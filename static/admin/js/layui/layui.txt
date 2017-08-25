@@ -1,0 +1,9 @@
+lay/modules/element.js
+children(".layui-tab-item")
+改为
+find(".layui-tab-item")
+
+lay/modules/upload.js
+(t.url||"")
+改为
+(s.attr("lay-url") || t.url || "")
