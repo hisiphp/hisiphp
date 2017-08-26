@@ -79,7 +79,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">管理员密码</label>
             <div class="layui-input-inline w200">
-                <input type="text" class="layui-input" name="password" lay-verify="title">
+                <input type="password" class="layui-input" name="password" lay-verify="title">
             </div>
             <div class="layui-form-mid layui-word-aux">保证密码最少6位</div>
         </div>
