@@ -64,7 +64,7 @@
                     <div class="menu-btns">
                         <a href="{:url('edit?id='.$vvvv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
                         <a href="{:url('add?pid='.$vvvv['id'].'&mod='.$vvvv['module'])}" title="添加子菜单"><i class="layui-icon">&#xe654;</i></a>
-                        <a href="{:url('del?ids='.$vvvv['id'])}" title="删除"><i class="layui-icon">&#xe640;</i></a>
+                        <a href="{:url('del?ids='.$vvvv['id'])}" title="删除之后无法恢复，您确定要删除吗？" class="j-ajax"><i class="layui-icon">&#xe640;</i></a>
                     </div>
                 </dd>
                 {/volist}
@@ -86,6 +86,7 @@
             <dd>
                 <span class="hd">排序</span>
                 <span class="hd2">状态</span>
+                <span class="hd3">操作</span>
             </dd>
         </dl>
         {volist name="menu_list" id="v" key="k"}
@@ -94,6 +95,9 @@
                 <input type="checkbox" name="ids[{$k}]" class="checkbox-ids" value="{$v['id']}" lay-skin="primary" title="{$v['title']}">
                 <input type="text" class="layui-input j-ajax-input menu-sort" name="sort[{$k}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$v['sort']}" data-value="{$v['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$v['id'])}">
                 <input type="checkbox" name="status" value="{$v['status']}" {if condition="$v['status'] eq 1"}checked=""{/if} lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_menu&ids='.$v['id'])}">
+                <div class="menu-btns">
+                <a href="{:url('del?ids='.$v['id'])}" title="删除之后无法恢复，您确定要删除吗？" class="j-ajax"><i class="layui-icon">&#xe640;</i></a>
+                </div>
             </dt>
         </dl>
         {/volist}
@@ -101,7 +105,7 @@
 </div>
 <script>
 layui.use(['jquery', 'form'], function() {
-    var $ = layui.jquery, form = layui.form();
+    var $ = layui.jquery, form = layui.form;
     // $('.menu-sort').blur(function(){
     //     var that = $(this);
     //     if(that.attr('data-value') != that.val()) {

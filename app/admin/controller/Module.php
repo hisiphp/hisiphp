@@ -212,6 +212,9 @@ class Module extends Admin
         }
         // 模块依赖检查
         foreach ($info['module_depend'] as $k => $v) {
+            if (!isset($v[3])) {
+                $v[3] = '=';
+            }
             $v[4] = '✔︎';
             $v[5] = '';
             // 判断模块是否存在

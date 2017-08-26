@@ -200,13 +200,14 @@ layui.define(['element', 'form'], function(exports) {
 
     /* TR数据行删除 */
     $('.j-tr-del').click(function() {
-        var that = $(this);
+        var that = $(this),
+            href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){
-            if (!that.attr('data-href')) {
+            if (!href) {
                 layer.msg('请设置data-href参数');
                 return false;
             }
-            $.post(that.attr('data-href'), {val:status}, function(res) {
+            $.post(href, {val:status}, function(res) {
                 if (res.code == 0) {
                     layer.msg(res.msg);
                 } else {
@@ -220,14 +221,16 @@ layui.define(['element', 'form'], function(exports) {
 
     /* ajax请求操作 */
     $('.j-ajax').click(function() {
-        var that = $(this), title = !that.attr('title') ? '确定要执行此操作吗？' : that.attr('title');
-        if (!that.attr('data-href')) {
+        var that = $(this), 
+            title = !that.attr('title') ? '确定要执行此操作吗？' : that.attr('title'),
+            href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
+        if (!href) {
             layer.msg('请设置data-href参数');
             return false;
         }
         layer.confirm(title, {title:false, closeBtn:0}, function(index){
             layer.msg('数据提交中...',{time:500000});
-            $.post(that.attr('data-href'), {}, function(res) {
+            $.post(href, {}, function(res) {
                 layer.msg(res.msg, {},function() {
                     if ((res.url).length > 0) {
                         location.href= res.url;
