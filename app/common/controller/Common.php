@@ -22,6 +22,25 @@ class Common extends Controller
     protected function _initialize()
     {
     }
+
+    /**
+     * 渲染后台模板
+     * 模块区分前后台时需用此方法
+     * @param string $template 模板路径
+     * @author 橘子俊 <364666827@qq.com>
+     * @return string
+     */
+    protected function afetch($template = '') {
+        if ($template) {
+            return $this->fetch($template);
+        }
+        $dispatch = request()->dispatch();
+        if (!$dispatch['module'][2]) {
+            $dispatch['module'][2] = 'index';
+        }
+        return $this->fetch($dispatch['module'][1].DS.$dispatch['module'][2]);
+    }
+    
     /**
      * 渲染插件模板
      * @param string $template 模板名称
