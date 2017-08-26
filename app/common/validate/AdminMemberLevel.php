@@ -20,7 +20,7 @@ class AdminMemberLevel extends Validate
 {
     //定义验证规则
     protected $rule = [
-        'name|等级名称' => 'require|unique:member_level',
+        'name|等级名称' => 'require|unique:admin_member_level',
         'status|状态设置'  => 'require|in:0,1',
     ];
 
