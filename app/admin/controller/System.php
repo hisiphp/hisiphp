@@ -71,7 +71,7 @@ class System extends Admin
                     $ids[$k] = json_encode($ids[$k], 1);
                 }
                 // 修改后台管理目录
-                if ($k == 'config_admin_path' && $ids[$k] != config('sys.admin_path')) {
+                if ($k == 'admin_path' && $ids[$k] != config('sys.admin_path')) {
                     if (is_file(ROOT_PATH.config('sys.admin_path')) && is_writable(ROOT_PATH.config('sys.admin_path'))) {
                         @rename(ROOT_PATH.config('sys.admin_path'), ROOT_PATH.$ids[$k]);
                         if (!is_file(ROOT_PATH.$ids[$k])) {
