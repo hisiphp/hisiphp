@@ -1,6 +1,8 @@
 <style type="text/css">
 .layui-form-item .layui-form-label{width:150px;}
 .layui-form-item .layui-input-inline{max-width:80%;width:auto;min-width:260px;}
+.layui-form-mid{padding:0;}
+.layui-form-mid code{color:#5FB878;}
 </style>
 <form action="{:url('?group='.input('param.group', 'base'))}" class="page-list-form layui-form layui-form-pane" method="post">
     {volist name="data_list" id="v"}
@@ -12,7 +14,7 @@
                 <div class="layui-input-inline">
                     <textarea rows="6"  class="layui-textarea" name="id[{$v['id']}]" autocomplete="off" placeholder="请填写{$v['title']}">{:htmlspecialchars_decode($v['value'])}</textarea>
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="array"}
@@ -22,7 +24,7 @@
                 <div class="layui-input-inline">
                     <textarea rows="6" class="layui-textarea" name="id[{$v['id']}]" autocomplete="off" placeholder="请填写{$v['title']}">{$v['value']}</textarea>
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="switch"}
@@ -32,7 +34,7 @@
                 <div class="layui-input-inline">
                     <input type="checkbox" name="id[{$v['id']}]" value="1" lay-skin="switch" lay-text="{$v['options'][1]}|{$v['options'][0]}" {if condition="$v['value'] eq 1"}checked=""{/if}>
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="select"}
@@ -46,7 +48,7 @@
                         {/volist}
                     </select>
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="radio"}
@@ -57,7 +59,7 @@
                     {volist name="v['options']" id="vv"}<input type="radio" name="id[{$v['id']}]" value="{$key}" title="{$vv}" {if condition="$key eq $v['value']"}checked{/if}>
                     {/volist}
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="checkbox"}
@@ -69,7 +71,7 @@
                     {volist name="v['options']" id="vv"}<input type="checkbox" name="id[{$v['id']}][]" value="{$key}" title="{$vv}" lay-skin="primary" {if condition="in_array($key, $value)"}checked{/if}>
                     {/volist}
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="date"}
@@ -79,7 +81,7 @@
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})">
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="datetime"}
@@ -89,7 +91,7 @@
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD hh:mm:ss'})">
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="image"}
@@ -105,7 +107,7 @@
                         <img src="" style="display:none;border-radius:5px;border:1px solid #ccc" width="36" height="36">
                     {/if}
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="file"}
@@ -116,7 +118,7 @@
                     <input type="file" class="layui-upload-file" name="upload" lay-type="file" autocomplete="off" lay-title="请上传{$v['title']}" lay-url="{if condition="!empty($v['url'])"}{:url($v['url'])}{/if}" lay-ext="{:str_replace(',', '|', config('upload.upload_file_ext'))}">
                     <input type="hidden" class="upload-input" name="id[{$v['id']}]" value="{$v['value']}">
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
         {/case}
         {case value="hidden"}
@@ -129,7 +131,7 @@
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}">
                 </div>
-                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
+                <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
     {/switch}
     <input type="hidden" name="type[{$v['id']}]" value="{$v['type']}">
@@ -145,7 +147,7 @@
 </form>
 <script>
 layui.use(['jquery', 'form', 'laydate', 'upload'], function() {
-    var $ = layui.jquery, form = layui.form(), laydate = layui.laydate, layer = layui.layer;
+    var $ = layui.jquery, form = layui.form, laydate = layui.laydate, layer = layui.layer;
     layui.upload({
         url: '{:url("admin/annex/upload?thumb=no&water=no")}'
         ,method: 'post'

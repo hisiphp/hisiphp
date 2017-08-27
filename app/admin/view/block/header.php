@@ -4,7 +4,7 @@
     <title>{$_admin_menu_current['title']}-后台首页 -  Powered by {:config('hisiphp.name')}</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css">
-    <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:time()}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/style.css">
     <script type="text/javascript">
         var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}";
     </script>
@@ -101,7 +101,7 @@ $ca = strtolower(request()->controller().'/'.request()->action());
         <script>
         layui.config({
           base: '__ADMIN_JS__/',
-          version: '{:time()}'
+          version: '{:config("hisiphp.version")}'
         }).use('global');
         </script>
         <div class="page-body">

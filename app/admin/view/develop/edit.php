@@ -179,7 +179,6 @@
 </div>
 {literal}
 <form class="layui-form layui-form-pane" action="{:url('')}" id="editForm" method="post">
-{/literal}
     <fieldset class="layui-elem-field layui-field-title">
       <legend>表单集合</legend>
     </fieldset>
@@ -307,10 +306,11 @@
         <div class="layui-input-block">
             <input type="hidden" class="field-id" name="id">
             <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">提交</button>
-            {literal}<a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>{/literal}
+            <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
     </div>
 </form>
+{/literal}
 <script>
 /* 修改模式下需要将数据放入此变量 */
 var formData = {literal}{:json_encode($data_info)};{/literal}

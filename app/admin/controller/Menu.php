@@ -51,7 +51,7 @@ class Menu extends Admin
             if (!$model->storage()) {
                 return $this->error($model->getError());
             }
-            return $this->success('保存成功。');
+            return $this->success('保存成功。', url('index'));
         }
         $this->assign('module_option', model('AdminModule')->getOption($mod));
         $this->assign('menu_option', self::menuOption($pid));
@@ -70,7 +70,7 @@ class Menu extends Admin
             if (!$model->storage()) {
                 return $this->error($model->getError());
             }
-            return $this->success('保存成功。');
+            return $this->success('保存成功。', url('index'));
         }
 
         $row = MenuModel::where('id', $id)->field('id,pid,module,title,icon,url,param,debug,system,status')->find();
