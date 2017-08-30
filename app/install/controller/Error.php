@@ -220,7 +220,7 @@ INFO;
     {
         $items = [
             'os'      => ['操作系统', '不限制', '类Unix', PHP_OS, 'ok'],
-            'php'     => ['PHP版本', '5.6', '5.6及以上', PHP_VERSION, 'ok'],
+            'php'     => ['PHP版本', '5.5', '5.5及以上', PHP_VERSION, 'ok'],
             'gd'      => ['GD库', '2.0', '2.0及以上', '未知', 'ok'],
         ];
         if ($items['php'][3] < $items['php'][1]) {
