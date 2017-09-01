@@ -14,7 +14,7 @@
 $ca = strtolower(request()->controller().'/'.request()->action());
 {/php}
 <div class="layui-layout layui-layout-admin">
-    <div class="layui-header">
+    <div class="layui-header" style="z-index:999!important;">
         <div class="fl header-logo">管理控制台</div>
         <div class="fl header-fold"><a href="javascript:;" title="打开/关闭左侧导航" class="aicon ai-caidan" id="foldSwitch"></a></div>
         <ul class="layui-nav fl nobg main-nav">

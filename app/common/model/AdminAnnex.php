@@ -236,6 +236,7 @@ class AdminAnnex extends Model
     private static function result($info = '', $from = 'input', $status = 0, $data = [])
     {
         unset($data['hash'], $data['group'], $data['ctime']);
+        $data['file'] = ROOT_DIR.ltrim($data['file'], '/');
         $arr = [];
         switch ($from) {
             case 'kindeditor':
