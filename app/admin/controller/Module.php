@@ -482,9 +482,9 @@ class Module extends Admin
             $xml = file_get_contents($path.$v.DS.'config.xml');
             $themes[$k] = xml2array($xml);
             $themes[$k]['name'] = $v;
-            $themes[$k]['thumb'] = '/theme/'.$module['name'].'/'.$v.'/thumb.png';
+            $themes[$k]['thumb'] = ROOT_DIR.'theme/'.$module['name'].'/'.$v.'/thumb.png';
             if (!is_file($themes[$k]['thumb'])) {
-                $themes[$k]['thumb'] = '/static/admin/image/theme.png';
+                $themes[$k]['thumb'] = ROOT_DIR.'static/admin/image/theme.png';
             }
         }
         $this->assign('data_info', $module);

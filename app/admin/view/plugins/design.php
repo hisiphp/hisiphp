@@ -153,7 +153,7 @@ static</textarea>
 </script>
 <script type="text/javascript">
     layui.use(['jquery', 'form'], function(){
-        var $ = layui.jquery, form = layui.form();
+        var $ = layui.jquery, form = layui.form;
         $('#addConfig').click(function(){
             var that = $(this), tpl = $('#configTr').html(), len = $('.config-tr').length;
             that.parents('tr').before(tpl.replace(/{i}/g, len+100));

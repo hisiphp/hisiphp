@@ -61,7 +61,7 @@
 <script>
 var formData = {:json_encode($data_info)};
 layui.use(['form'], function() {
-    var $ = layui.jquery, form = layui.form();
+    var $ = layui.jquery, form = layui.form;
     /* 有BUG 待完善*/
     form.on('checkbox(roleAuth)', function(data) {
         var child = $(data.elem).parent('dt').siblings('dd').find('input');

@@ -53,7 +53,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">图片上传</label>
             <div class="layui-input-inline upload">
-                <input type="file" class="layui-upload-file" name="upload" lay-type="image" autocomplete="off" lay-title="请上传图片" lay-ext="" lay-url="">
+                <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-type="image" lay-data="{accept:'image'}">请上传图片</button>
                 <input type="hidden" class="upload-input" name="image" value="">
                 <img src="" style="display:none;border-radius:5px;border:1px solid #ccc" width="36" height="36">
             </div>
@@ -217,7 +217,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">图片上传</label>
         <div class="layui-input-inline upload">
-            <input type="file" class="layui-upload-file" name="upload" lay-type="image" autocomplete="off" lay-title="请上传图片" lay-ext="" lay-url="">
+            <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-type="image" lay-data="{accept:'image'}">请上传图片</button>
             <input type="hidden" class="upload-input" name="image" value="">
             <img src="" style="display:none;border-radius:5px;border:1px solid #ccc" width="36" height="36">
         </div>
@@ -320,7 +320,7 @@ function func(data) {
     $('input[name="member"]').val('['+data[0]['id']+']'+data[0]['username']);
 }
 layui.use(['upload'], function() {
-    var $ = layui.jquery;
+    var $ = layui.jquery, layer = layui.layer, upload = layui.upload;
     /**
      * 附件上传url参数说明
      * @param string $from 来源
@@ -330,14 +330,16 @@ layui.use(['upload'], function() {
      * @param string $thumb_type 缩略图方式
      * @param string $input 文件表单字段名
      */
-    layui.upload({
-        url: '{literal}{:url("admin/annex/upload?water=&thumb=&from=&group=")}{/literal}'
+    upload.render({
+        elem: '.layui-upload'
+        ,url: '{literal}{:url("admin/annex/upload?water=&thumb=&from=&group=")}{/literal}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
-        },success: function(res, obj) {
-            if (res.status == 0) {
-                layer.msg(res.info);
+        },done: function(res, index, upload) {
+            var obj = this.item;
+            if (res.code == 0) {
+                layer.msg(res.msg);
                 return false;
             }
             layer.closeAll();
@@ -377,7 +379,7 @@ function func(data) {
     $('input[name="member"]').val('['+data[0]['id']+']'+data[0]['username']);
 }
 layui.use(['upload'], function() {
-    var $ = layui.jquery;
+    var $ = layui.jquery, layer = layui.layer, upload = layui.upload;
     /**
      * 附件上传url参数说明
      * @param string $from 来源
@@ -385,16 +387,18 @@ layui.use(['upload'], function() {
      * @param string $water 水印，参数为空默认调用系统配置，no直接关闭水印，image 图片水印，text文字水印
      * @param string $thumb 缩略图，参数为空默认调用系统配置，no直接关闭缩略图，如需生成 500x500 的缩略图，则 500x500多个规格请用";"隔开
      * @param string $thumb_type 缩略图方式
-     * @param string $input 文件表单字段名[默认：upload]
+     * @param string $input 文件表单字段名
      */
-    layui.upload({
-        url: '{:url("admin/annex/upload?water=&thumb=&from=&group=&input=")}'
+    upload.render({
+        elem: '.layui-upload'
+        ,url: '{:url("admin/annex/upload?water=&thumb=&from=&group=")}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
-        },success: function(res, obj) {
-            if (res.status == 0) {
-                layer.msg(res.info);
+        },done: function(res, index, upload) {
+            var obj = this.item;
+            if (res.code == 0) {
+                layer.msg(res.msg);
                 return false;
             }
             layer.closeAll();

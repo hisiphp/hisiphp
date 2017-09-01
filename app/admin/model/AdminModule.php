@@ -115,7 +115,7 @@ class AdminModule extends Model
         if (empty($data)) {
             $data = $this->request->post();
         }
-        $data['icon'] = '/static/app_icon/'.$data['name'].'.png';
+        $data['icon'] = ROOT_DIR.'static/app_icon/'.$data['name'].'.png';
         $mod_path = APP_PATH.$data['name'] . DS;
         if (is_dir($mod_path) || self::where('name', $data['name'])->find() || in_array($data['name'], config('hs_system.modules')) !== false) {
             $this->error = '模块已存在！';

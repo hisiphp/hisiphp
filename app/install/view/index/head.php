@@ -3,13 +3,13 @@
 <head>
     <title> 系统安装 - Powered by {:config('hisiphp.name')}</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
-    <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
-    <link rel="stylesheet" href="/static/admin/css/style.css">
-    <link rel="stylesheet" href="/static/admin/css/install.css?time={:time()}">
-    <script src="/static/admin/js/layui/layui.js"></script>
+    <link rel="stylesheet" href="static/admin/js/layui/css/layui.css">
+    <link rel="stylesheet" href="static/admin/css/style.css">
+    <link rel="stylesheet" href="static/admin/css/install.css">
+    <script src="static/admin/js/layui/layui.js"></script>
     <script>
     layui.config({
-      base: '/static/admin/js/',
+      base: 'static/admin/js/',
       version: '{:time()}'
     }).use('global');
     </script>

@@ -96,7 +96,7 @@
 <script>
 var formData = {:json_encode($data_info)};
 layui.use(['form'], function() {
-    var $ = layui.jquery, form = layui.form();
+    var $ = layui.jquery, form = layui.form;
     // form.on('select(pid)', function(data) {
     //     var level = $('.field-pid option:selected').attr('level');
     //     // 根据所属菜单层级对菜单链接做出相应提示

@@ -73,7 +73,7 @@
 <script>
 var formData = {:json_encode($data_info)};
 layui.use(['form'], function() {
-    var $ = layui.jquery, form = layui.form();
+    var $ = layui.jquery, form = layui.form;
     form.on('select(group)', function(data) {
         $('#groupShow').html(data.value);
     });

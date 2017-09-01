@@ -62,6 +62,7 @@ CREATE TABLE `hisiphp_admin_config` (
 INSERT INTO `hisiphp_admin_config` (`id`, `system`, `group`, `title`, `name`, `value`, `type`, `options`, `url`, `tips`, `sort`, `status`, `ctime`, `mtime`)
 VALUES
   (1,1,'sys','扩展配置分组','config_group','','array',' ','','请按如下格式填写：&lt;br&gt;键值:键名&lt;br&gt;键值:键名&lt;br&gt;&lt;span style=&quot;color:#f00&quot;&gt;键值只能为英文、数字、下划线&lt;/span&gt;',1,1,1492140215,1492140215),
+  (13, 1, 'base', '网站域名', 'site_domain', '', 'input', '', '', '', 2, 1, 1492140215, 1492140215),
   (14,1,'upload','图片上传大小限制','upload_image_size','0','input','','','单位：KB，0表示不限制大小',3,1,1490841797,1491040778),
   (15,1,'upload','允许上传图片格式','upload_image_ext','jpg,png,gif,jpeg,ico','input','','','多个格式请用英文逗号（,）隔开',4,1,1490842130,1491040778),
   (16,1,'upload','缩略图裁剪方式','thumb_type','2','select','1:等比例缩放\r\n2:缩放后填充\r\n3:居中裁剪\r\n4:左上角裁剪\r\n5:右下角裁剪\r\n6:固定尺寸缩放\r\n','','',5,1,1490842450,1491040778),
@@ -348,7 +349,7 @@ VALUES
   (100,0,97,'admin','删除语言包','','admin/language/del','','_self',100,0,1,0,1,1490315067),
   (101,0,97,'admin','排序设置','','admin/language/sort','','_self',100,0,1,0,1,1490315067),
   (102,0,97,'admin','状态设置','','admin/language/status','','_self',100,0,1,0,1,1490315067),
-  (103,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
+  (103,0,16,'admin','收藏夹图标上传','','admin/annex/favicon','','_self',3,0,1,0,1,1490315067),
   (104,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
   (105,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
   (106,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
@@ -389,7 +390,7 @@ CREATE TABLE `hisiphp_admin_menu_lang` (
   `title` varchar(120) NOT NULL DEFAULT '' COMMENT '标题',
   `lang` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '语言包',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8 COMMENT='[系统] 管理菜单语言包';
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8;
 
 INSERT INTO `hisiphp_admin_menu_lang` (`menu_id`, `title`, `lang`)
 VALUES

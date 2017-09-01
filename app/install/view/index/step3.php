@@ -10,7 +10,7 @@
     <fieldset class="layui-elem-field layui-field-title">
         <legend>数据库配置</legend>
     </fieldset>
-    <form class="layui-form layui-form-pane" action="/?step=4" method="post">
+    <form class="layui-form layui-form-pane" action="?step=4" method="post">
         <div class="layui-form-item">
             <label class="layui-form-label">服务器地址</label>
             <div class="layui-input-inline w200">
@@ -65,7 +65,7 @@
             <button type="submit" class="layui-btn fl" style="margin-left:120px;" lay-submit="" lay-filter="formSubmit">测试数据库连接</button>
         </div>
     </form>
-    <form class="layui-form layui-form-pane" action="/?step=5" method="post">
+    <form class="layui-form layui-form-pane" action="?step=5" method="post">
         <fieldset class="layui-elem-field layui-field-title">
             <legend>管理账号设置</legend>
         </fieldset>

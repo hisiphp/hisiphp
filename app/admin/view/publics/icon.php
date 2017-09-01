@@ -44,7 +44,7 @@
 <script src="__ADMIN_JS__/layui/layui.js"></script>
 <script type="text/javascript">
 layui.use(['jquery', 'element'], function() {
-    var $ = layui.jquery, element = layui.element();
+    var $ = layui.jquery, element = layui.element;
     var index = parent.layer.getFrameIndex(window.name);
     $('.icon-list li').click(function(){
         var _val = $(this).find('span').html();

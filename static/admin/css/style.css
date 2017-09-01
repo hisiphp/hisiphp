@@ -135,6 +135,7 @@ body{background-color:#f5f5f5;}
 .layui-tab-title li{padding:0;}
 .layui-tab-title li a{padding:0 10px;}
 .page-tips .layui-colla-content{/*color:#999;background-color:#f9f9f9*/}
+.layui-form-mid{font-size:12px!important;}
 /*themes*/
 .themes{}
 .themes li{float:left;width:360px;overflow:hidden;margin:10px 20px 10px 10px;}

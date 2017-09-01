@@ -91,7 +91,6 @@ class Member extends Admin
         }
 
         $row = MemberModel::where('id', $id)->field('id,username,level_id,nick,email,mobile')->find()->toArray();
-
         $this->assign('data_info', array_filter($row));
         $this->assign('level_option', LevelModel::getOption($row['level_id']));
         return $this->fetch('form');
@@ -201,6 +200,21 @@ class Member extends Admin
 
         $this->assign('data_info', $row);
         return $this->fetch('levelform');
+    }
+
+    /**
+     * 删除会员等级
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function delLevel()
+    {
+        $ids = input('param.ids/a');
+        $model = new LevelModel;
+        if (!$model->del($ids)) {
+            return $this->error($model->getError());
+        }
+        return $this->success('删除成功');
     }
 
     /**

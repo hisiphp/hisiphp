@@ -4,7 +4,7 @@
         <a href="{:url('addLevel')}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加</a>
         <a data-href="{:url('status?val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
         <a data-href="{:url('status?val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
-        <a data-href="{:url('delRole')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="aicon ai-jinyong"></i>删除</a>
+        <a data-href="{:url('delLevel')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="aicon ai-jinyong"></i>删除</a>
     </div>
 </div>
 <div class="layui-form">

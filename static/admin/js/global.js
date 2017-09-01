@@ -1,5 +1,5 @@
 layui.define(['element', 'form'], function(exports) {
-    var $ = layui.jquery,element = layui.element(), layer = layui.layer, form = layui.form();
+    var $ = layui.jquery,element = layui.element, layer = layui.layer, form = layui.form;
     var lockscreen = function() {
         document.oncontextmenu=new Function("event.returnValue=false;");
         document.onselectstart=new Function("event.returnValue=false;");

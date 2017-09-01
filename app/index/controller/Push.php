@@ -25,6 +25,10 @@ ignore_user_abort(true);
 class Push extends Home
 {
     protected function _initialize() {
+        if (!config('sys.cloud_push')) {
+            echo '{"code":0,"msg":"您的站点已关闭云端推送功能","data":[]}';
+            exit;
+        }
         parent::_initialize();
         $this->update_path = ROOT_PATH.'backup'.DS.'uppack'.DS;
         $this->cloud = new CloudApi(config('hs_cloud.identifier'), $this->update_path);
@@ -94,23 +98,26 @@ class Push extends Home
         if (!is_dir($decom_path.DS.'upload'.DS.'app')) {
             return $this->apiReturn('推送失败，升级包文件不完整！');
         }
-        Dir::copyDir($decom_path.DS.'upload'.DS.'app', './app');
+        if (!is_dir(ROOT_PATH.'app'.DS.$this->app_name)) {
+            Dir::create(ROOT_PATH.'app'.DS.$this->app_name, 0777, true);
+        }
+        Dir::copyDir($app_path, './app'.DS.$this->app_name);
         if (!is_dir(ROOT_PATH.'static'.DS.'app_icon'.DS)) {
             Dir::create(ROOT_PATH.'static'.DS.'app_icon'.DS, 0755, true);
         }
         // 复制应用图标
-        $icon = '/static/admin/image/app.png';
+        $icon = ROOT_DIR.'static/admin/image/app.png';
         if (is_file($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.$this->app_name.'.png')) {
             copy($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.'icon.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$this->app_name.'.png');
-            $icon = '/static/app_icon/'.$this->app_name.'.png';
+            $icon = ROOT_DIR.'static/app_icon/'.$this->app_name.'.png';
         }
         // 复制static目录
         if (is_dir($decom_path.DS.'upload'.DS.'static')) {
-            Dir::copyDir($decom_path.DS.'upload'.DS.'static', './static');
+            Dir::copyDir($decom_path.DS.'upload'.DS.'static', '.'.ROOT_DIR.'static');
         }
         // 复制theme目录
         if (is_dir($decom_path.DS.'upload'.DS.'theme')) {
-            Dir::copyDir($decom_path.DS.'upload'.DS.'theme', './theme');
+            Dir::copyDir($decom_path.DS.'upload'.DS.'theme', '.'.ROOT_DIR.'theme');
         }
         // 删除临时目录和安装包
         Dir::delDir($decom_path);
@@ -168,17 +175,17 @@ class Push extends Home
         if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
             return $this->apiReturn('推送失败，请开启[backup/uppack]文件夹权限！');
         }
-        if (!is_dir('./plugins/'.$this->app_name)) {
-            Dir::create('./plugins/'.$this->app_name, 0777, true);
+        if (!is_dir('.'.ROOT_DIR.'plugins/'.$this->app_name)) {
+            Dir::create('.'.ROOT_DIR.'plugins/'.$this->app_name, 0777, true);
         }
 
         $app_path = $decom_path.DS.'upload'.DS.$this->app_name.DS;
-        if (!file_exists($app_path.'info.php')) {
+        if (!is_file($app_path.'info.php')) {
             return $this->apiReturn('推送失败，升级包文件不完整！');
         }
         $info = include_once $app_path.'info.php';
         // 复制到插件目录
-        Dir::copyDir($app_path, './plugins/'.$this->app_name);
+        Dir::copyDir($app_path, '.'.ROOT_DIR.'plugins/'.$this->app_name);
         // 删除临时目录和安装包
         Dir::delDir($decom_path);
         @unlink($file);
@@ -188,7 +195,7 @@ class Push extends Home
         $map['identifier'] = $info['identifier'];
         $map['title'] = $info['title'];
         $map['intro'] = $info['intro'];
-        $map['icon'] = '/plugins/'.$this->app_name.'/'.$this->app_name.'.png';
+        $map['icon'] = ROOT_DIR.'plugins/'.$this->app_name.'/'.$this->app_name.'.png';
         $map['version'] = $info['version'];
         $map['author'] = isset($info['author']) ? $info['author'] : '';
         $map['url'] = isset($info['author_url']) ? $info['author_url'] : '';
@@ -225,7 +232,7 @@ class Push extends Home
             return $this->apiReturn('推送失败，请开启[backup/uppack]文件夹权限！');
         }
         $app_path = $decom_path.DS.'upload'.DS.$this->app_name.DS;
-        if (!file_exists($app_path.'config.xml')) {
+        if (!is_file($app_path.'config.xml')) {
             return $this->apiReturn('推送失败，升级包文件不完整！');
         }
         $xml = file_get_contents($app_path.'config.xml');
@@ -242,7 +249,7 @@ class Push extends Home
             @unlink($file);
             return $this->apiReturn('推送失败，您的网站未安装相应模块['.$config['depend'].']');
         }
-        if (!file_exists(APP_PATH.$module.DS.'info.php')) {
+        if (!is_file(APP_PATH.$module.DS.'info.php')) {
             Dir::delDir($decom_path);
             @unlink($file);
             return $this->apiReturn('推送失败，您的网站模块异常['.$config['depend'].']');
@@ -254,11 +261,11 @@ class Push extends Home
             return $this->apiReturn('推送失败，请先安装依赖模块['.$config['depend'].']');
         }
         // 复制到插件目录
-        Dir::copyDir($app_path, './theme/'.$module.'/'.$this->app_name);
+        Dir::copyDir($app_path, '.'.ROOT_DIR.'theme/'.$module.'/'.$this->app_name);
         // 删除临时目录和安装包
         Dir::delDir($decom_path);
         @unlink($file);
-        if (!file_exists(ROOT_PATH.'theme'.DS.$module.DS.$this->app_name.DS.'config.xml')) {
+        if (!is_file(ROOT_PATH.'theme'.DS.$module.DS.$this->app_name.DS.'config.xml')) {
             return $this->apiReturn('未知错误，模板推送失败！');
         }
         clearstatcache();

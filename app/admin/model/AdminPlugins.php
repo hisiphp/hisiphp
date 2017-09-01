@@ -105,7 +105,7 @@ class AdminPlugins extends Model
         }
 
         $data['status'] = 0;
-        $data['icon'] = '/plugins/'.$data['name'].'/'.$data['name'].'.png';
+        $data['icon'] = ROOT_DIR.'plugins/'.$data['name'].'/'.$data['name'].'.png';
         // 验证
         $valid = Loader::validate('Plugins');
         if($valid->check($data) !== true) {

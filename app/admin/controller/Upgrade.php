@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
+
 namespace app\admin\controller;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminPlugins as PluginsModel;
@@ -77,14 +78,14 @@ class Upgrade extends Admin
             if (isset($res['code']) && $res['code'] == 1) {
                 // 缓存站点标识
                 $str = "<?php\nreturn ['identifier' => '".$res['data']."'];\n";
-                file_put_contents(APP_PATH.'extra/hs_cloud.php', $str);
-                if (file_exists(APP_PATH.'extra/hs_cloud.php')) {
-                    $cloud = include_once APP_PATH.'extra/hs_cloud.php';
+                file_put_contents(APP_PATH.'extra'.DS.'hs_cloud.php', $str);
+                if (is_file(APP_PATH.'extra'.DS.'hs_cloud.php')) {
+                    $cloud = include_once APP_PATH.'extra'.DS.'hs_cloud.php';
                     if (isset($cloud['identifier']) && !empty($cloud['identifier'])) {
                         return $this->success('恭喜您，已成功绑定云平台账号。');
                     }
                 }
-                return $this->error('extra/hs_cloud.php写入失败！');
+                return $this->error('extra'.DS.'hs_cloud.php写入失败！');
             }
             return $this->error($res['msg'] ? $res['msg'] : '云平台绑定失败！(-0)');
         }
@@ -262,33 +263,32 @@ class Upgrade extends Admin
         $layout = '';
         array_push($up_info['update'], '/version.php');
         foreach ($up_info['update'] as $k => $v) {
-            $file = $v;
-            $_dir = $back_path.dirname($file).'/';
+            $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777, true);
             }
-            if (basename($file) == 'layout.php') {
+            if (basename($v) == 'layout.php') {
                 $layout = APP_PATH.'admin'.DS.'view'.DS.'layout.php';
             }
-            if (file_exists('.'.$file)) {
-                @copy('.'.$file, $_dir.basename($file));
+            if (is_file('./'.$v)) {
+                @copy('./'.$v, $_dir.basename($v));
             }
         }
-
         // 更新升级文件
         Dir::copyDir($decom_path.DS.'upload', '.');
         // 根据升级补丁删除文件
         if (isset($up_info['delete'])) {
             foreach ($up_info['delete'] as $k => $v) {
-                if ('.'.$v) {
-                    unlink('.'.$v);
+                if (is_file('./'.$v)) {
+                    @unlink('./'.$v);
                 }
             }
         }
+
         // 同步更新扩展模块下的layout.php TODO
         // 导入SQL
         $sql_file = realpath($decom_path.DS.'database.sql');
-        if (file_exists($sql_file)) {
+        if (is_file($sql_file)) {
             $sql = file_get_contents($sql_file);
             $sql_list = parse_sql($sql, 0, ['hisiphp_' => config('database.prefix')]);
             if ($sql_list) {
@@ -339,44 +339,51 @@ class Upgrade extends Admin
             return false;
         }
         // 获取本次升级信息
-        if (!file_exists($decom_path.DS.'upgrade.php')) {
+        if (!is_file($decom_path.DS.'upgrade.php')) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
         }
         $up_info = include_once $decom_path.DS.'upgrade.php';
         //备份需要升级的旧版本
         foreach ($up_info['update'] as $k => $v) {
-            $file = $v;
-            $_dir = $back_path.dirname($file).'/';
+            if (substr($v, 0, strlen('/app/'.$module->name)) != '/app/'.$module->name || strpos($v, '..') !== false) {
+                $this->error = '升级补丁文件异常';
+                return false;
+            }
+            $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777, true);
             }
-            if (file_exists('.'.$file)) {
-                @copy('.'.$file, $_dir.basename($file));
+            if (is_file('./'.$v)) {
+                @copy('./'.$v, $_dir.basename($v));
             }
         }
         // 复制app目录
         if (is_dir($decom_path.DS.'upload'.DS.'app'.DS.$module->name)) {
-            Dir::copyDir($decom_path.DS.'upload'.DS.'app'.DS.$module->name, './app/'.$module->name);
+            Dir::copyDir($decom_path.DS.'upload'.DS.'app'.DS.$module->name, '.'.ROOT_DIR.'app'.DS.$module->name);
         }
         // 复制static目录
         if (is_dir($decom_path.DS.'upload'.DS.'static')) {
-            Dir::copyDir($decom_path.DS.'upload'.DS.'static'.DS.$module->name, './static/'.$module->name);
+            Dir::copyDir($decom_path.DS.'upload'.DS.'static'.DS.$module->name, '.'.ROOT_DIR.'static'.DS.$module->name);
         }
         // 复制theme目录
         if (is_dir($decom_path.DS.'upload'.DS.'theme')) {
-            Dir::copyDir($decom_path.DS.'upload'.DS.'theme'.DS.$module->name, './theme/'.$module->name);
+            Dir::copyDir($decom_path.DS.'upload'.DS.'theme'.DS.$module->name, '.'.ROOT_DIR.'theme'.DS.$module->name);
         }
         // 根据升级补丁删除文件
         if (isset($up_info['delete'])) {
             foreach ($up_info['delete'] as $k => $v) {
-                if ('.'.$v) {
-                    @unlink('.'.$v);
+                if (is_file('./'.$v)) {
+                    if (substr($v, 0, strlen('/app/'.$model->name)) != '/app/'.$model->name) {
+                        $this->error = '升级补丁文件异常';
+                        return false;
+                    }
+                    @unlink('./'.$v);
                 }
             }
         }
         // 读取模块info
-        if (!file_exists(APP_PATH.$module->name.DS.'info.php')) {
+        if (!is_file(APP_PATH.$module->name.DS.'info.php')) {
             $this->error = $module->name.'模块配置文件[info.php]丢失！';
             return false;
         }
@@ -386,7 +393,7 @@ class Upgrade extends Admin
         }
         // 导入SQL
         $sql_file = realpath($decom_path.DS.'database.sql');
-        if (file_exists($sql_file)) {
+        if (is_file($sql_file)) {
             $sql = file_get_contents($sql_file);
             $sql_list = parse_sql($sql, 0, [$module_info['db_prefix'] => config('database.prefix')]);
             if ($sql_list) {
@@ -439,52 +446,59 @@ class Upgrade extends Admin
             return false;
         }
         // 获取本次升级信息
-        if (!file_exists($decom_path.DS.'upgrade.php')) {
+        if (!is_file($decom_path.DS.'upgrade.php')) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
         }
         $up_info = include_once $decom_path.DS.'upgrade.php';
         //备份需要升级的旧版本
         foreach ($up_info['update'] as $k => $v) {
-            $file = $v;
-            $_dir = $back_path.dirname($file).'/';
+            if (substr($v, 0, strlen('/plugins/'.$plugins->name)) != '/plugins/'.$plugins->name || strpos($v, '..') !== false) {
+                $this->error = '升级补丁文件异常';
+                return false;
+            }
+            $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777, true);
             }
-            if (file_exists('.'.$file)) {
-                @copy('.'.$file, $_dir.basename($file));
+            if (is_file('./'.$v)) {
+                @copy('./'.$v, $_dir.basename($v));
             }
         }
         if (!is_dir($decom_path.DS.'upload'.DS.$plugins->name)) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
         }
-        if (!is_dir('./plugins/'.$plugins->name)) {
-            $this->error = '升级失败，插件目录不存在[/plugins/'.$plugins->name.']！';
+        if (!is_dir('.'.ROOT_DIR.'plugins'.DS.$plugins->name)) {
+            $this->error = '升级失败，插件目录不存在['.ROOT_DIR.'plugins'.DS.$plugins->name.']！';
             return false;
         }
         // 复制插件目录
-        Dir::copyDir($decom_path.DS.'upload'.DS.$plugins->name, './plugins/'.$plugins->name);
+        Dir::copyDir($decom_path.DS.'upload'.DS.$plugins->name, '.'.ROOT_DIR.'plugins'.DS.$plugins->name);
         // 根据升级补丁删除文件
         if (isset($up_info['delete'])) {
             foreach ($up_info['delete'] as $k => $v) {
-                if ('.'.$v) {
-                    @unlink('.'.$v);
+                if (substr($v, 0, 8) != '/plugins') {
+                    $this->error = '升级补丁文件异常';
+                    return false;
+                }
+                if (is_file('./'.$v)) {
+                    @unlink('./'.$v);
                 }
             }
         }
         // 读取插件info
-        if (!file_exists('./plugins/'.$plugins->name.DS.'info.php')) {
+        if (!is_file('.'.ROOT_DIR.'plugins'.DS.$plugins->name.DS.'info.php')) {
             $this->error = $plugins->name.'插件配置文件[info.php]丢失！';
             return false;
         }
-        $plugins_info = include_once './plugins/'.$plugins->name.DS.'info.php';
+        $plugins_info = include_once ROOT_PATH.'plugins'.DS.$plugins->name.DS.'info.php';
         if (!isset($plugins_info['db_prefix']) || empty($plugins_info['db_prefix'])) {
             $plugins_info['db_prefix'] = 'db_';
         }
         // 导入SQL
         $sql_file = realpath($decom_path.DS.'database.sql');
-        if (file_exists($sql_file)) {
+        if (is_file($sql_file)) {
             $sql = file_get_contents($sql_file);
             $sql_list = parse_sql($sql, 0, [$plugins_info['db_prefix'] => config('database.prefix')]);
             if ($sql_list) {
@@ -523,7 +537,7 @@ class Upgrade extends Admin
         }
         $identifier = explode('.', $this->identifier);
         $app_name = $identifier[0];
-        if (!file_exists('.'.DS.'theme'.DS.$module_name.DS.$app_name.DS.'config.xml')) {
+        if (!is_file('.'.DS.'theme'.DS.$module_name.DS.$app_name.DS.'config.xml')) {
             $this->error = '升级失败，原版本缺少config.xml文件！';
             return false;
         }
@@ -566,24 +580,35 @@ class Upgrade extends Admin
             return false;
         }
         // 获取本次升级信息
-        if (!file_exists($decom_path.DS.'upgrade.php')) {
+        if (!is_file($decom_path.DS.'upgrade.php')) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
         }
         $up_info = include_once $decom_path.DS.'upgrade.php';
         //备份需要升级的旧版本
         foreach ($up_info['update'] as $k => $v) {
-            $file = $v;
-            $_dir = $back_path.dirname($file).'/';
+            $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777, true);
             }
-            if (file_exists('.'.$file)) {
-                @copy('.'.$file, $_dir.basename($file));
+            if (is_file('./'.$v)) {
+                @copy('./'.$v, $_dir.basename($v));
+            }
+        }
+        // 根据升级补丁删除文件
+        if (isset($up_info['delete'])) {
+            foreach ($up_info['delete'] as $k => $v) {
+                if (substr($v, 0, strlen('/theme/'.$module_name)) != '/theme/'.$module_name || strpos($v, '..') !== false) {
+                    $this->error = '升级补丁文件异常';
+                    return false;
+                }
+                if (is_file('./'.$v)) {
+                    @unlink('./'.$v);
+                }
             }
         }
         // 复制升级文件
-        Dir::copyDir($decom_path.DS.'upload'.DS.$app_name, '.'.DS.'theme'.DS.$module_name.DS.$app_name);
+        Dir::copyDir($decom_path.DS.'upload'.DS.$app_name, '.'.ROOT_DIR.'theme'.DS.$module_name.DS.$app_name);
         $this->clearCache('', $version);
         return true;
     }

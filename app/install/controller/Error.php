@@ -209,7 +209,10 @@ class Error extends Common
 return ['key' => '{$auth}'];
 INFO;
         file_put_contents(APP_PATH.'extra/hs_auth.php', $hs_auth);
-        return $this->success('系统安装成功，欢迎您使用HisiPHP开源框架', '/admin.php');
+        // 获取站点根目录
+        $root_dir = request()->baseFile();
+        $root_dir  = preg_replace(['/index.php$/'], [''], $root_dir);
+        return $this->success('系统安装成功，欢迎您使用HisiPHP开源框架', $root_dir.'admin.php');
     }
     
     /**

@@ -48,7 +48,7 @@ class Publics extends Common
      */
     public function logout(){
         model('AdminUser')->logout();
-        $this->redirect('/');
+        $this->redirect(ROOT_DIR);
     }
 
 

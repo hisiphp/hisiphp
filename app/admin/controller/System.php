@@ -85,7 +85,7 @@ class System extends Admin
             // 更新配置缓存
             ConfigModel::getConfig('', true);
 
-            return $this->success('保存成功。', '/'.$admin_path.'/admin/system/index/group/'.$group.'.html');
+            return $this->success('保存成功。', ROOT_DIR.$admin_path.'/admin/system/index/group/'.$group.'.html');
         }
         $tab_data = [];
         foreach (config('sys.config_group') as $key => $value) {

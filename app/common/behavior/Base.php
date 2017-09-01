@@ -27,7 +27,6 @@ class Base
         if (isset($dispatch['module'])) {
             $module = $dispatch['module'][0];
         }
-        
         // 系统版本
         $version = include_once(ROOT_PATH.'version.php');
         config($version);
@@ -57,39 +56,44 @@ class Base
             // 设置模块的默认主题
             $theme = $mod_info['theme'] ? $mod_info['theme'] : 'default';
         }
+        // 获取站点根目录
+        $root_dir = request()->baseFile();
+        $root_dir  = preg_replace(['/index.php$/', '/plugins.php$/', '/'.config('sys.admin_path').'$/'], ['', '', ''], $root_dir);
+        define('ROOT_DIR', $root_dir);
         //静态目录扩展配置
         $view_replace_str = [
             // 静态资源根目录
-            '__STATIC__'    => '/static',
+            '__STATIC__'    => ROOT_DIR.'static',
             // 文件上传目录
-            '__UPLOAD__'   => '/upload',
+            '__UPLOAD__'   => ROOT_DIR.'upload',
             // 插件目录
-            '__PLUGINS__' => '/plugins',
+            '__PLUGINS__' => ROOT_DIR.'plugins',
             // 后台公共静态目录
-            '__ADMIN_CSS__'      => '/static/admin/css',
-            '__ADMIN_JS__'      => '/static/admin/js',
-            '__ADMIN_IMG__'      => '/static/admin/image',
+            '__ADMIN_CSS__'      => ROOT_DIR.'static/admin/css',
+            '__ADMIN_JS__'      => ROOT_DIR.'static/admin/js',
+            '__ADMIN_IMG__'      => ROOT_DIR.'static/admin/image',
             // 后台模块静态目录
-            '__ADMIN_MOD_CSS__'      => '/static/'.$module.'/css',
-            '__ADMIN_MOD_JS__'      => '/static/'.$module.'/js',
-            '__ADMIN_MOD_IMG__'      => '/static/'.$module.'/image',
+            '__ADMIN_MOD_CSS__'      => ROOT_DIR.'static/'.$module.'/css',
+            '__ADMIN_MOD_JS__'      => ROOT_DIR.'static/'.$module.'/js',
+            '__ADMIN_MOD_IMG__'      => ROOT_DIR.'static/'.$module.'/image',
             // 前台公共静态目录
-            '__PUBLIC_CSS__'      => '/static/css',
-            '__PUBLIC_JS__'      => '/static/js',
-            '__PUBLIC_IMG__'      => '/static/image',
+            '__PUBLIC_CSS__'      => ROOT_DIR.'static/css',
+            '__PUBLIC_JS__'      => ROOT_DIR.'static/js',
+            '__PUBLIC_IMG__'      => ROOT_DIR.'static/image',
             // 前台模块静态目录
-            '__CSS__'      => '/theme/'.$module.'/'.$theme.'/static/css',
-            '__JS__'      => '/theme/'.$module.'/'.$theme.'/static/js',
-            '__IMG__'      => '/theme/'.$module.'/'.$theme.'/static/image',
+            '__CSS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/css',
+            '__JS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/js',
+            '__IMG__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/image',
         ];
         if (defined('PLUGIN_ENTRANCE')) {
             $plugins_name = isset($_GET['_p']) ? $_GET['_p'] : $dispatch['module'][2];
             $view_replace_str = array_merge($view_replace_str, [
-                '__PLUGINS_CSS__' => '/plugins/'.$plugins_name.'/static/css',
-                '__PLUGINS_JS__' => '/plugins/'.$plugins_name.'/static/js',
-                '__PLUGINS_IMG__' => '/plugins/'.$plugins_name.'/static/image',
+                '__PLUGINS_CSS__' => ROOT_DIR.'plugins/'.$plugins_name.'/static/css',
+                '__PLUGINS_JS__' => ROOT_DIR.'plugins/'.$plugins_name.'/static/js',
+                '__PLUGINS_IMG__' => ROOT_DIR.'plugins/'.$plugins_name.'/static/image',
             ]);
         }
+        
         config('view_replace_str', $view_replace_str);
         // 如果定义了入口为admin，则修改默认的访问控制器层
         if(defined('ENTRANCE') && ENTRANCE == 'admin') {
@@ -120,7 +124,7 @@ class Base
             if ($module != 'index') {
                 config('url_controller_layer', 'home');
                 // 定义前台模板路径[分手机和PC]
-                if (request()->isMobile() === true && config('base.wap_site_status') && file_exists('./theme'.DS.$module.DS.$theme.DS.'wap'.DS)) {
+                if (request()->isMobile() === true && config('base.wap_site_status') && file_exists('.'.ROOT_DIR.'theme'.DS.$module.DS.$theme.DS.'wap'.DS)) {
                     config('template.view_path', 'theme'.DS.$module.DS.$theme.DS.'wap'.DS);
                 } else {
                     config('template.view_path', 'theme'.DS.$module.DS.$theme.DS);

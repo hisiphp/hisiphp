@@ -39,7 +39,7 @@ class AdminAnnex extends Model
      * @author 橘子俊 <364666827@qq.com>
      * @return json
      */
-    public static function upload($from = 'input', $group = 'sys', $water = '', $thumb = '', $thumb_type = '', $input = 'upload')
+    public static function upload($from = 'input', $group = 'sys', $water = '', $thumb = '', $thumb_type = '', $input = 'file')
     {
         switch ($from) {
             case 'kindeditor':
@@ -48,7 +48,9 @@ class AdminAnnex extends Model
             case 'umeditor':
                 $input = 'upfile';
                 break;
-
+            case 'ckeditor':
+                $input = 'upload';
+                break;
             case 'ueditor':
                 $input = 'upfile';
                 if (isset($_GET['action']) && $_GET['action'] == 'config') {
@@ -267,8 +269,8 @@ class AdminAnnex extends Model
                 break;
             
             default:
-                $arr['info'] = $info;
-                $arr['status'] = $status;
+                $arr['msg'] = $info;
+                $arr['code'] = $status;
                 $arr['data'] = $data;
                 break;
         }

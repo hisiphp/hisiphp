@@ -31,7 +31,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上传语言包</label>
         <div class="layui-input-inline upload">
-            <input type="file" class="layui-upload-file" name="upload" lay-type="file" autocomplete="off" lay-title="请上传语言包" lay-ext="zip">
+            <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-data="{exts:'zip', accept:'file'}">请上传语言包(zip)</button>
             <input type="hidden" class="upload-input field-pack" name="pack" value="">
         </div>
         <div class="layui-form-mid layui-word-aux">如果不上传语言包，则后台不支持切换到此语言包，<span class="red">请确认/app/admin/lang/ 和 /app/admin/lang/有读写权限</span></div>
@@ -55,15 +55,17 @@
 <script>
 var formData = {:json_encode($data_info)};
 layui.use(['jquery', 'upload'], function() {
-    var $ = layui.jquery, layer = layui.layer;
-    layui.upload({
-        url: '{:url("admin/annex/upload?thumb=no&water=no")}'
+    var $ = layui.jquery, layer = layui.layer, upload = layui.upload;
+    upload.render({
+        elem: '.layui-upload'
+        ,url: '{:url("admin/annex/upload?thumb=no&water=no")}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
-        },success: function(res, obj) {
-            if (res.status == 0) {
-                layer.msg(res.info);
+        },done: function(res, index, upload) {
+            var obj = this.item;
+            if (res.code == 0) {
+                layer.msg(res.msg);
                 return false;
             }
             layer.msg('文件上传成功');

@@ -22,10 +22,12 @@ class Cloud {
     private $api = NULL;
     // 站点标识
     private $identifier = '';
-
+    // 升级锁
+    public $lock = '';
+    // 升级目录路径
+    public $path = './';
+    // 请求类型
     public $type = 'post';
-
-    public $lock = './upload/cloud.lock';
 
     //服务器地址
     const api_url = 'http://cloud.hisiphp.com/thinkphp5/';
@@ -38,6 +40,7 @@ class Cloud {
     public function __construct($identifier = '', $path = './') {
         $this->identifier = $identifier;
         $this->path = $path;
+        $this->lock = ROOT_PATH.'upload/cloud.lock';
     }
 
     /**
@@ -138,7 +141,7 @@ class Cloud {
     private function run($request = true){
         $params['format'] = 'json';
         $params['timestamp'] = time();
-        $params['domain'] = $_SERVER['SERVER_NAME'];
+        $params['domain'] = $_SERVER['SERVER_NAME'].ROOT_DIR;
         $params['identifier'] = $this->identifier;
         $params = array_merge($params,$this->data);
         $params = array_filter($params);

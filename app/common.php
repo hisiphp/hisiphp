@@ -501,14 +501,13 @@ if (!function_exists('editor')) {
      */
     function editor($obj = [], $name = '', $url = '') {
         $js_path = config('view_replace_str.__PUBLIC_JS__').'/editor/';
-        if (empty($url)){
-            $url = url("admin/annex/upload?thumb=no&from=".$name);
-        }
-
         if (empty($name)) {
             $name = config('sys.editor');
         }
 
+        if (empty($url)){
+            $url = url("admin/annex/upload?thumb=no&from=".$name);
+        }
         switch (strtolower($name)) {
             case 'ueditor':
                 $html = '<script src="'.$js_path.'ueditor/ueditor.config.js"></script>';

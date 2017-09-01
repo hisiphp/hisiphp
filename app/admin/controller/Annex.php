@@ -40,7 +40,7 @@ class Annex extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return json
      */
-    public function upload($from = 'input', $group = 'sys', $water = '', $thumb = '', $thumb_type = '', $input = 'upload')
+    public function upload($from = 'input', $group = 'sys', $water = '', $thumb = '', $thumb_type = '', $input = 'file')
     {
         return json(AnnexModel::upload($from, $group, $water, $thumb, $thumb_type, $input));
     }

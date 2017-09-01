@@ -103,7 +103,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline upload">
-                        <input type="file" class="layui-upload-file" name="upload" lay-type="image" autocomplete="off" lay-title="请上传{$v['title']}">
+                        <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-data="{accept:'image'}" lay-type="image">请上传{$v['title']}</button>
                         <input type="hidden" class="upload-input" name="{$v['name']}" value="{$v['value']}">
                         {if condition="$v['value']"}
                             <img src="{$v['value']}" style="display:inline-block;border-radius:5px;border:1px solid #ccc" width="36" height="36">
@@ -119,7 +119,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline upload">
-                        <input type="file" class="layui-upload-file" name="upload" lay-type="file" autocomplete="off" lay-title="请上传{$v['title']}">
+                        <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-data="{accept:'file'}">请上传{$v['title']}</button>
                         <input type="hidden" class="upload-input" name="{$v['name']}" value="{$v['value']}">
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>
@@ -151,16 +151,18 @@
 </form>
 <script>
 var formData = {:json_encode($data_info['config'])};
-layui.use(['jquery', 'form', 'laydate', 'upload'], function() {
-    var $ = layui.jquery, form = layui.form(), laydate = layui.laydate, layer = layui.layer;
-    layui.upload({
-        url: '{:url("admin/annex/upload?group=p_".$data_info["name"])}'
+layui.use(['jquery', 'laydate', 'upload'], function() {
+    var $ = layui.jquery, laydate = layui.laydate, layer = layui.layer, upload = layui.upload;
+    upload.render({
+        elem: '.layui-upload'
+        url: '{:url("admin/annex/upload?group=m_".$data_info["name"])}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
-        },success: function(res, obj) {
-            if (res.status == 0) {
-                layer.msg(res.info);
+        },done: function(res, obj) {
+            var obj = this.item;
+            if (res.code == 0) {
+                layer.msg(res.msg);
                 return false;
             }
             layer.closeAll();

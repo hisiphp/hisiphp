@@ -1,7 +1,7 @@
 <style type="text/css">
 .layui-form-item .layui-form-label{width:150px;}
 .layui-form-item .layui-input-inline{max-width:80%;width:auto;min-width:260px;}
-.layui-form-mid{padding:0;}
+.layui-form-mid{padding:0!important;}
 .layui-form-mid code{color:#5FB878;}
 </style>
 <form action="{:url('?group='.input('param.group', 'base'))}" class="page-list-form layui-form layui-form-pane" method="post">
@@ -99,7 +99,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{$v['title']}</label>
                 <div class="layui-input-inline upload">
-                    <input type="file" class="layui-upload-file" name="upload" lay-type="image" autocomplete="off" lay-title="请上传{$v['title']}" lay-url="{if condition="!empty($v['url'])"}{:url($v['url'])}{/if}" lay-ext="{:str_replace(',', '|', config('upload.upload_image_ext'))}">
+                    <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-type="image" lay-data="{ {if condition="!empty($v['url'])"}url: '{:url($v['url'])}', {/if}exts:'{:str_replace(',', '|', config('upload.upload_image_ext'))}', accept:'image'}">请上传{$v['title']}</button>
                     <input type="hidden" class="upload-input" name="id[{$v['id']}]" value="{$v['value']}">
                     {if condition="$v['value']"}
                         <img src="{$v['value']}" style="display:inline-block;border-radius:5px;border:1px solid #ccc" width="36" height="36">
@@ -115,7 +115,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{$v['title']}</label>
                 <div class="layui-input-inline upload">
-                    <input type="file" class="layui-upload-file" name="upload" lay-type="file" autocomplete="off" lay-title="请上传{$v['title']}" lay-url="{if condition="!empty($v['url'])"}{:url($v['url'])}{/if}" lay-ext="{:str_replace(',', '|', config('upload.upload_file_ext'))}">
+                    <button type="button" name="upload" class="layui-btn layui-btn-primary layui-upload" lay-data="{ {if condition="!empty($v['url'])"}url: '{:url($v['url'])}', {/if}exts:'{:str_replace(',', '|', config('upload.upload_file_ext'))}', accept:'file'}">请上传{$v['title']}</button>
                     <input type="hidden" class="upload-input" name="id[{$v['id']}]" value="{$v['value']}">
                 </div>
                 <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
@@ -146,16 +146,18 @@
     </div>
 </form>
 <script>
-layui.use(['jquery', 'form', 'laydate', 'upload'], function() {
-    var $ = layui.jquery, form = layui.form, laydate = layui.laydate, layer = layui.layer;
-    layui.upload({
+layui.use(['jquery', 'laydate', 'upload'], function() {
+    var $ = layui.jquery, laydate = layui.laydate, layer = layui.layer, upload = layui.upload;
+    upload.render({
+        elem: '.layui-upload',
         url: '{:url("admin/annex/upload?thumb=no&water=no")}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
-        },success: function(res, obj) {
-            if (res.status == 0) {
-                layer.msg(res.info);
+        },done: function(res, index, upload) {
+            var obj = this.item;
+            if (res.code == 0) {
+                layer.msg(res.msg);
                 return false;
             }
             layer.closeAll();
