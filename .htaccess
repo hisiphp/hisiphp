@@ -1,0 +1,40 @@
+<IfModule mod_rewrite.c>
+    #Options +FollowSymlinks -Multiviews
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^runtime(.*)$ index.php
+
+    # 应用目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^app/(.*)$ index.php
+
+    # 第三方类库目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^vendor/(.*)$ index.php
+
+    # 应用运行目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^runtime/(.*)$ index.php
+
+    # 插件目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^plugins/(.*).php|.sql$ index.php
+
+    # 安装包目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^package/(.*)$ index.php
+
+    # 备份目录
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^backup/(.*)$ index.php
+
+    # 上传保护文件
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^upload/protect/(.*)$ index.php
+</IfModule>
+
