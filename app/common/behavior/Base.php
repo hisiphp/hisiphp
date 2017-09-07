@@ -38,10 +38,10 @@ class Base
         config(ModuleModel::getConfig());
         // 设置系统配置
         config(ConfigModel::getConfig());
-
         if (config('develop.app_trace') == 1) {
             config('app_trace', true);
         }
+
         // 判断模块是否存在且已安装
         $theme = 'default';
         if ($module != 'index' && !defined('ENTRANCE')) {
@@ -62,6 +62,8 @@ class Base
         define('ROOT_DIR', $root_dir);
         //静态目录扩展配置
         $view_replace_str = [
+            // 站点根目录
+            '__ROOT_DIR__'    => ROOT_DIR,
             // 静态资源根目录
             '__STATIC__'    => ROOT_DIR.'static',
             // 文件上传目录
@@ -125,6 +127,14 @@ class Base
                 config('url_controller_layer', 'home');
                 // 定义前台模板路径[分手机和PC]
                 if (request()->isMobile() === true && config('base.wap_site_status') && file_exists('.'.ROOT_DIR.'theme'.DS.$module.DS.$theme.DS.'wap'.DS)) {
+                    // 如果有移动端域名，强制跳转
+                    $wap_domain = preg_replace(['/http:\/\/$/', '/https:\/\/$/'], ['', ''], config('base.wap_domain'));
+                    if ($wap_domain && input('server.server_name') != $wap_domain) {
+                        if (input('server.https') && input('server.https') == 'on') {
+                            header('Location: https://'.$wap_domain);
+                        }
+                        header('Location: http://'.$wap_domain);
+                    }
                     config('template.view_path', 'theme'.DS.$module.DS.$theme.DS.'wap'.DS);
                 } else {
                     config('template.view_path', 'theme'.DS.$module.DS.$theme.DS);
