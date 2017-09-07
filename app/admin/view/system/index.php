@@ -79,7 +79,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{$v['title']}</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})">
+                    <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})">
                 </div>
                 <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
@@ -89,7 +89,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{$v['title']}</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD hh:mm:ss'})">
+                    <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD hh:mm:ss'})">
                 </div>
                 <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{:input('param.group', 'base')}.{$v['name']}')</code></div>
             </div>
@@ -168,5 +168,7 @@ layui.use(['jquery', 'laydate', 'upload'], function() {
             input.val(res.data.file);
         }
     });
+    // 日期渲染
+    laydate.render({elem: '.layui-date'});
 });
 </script>
