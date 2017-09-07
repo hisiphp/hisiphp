@@ -79,6 +79,9 @@ class Member extends Admin
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
+            if ($data['mobile'] == 0) {
+                unset($data['mobile']);
+            }
             // 验证
             $result = $this->validate($data, 'AdminMember.update');
             if($result !== true) {
@@ -90,8 +93,8 @@ class Member extends Admin
             return $this->success('修改成功。');
         }
 
-        $row = MemberModel::where('id', $id)->field('id,username,level_id,nick,email,mobile')->find()->toArray();
-        $this->assign('data_info', array_filter($row));
+        $row = MemberModel::where('id', $id)->field('id,username,level_id,nick,email,mobile,expire_time')->find()->toArray();
+        $this->assign('data_info', $row);
         $this->assign('level_option', LevelModel::getOption($row['level_id']));
         return $this->fetch('form');
     }
@@ -196,7 +199,7 @@ class Member extends Admin
             cache('system_member_level', LevelModel::getAll());
             return $this->success('修改成功。');
         }
-        $row = LevelModel::where('id', $id)->field('id,name,intro,discount,min_exper,max_exper,default,status')->find()->toArray();
+        $row = LevelModel::where('id', $id)->find()->toArray();
 
         $this->assign('data_info', $row);
         return $this->fetch('levelform');

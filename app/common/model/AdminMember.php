@@ -44,6 +44,24 @@ class AdminMember extends Model
         return request()->time();
     }
 
+    // 有效期
+    public function setExpireTimeAttr($value)
+    {
+        if ($value != 0) {
+            return strtotime($value);
+        }
+        return 0;
+    }
+
+    // 有效期
+    public function getExpireTimeAttr($value)
+    {
+        if ($value != 0) {
+            return date('Y-m-d', $value);
+        }
+        return 0;
+    }
+
     /**
      * 注册
      * @param array $data 参数，可传参数username,password,email,mobile,nick
@@ -94,8 +112,12 @@ class AdminMember extends Model
         if (isset($data['nick']) && !empty($data['nick'])) {
             $map['nick'] = $data['nick'];
         }
-        $level_id = model('AdminMemberLevel')->where('default',1)->value('id');
-        $map['level_id'] = $level_id ? $level_id : 0;
+
+        $level = model('AdminMemberLevel')->where('default',1)->find();
+        if ($level) {
+            $map['level_id'] = $level['id'];
+            $map['expire_time'] = $level['expire'] > 0 ? strtotime('+ '.$level['expire'].' days') : 0;
+        }
         $res = $this->validate('AdminMember')->isUpdate(false)->save($map);
         if (!$res) {
             $this->error = $this->getError() ? $this->getError() : '注册失败！';
@@ -114,7 +136,7 @@ class AdminMember extends Model
      */
     public function oauthRegister($nick = '')
     {
-        $level_id = model('AdminMemberLevel')->where('default',1)->value('id');
+        $level = model('AdminMemberLevel')->where('default',1)->find();
         $map = [];
         $map['nick'] = $nick;
         $map['password'] = '';
@@ -123,7 +145,10 @@ class AdminMember extends Model
         $map['username'] = '';
         $map['last_login_ip'] = get_client_ip();
         $map['last_login_time'] = request()->time();
-        $map['level_id'] = $level_id ? $level_id : 0;
+        if ($level) {
+            $map['level_id'] = $level['id'];
+            $map['expire_time'] = $level['expire'] > 0 ? strtotime('+ '.$level['expire'].' days') : 0;
+        }
         $res = $this->create($map);
         if (!$res) {
             $this->error = $this->getError() ? $this->getError() : '授权登录失败！';
@@ -184,7 +209,7 @@ class AdminMember extends Model
             return false;
         }
 
-        $member = self::where($map)->field('id,'.$field.',level_id,password')->find();
+        $member = self::where($map)->field('id,'.$field.',level_id,password,expire_time')->find();
         if (!$member) {
             $this->error = '用户不存在或被禁用！';
             return false;
@@ -193,6 +218,12 @@ class AdminMember extends Model
         // 密码校验
         if (!password_verify($password, $member->password)) {
             $this->error = '登陆密码错误！';
+            return false;
+        }
+
+        // 检查有效期
+        if ($member->expire_time > 0 &&  $member->expire_time < request()->time()) {
+            $this->error = '账号已过期！';
             return false;
         }
 
@@ -236,9 +267,15 @@ class AdminMember extends Model
             $map = [];
             $map['id'] = $data['id'];
             $map['status'] = 1;
-            $data = $this->where($map)->field('id,level_id,nick,username,mobile,email,avatar')->find();
+            $data = $this->where($map)->field('id,level_id,nick,username,mobile,email,expire_time,avatar')->find();
             if (!$data) {
                 $this->error = '用户不存在或被禁用！';
+                return false;
+            }
+
+            // 检查有效期
+            if ($data['expire_time'] > 0 &&  $data['expire_time'] < request()->time()) {
+                $this->error = '账号已过期！';
                 return false;
             }
         }

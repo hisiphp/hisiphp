@@ -27,6 +27,13 @@
         <div class="layui-form-mid layui-word-aux">设置会员等级所需要的最大经验值上限</div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">会员有效期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-expire w100" name="expire" value="0" lay-verify="number" autocomplete="off" placeholder="请输入会员有效期" style="display:inline-block;"><label>&nbsp;天</label>
+        </div>
+        <div class="layui-form-mid layui-word-aux">设置会员注册后多少天到期，设置为0表示永久</div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">等级状态</label>
         <div class="layui-input-inline">
             <input type="radio" class="field-status" name="status" value="1" title="启用">
@@ -50,7 +57,7 @@
         <div class="layui-input-block">
             <input type="hidden" class="field-id" name="id">
             <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">提交</button>
-            <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
+            <a href="{:url('level')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
     </div>
 </form>

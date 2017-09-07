@@ -38,6 +38,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">会员有效期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-expire_time" name="expire_time" autocomplete="off" placeholder="请设置会员有效期" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})" readonly>
+        </div>
+        <div class="layui-form-mid layui-word-aux"><a href="javascript:void(0);" id="reset_expire">点我设置为永久</a></div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">状&nbsp;&nbsp;&nbsp;&nbsp;态</label>
         <div class="layui-input-inline">
             <input type="radio" class="field-status" name="status" value="1" title="启用" checked>
@@ -54,5 +61,17 @@
 </form>
 <script>
 var formData = {:json_encode($data_info)};
+
+layui.use(['jquery', 'laydate'], function() {
+    var $ = layui.jquery, laydate = layui.laydate;
+    laydate.render({
+        elem: '.field-expire_time',
+        min:'0'
+    });
+
+    $('#reset_expire').on('click', function(){
+        $('input[name="expire_time"]').val(0);
+    });
+});
 </script>
 <script src="__ADMIN_JS__/footer.js"></script>

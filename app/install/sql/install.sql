@@ -79,7 +79,7 @@ VALUES
   (27,1,'upload','文字水印颜色','text_watermark_color','#000000','input','','','文字水印颜色，格式:#000000',14,1,1490861482,1491040778),
   (28,1,'upload','文字水印位置','text_watermark_location','7','select','7:左下角\r\n1:左上角\r\n4:左居中\r\n9:右下角\r\n3:右上角\r\n6:右居中\r\n2:上居中\r\n8:下居中\r\n5:居中','','',11,1,1490861718,1491040778),
   (29,1,'upload','缩略图尺寸','thumb_size','300x300;500x500','input','','','为空则不生成，生成 500x500 的缩略图，则填写 500x500，多个规格填写参考 300x300;500x500;800x800',4,1,1490947834,1491040778),
-  (30,1,'develop','开发模式','app_debug','0','switch','0:关闭\r\n1:开启','','',0,1,1491005004,1492093874),
+  (30,1,'develop','开发模式','app_debug','1','switch','0:关闭\r\n1:开启','','',0,1,1491005004,1492093874),
   (31,1,'develop','页面Trace','app_trace','0','switch','0:关闭\r\n1:开启','','',0,1,1491005081,1492093874),
   (33,1,'sys','富文本编辑器','editor','umeditor','select','ueditor:UEditor\r\numeditor:UMEditor\r\nkindeditor:KindEditor\r\nckeditor:CKEditor','','',2,1,1491142648,1492140215),
   (35,1,'databases','备份目录','backup_path','./backup/database/','input','','','数据库备份路径,路径必须以 / 结尾',0,1,1491881854,1491965974),
@@ -97,7 +97,8 @@ VALUES
   (47,1,'base','网站LOGO','site_logo','','image','','','网站LOGO图片',4,1,1494692345,1494693235),
   (48,1,'base','网站图标','site_favicon','','image','','/admin/annex/favicon','又叫网站收藏夹图标，它显示位于浏览器的地址栏或者标题前面，&lt;strong class=&quot;red&quot;&gt;.ico格式&lt;/strong&gt;，&lt;a href=&quot;https://www.baidu.com/s?ie=UTF-8&amp;wd=favicon&quot; target=&quot;_blank&quot;&gt;点此了解网站图标&lt;/a&gt;',5,1,1494692781,1494693966),
   (49, 1, 'base', '手机网站', 'wap_site_status', '0', 'switch', '0:关闭\r\n1:开启', '', '如果有手机网站，请设置为开启状态，否则只显示PC网站', 2, 1, 1498405436, 1498405436),
-  (50, 1, 'sys', '云端推送', 'cloud_push', '0', 'switch', '0:关闭\r\n1:开启', '', '关闭之后，无法通过云端推送安装扩展', 3, 1, 1504250320, 1504250320);
+  (50, 1, 'sys', '云端推送', 'cloud_push', '0', 'switch', '0:关闭\r\n1:开启', '', '关闭之后，无法通过云端推送安装扩展', 3, 1, 1504250320, 1504250320),
+  (51, 0, 'base', '手机网站域名', 'wap_domain', '', 'input', '', '', '手机访问将自动跳转至此域名', 2, 1, 1504304776, 1504304837);
 
 # Dump of table hisiphp_admin_language
 # ------------------------------------------------------------
@@ -190,14 +191,15 @@ CREATE TABLE `hisiphp_admin_member` (
   `last_login_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '最后登陆IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登陆时间',
   `login_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登陆次数',
+  `expire_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '到期时间(0永久)',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0禁用，1正常)',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000001 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='[系统] 会员表';
 
-INSERT INTO `hisiphp_admin_member` (`id`, `level_id`, `nick`, `username`, `mobile`, `email`, `password`, `money`, `frozen_money`, `income`, `expend`, `exper`, `integral`, `frozen_integral`, `avatar`, `last_login_ip`, `last_login_time`, `login_count`, `status`, `ctime`)
+INSERT INTO `hisiphp_admin_member` (`id`, `level_id`, `nick`, `username`, `mobile`, `email`, `password`, `money`, `frozen_money`, `income`, `expend`, `exper`, `integral`, `frozen_integral`, `avatar`, `last_login_ip`, `last_login_time`, `login_count`, `expire_time`, `status`, `ctime`)
 VALUES
-  (1000000,1,'','test',0,'','$2y$10$WC0mMyErW1u1JCLXDCbTIuagCceC/kKpjzvCf.cxrVKaxsrZLXrGe',0.00,0.00,0.00,0.00,0,0,0,'','',0,0,1,1493274686);
+  (1000000,1,'','test',0,'','$2y$10$WC0mMyErW1u1JCLXDCbTIuagCceC/kKpjzvCf.cxrVKaxsrZLXrGe',0.00,0.00,0.00,0.00,0,0,0,'','',0,0,0,1,1493274686);
 
 # Dump of table hisiphp_admin_member_level
 # ------------------------------------------------------------
@@ -212,15 +214,16 @@ CREATE TABLE `hisiphp_admin_member_level` (
   `discount` int(2) unsigned NOT NULL DEFAULT '100' COMMENT '折扣率(%)',
   `intro` varchar(255) NOT NULL COMMENT '等级简介',
   `default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '默认等级',
+  `expire` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会员有效期(天)',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0',
   `mtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='[系统] 会员等级';
 
-INSERT INTO `hisiphp_admin_member_level` (`id`, `name`, `min_exper`, `max_exper`, `discount`, `intro`, `default`, `status`, `ctime`, `mtime`)
+INSERT INTO `hisiphp_admin_member_level` (`id`, `name`, `min_exper`, `max_exper`, `discount`, `intro`, `default`, `expire`, `status`, `ctime`, `mtime`)
 VALUES
-  (1,'注册会员',0,0,100,'',1,1,0,1491966814);
+  (1,'注册会员',0,0,100,'',1,0,1,0,1491966814);
 
 # Dump of table hisiphp_admin_menu
 # ------------------------------------------------------------
