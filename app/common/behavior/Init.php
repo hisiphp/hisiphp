@@ -33,8 +33,8 @@ class Init
                     }
                 }
             }
-
         }
+        
         // 设置路由
         config('route_config_file', ModuleModel::moduleRoute());
         if (!defined('PLUGIN_ENTRANCE') && !defined('CLOUD_ENTRANCE') && $default_module === false) {
