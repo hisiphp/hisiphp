@@ -60,7 +60,7 @@ $ca = strtolower(request()->controller().'/'.request()->action());
             <ul class="layui-nav layui-nav-tree" style="display:none;">
             {/if}
                 {volist name="v['childs']" id="vv" key="kk"}
-                <li class="layui-nav-item {if condition="$kk eq $kk"}layui-nav-itemed{/if}">
+                <li class="layui-nav-item {if condition="$kk eq 1"}layui-nav-itemed{/if}">
                     <a href="javascript:;"><i class="{$vv['icon']}"></i>{$vv['title']}<span class="layui-nav-more"></span></a>
                     <dl class="layui-nav-child">
                         {if condition="$vv['title'] eq '快捷菜单'"}
