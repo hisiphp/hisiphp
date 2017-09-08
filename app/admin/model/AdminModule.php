@@ -272,7 +272,7 @@ return [
         'title'         => '{$data['title']}',
         'icon'          => 'aicon ai-shezhi',
         'module'        => '{$data['name']}',
-        'url'           => '{$data['name']}/index/index',
+        'url'           => '{$data['name']}',
         'param'         => '',
         'target'        => '_self',
         'sort'          => 100,
