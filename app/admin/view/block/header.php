@@ -76,7 +76,6 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                     </dl>
                 </li>
                 {/volist}
-                <li class="layui-nav-item" style="height: 30px; text-align: center"></li>
             </ul>
             {/volist}
         </div>
