@@ -1,4 +1,12 @@
 <form class="layui-form layui-form-pane" action="{:url()}" method="post" id="editForm">
+    <div class="layui-collapse page-tips">
+      <div class="layui-colla-item">
+        <h2 class="layui-colla-title">温馨提示</h2>
+        <div class="layui-colla-content">
+          <p>后台权限验证采用白名单方式，而白名单数据均来源于系统菜单。请严格按照系统要求填写菜单链接和扩展参数。</p>
+        </div>
+      </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">所属模块</label>
         <div class="layui-input-inline">
@@ -23,7 +31,10 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称</label>
         <div class="layui-input-inline">
-            <input type="text" class="layui-input field-title" name="title" lay-verify="required" autocomplete="off" placeholder="请输入用户名">
+            <input type="text" class="layui-input field-title" name="title" lay-verify="required" autocomplete="off" placeholder="请输入菜单名称">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            必填，长度限制3-24个字节(1个汉字等于3个字节)
         </div>
     </div>
     <div class="layui-form-item">
@@ -40,7 +51,7 @@
             <input type="text" class="layui-input field-url" name="url" lay-verify="required" autocomplete="off" placeholder="请严格按照参考格式填写">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            参考格式：模块名/控制器名/方法名，例：admin/index/index
+            必填，参考格式：模块名/控制器名/方法名，例：admin/index/index
 <!--             <span class="menu-url" style="display:none;">参考格式：模块名，例：admin</span>
             <span class="menu-url" style="display:none;">参考格式：模块名/控制器名，例：admin/index</span>
             <span class="menu-url" style="display:none;">参考格式：模块名/控制器名/方法名，例：admin/index/index</span> -->
@@ -52,7 +63,7 @@
             <input type="text" class="layui-input field-param" name="param" lay-verify="" autocomplete="off" placeholder="请严格按照参考格式填写">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            参考格式：a=123&b=345
+            选填，参考格式：a=123&b=345
         </div>
     </div>
     <div class="layui-form-item">
@@ -68,9 +79,12 @@
             <input type="radio" class="field-system" name="system" value="1" title="是">
             <input type="radio" class="field-system" name="system" value="0" title="否" checked>
         </div>
+        <div class="layui-form-mid layui-word-aux">
+            设置为系统菜单后，无法删除
+        </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">设置导航</label>
+        <label class="layui-form-label">后台导航</label>
         <div class="layui-input-inline">
             <input type="radio" class="field-nav" name="nav" value="1" title="是" checked>
             <input type="radio" class="field-nav" name="nav" value="0" title="否">

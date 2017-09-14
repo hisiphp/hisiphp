@@ -40,10 +40,16 @@ class Admin extends Common
         if (!$c_menu) {
             return $this->error('节点不存在或者已禁用！');
         }
-        
+
         // 检查权限
         if (!RoleModel::checkAuth($c_menu['id'])) {
-            return $this->error('['.$c_menu['title'].'] 访问权限不足');
+            $url = '';
+            // 如果没有后台首页的登录权限，直接退出，避免出现死循环跳转
+            if ($c_menu['url'] == 'admin/index/index') {
+                $url = ROOT_DIR.config('sys.admin_path');
+                model('AdminUser')->logout();
+            }
+            return $this->error('['.$c_menu['title'].'] 访问权限不足', $url);
         }
 
         // 如果不是ajax请求，则读取菜单

@@ -106,7 +106,7 @@ class User extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
             // 超级管理员角色不可更改角色分组，当前登陆用户不可更改自己的分组角色
-            if ($data['id'] == 1 || ADMIN_ROLE != $data['role_id']) {
+            if ($data['id'] == 1 || ADMIN_ROLE == $data['role_id']) {
                 unset($data['role_id']);
             }
 

@@ -44,7 +44,7 @@ layui.define(['element', 'form'], function(exports) {
         window.localStorage.setItem("adminNavTag", $(this).attr('href'));
     });
     if (window.localStorage.getItem("adminNavTag")) {
-        $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this');
+        $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
     }
 
     layer.config({offset:'60px'});
@@ -56,21 +56,23 @@ layui.define(['element', 'form'], function(exports) {
             $('#switchNav').animate({width:'52px'}, 100).addClass('close').hover(function() {
                 if (that.hasClass('close')) {
                     $(this).animate({width:'200px'}, 300);
-                    $('#switchNav .fold-mark').removeClass('fold-mark').addClass('layui-nav-itemed');
+                    $('#switchNav .fold-mark').removeClass('fold-mark');
+                    $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
                 }
             },function() {
                 if (that.hasClass('close')) {
                     $(this).animate({width:'52px'}, 300);
-                    $('#switchNav .layui-nav-itemed').addClass('fold-mark').removeClass('layui-nav-itemed');
+                    $('#switchNav .layui-nav-item').addClass('fold-mark').removeClass('layui-nav-itemed');
                 }
             });
             $('#switchBody,.footer').animate({left:'52px'}, 100);
-            $('#switchNav .layui-nav-itemed').addClass('fold-mark').removeClass('layui-nav-itemed');
+            $('#switchNav .layui-nav-item').addClass('fold-mark').removeClass('layui-nav-itemed');
         } else {
+            $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
             that.removeClass('close');
             $('#switchNav').animate({width:'200px'}, 100).removeClass('close');
             $('#switchBody,.footer').animate({left:'200px'}, 100);
-            $('#switchNav .fold-mark').removeClass('fold-mark').addClass('layui-nav-itemed');
+            $('#switchNav .fold-mark').removeClass('fold-mark');
         }
     });
 
@@ -93,10 +95,12 @@ layui.define(['element', 'form'], function(exports) {
     $('#fullscreen-btn').click(function(){
         var that = $(this);
         if (!that.hasClass('ai-quanping')) {
+            $('#switchBody').css({'z-index':1000});
             $('#switchNav').css({'z-index':900});
             that.addClass('ai-quanping').removeClass('ai-quanping1').parents('.page-body').addClass('fullscreen');
             $('.page-tab-content').css({'min-height':($(window).height()-63)+'px'});
         } else {
+            $('#switchBody').css({'z-index':998});
             $('#switchNav').css({'z-index':1000});
             that.addClass('ai-quanping1').removeClass('ai-quanping').parents('.page-body').removeClass('fullscreen');
             $('.page-tab-content').css({'min-height':'auto'});

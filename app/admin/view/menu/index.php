@@ -22,7 +22,7 @@
     <dl class="menu-dl1">
         <dt>
             <input type="checkbox" name="ids[{$kk}]" value="{$vv['id']}" class="checkbox-ids" lay-skin="primary" title="{$vv['title']}">
-            <input type="text" class="layui-input j-ajax-input menu-sort" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vv['sort']}" data-value="{$vv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vv['id'])}">
+            <input type="text" class="menu-sort j-ajax-input" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vv['sort']}" data-value="{$vv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vv['id'])}">
             <input type="checkbox" name="status" value="{$vv['status']}" {if condition="$vv['status'] eq 1"}checked=""{/if} lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_menu&ids='.$vv['id'])}">
             <div class="menu-btns">
                 <a href="{:url('edit?id='.$vv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
@@ -42,7 +42,7 @@
             <dl class="menu-dl2">
                 <dt>
                     <input type="checkbox" name="ids[{$kk}]" value="{$vvv['id']}" class="checkbox-ids" lay-skin="primary" title="{$vvv['title']}">
-                    <input type="text" class="layui-input j-ajax-input menu-sort" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vvv['sort']}" data-value="{$vvv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vvv['id'])}">
+                    <input type="text" class="menu-sort j-ajax-input" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vvv['sort']}" data-value="{$vvv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vvv['id'])}">
                     <input type="checkbox" name="status" value="{$vvv['status']}" {if condition="$vvv['status'] eq 1"}checked=""{/if} lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_menu&ids='.$vvv['id'])}">
                     <div class="menu-btns">
                         <a href="{:url('edit?id='.$vvv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
@@ -59,7 +59,7 @@
                 {/php}
                 <dd>
                     <input type="checkbox" name="ids[{$kk}]" value="{$vvvv['id']}" class="checkbox-ids" lay-skin="primary" title="{$vvvv['title']}">
-                    <input type="text" class="layui-input j-ajax-input menu-sort" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vvvv['sort']}" data-value="{$vvvv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vvvv['id'])}">
+                    <input type="text" class="menu-sort j-ajax-input" name="sort[{$kk}]" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vvvv['sort']}" data-value="{$vvvv['sort']}" data-href="{:url('sort?table=admin_menu&ids='.$vvvv['id'])}">
                     <input type="checkbox" name="status" value="{$vvvv['status']}" {if condition="$vvvv['status'] eq 1"}checked=""{/if} lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_menu&ids='.$vvvv['id'])}">
                     <div class="menu-btns">
                         <a href="{:url('edit?id='.$vvvv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
@@ -103,17 +103,3 @@
         {/volist}
     </form>
 </div>
-<script>
-layui.use(['jquery', 'form'], function() {
-    var $ = layui.jquery, form = layui.form;
-    // $('.menu-sort').blur(function(){
-    //     var that = $(this);
-    //     if(that.attr('data-value') != that.val()) {
-    //         that.siblings('.checkbox-ids').prop("checked", true);
-    //     }else{
-    //         that.siblings('input[name="ids[]"]').prop("checked", false);
-    //     };
-    //     form.render('checkbox');
-    // });
-});
-</script>
