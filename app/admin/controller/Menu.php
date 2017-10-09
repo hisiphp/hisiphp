@@ -79,7 +79,10 @@ class Menu extends Admin
             return $this->error('禁止修改系统模块！');
         }
         // 多语言
-        $row['title'] = $row['lang']['title'];
+        if (config('sys.multi_language') == 1) {
+            $row['title'] = $row['lang']['title'];
+        }
+        
         $this->assign('data_info', $row);
         $this->assign('module_option', model('AdminModule')->getOption($row['module']));
         $this->assign('menu_option', self::menuOption($row['pid']));
@@ -157,7 +160,8 @@ class Menu extends Admin
         unset($menu['pid'], $menu['id']);
         $menus = [];
         $menus[0] = $menu;
-        $menus[0]['childs'] = MenuModel::getAllChild($id, 0, 'id,title,icon,module,url,param,target,sort');
+        $menus[0]['childs'] = MenuModel::getAllChild($id, 0, 'id,pid,title,icon,module,url,param,target,sort');
+        $menus = self::menuReor($menus);
         $menus = json_decode(json_encode($menus, 1), 1);
         // 美化数组格式
         $menus = var_export($menus, true);
@@ -195,6 +199,7 @@ class Menu extends Admin
         unset($row['id'], $map['id']);
         $map['url'] = $row['url'];
         $map['param'] = $row['param'];
+        $map['uid'] = ADMIN_ID;
         $row['pid'] = $map['pid'] = 4;
         if (MenuModel::where($map)->find()) {
             return $this->error('您已添加过此快捷菜单！');
@@ -209,5 +214,27 @@ class Menu extends Admin
             return $this->error('快捷菜单添加失败！');
         }
         return $this->success('快捷菜单添加成功。');
+    }
+
+    /**
+     * 菜单重组（导出专用），主要清除pid字段和空childs字段
+     * @author 橘子俊 <364666827@qq.com>
+     * @return array
+     */
+    private static function menuReor($data = [])
+    {
+        $menus = [];
+        foreach ($data as $k => $v) {
+            if (isset($v['pid'])) {
+                unset($v['pid']);
+            }
+            if (isset($v['childs']) && !empty($v['childs'])) {
+                $v['childs'] = self::menuReor($v['childs']);
+            } else if (isset($v['childs'])) {
+                unset($v['childs']);
+            }
+            $menus[] = $v;
+        }
+        return $menus;
     }
 }

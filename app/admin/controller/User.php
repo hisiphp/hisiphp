@@ -173,7 +173,7 @@ class User extends Admin
      */
     public function delUser()
     {
-        $ids   = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
+        $ids   = input('param.ids/a');
         $model = new UserModel();
         if ($model->del($ids)) {
             return $this->success('删除成功。');
@@ -288,7 +288,7 @@ class User extends Admin
      */
     public function delRole()
     {
-        $ids   = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
+        $ids   = input('param.ids/a');
         $model = new RoleModel();
         if ($model->del($ids)) {
             return $this->success('删除成功。');

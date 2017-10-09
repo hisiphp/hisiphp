@@ -94,7 +94,7 @@ class Plugins extends Admin
         $tab_data['menu'] = [
             ['title' => '插件设计'],
             ['title' => '插件配置'],
-            ['title' => '插件菜单'],
+            // ['title' => '插件菜单'],
         ];
 
         $this->assign('tab_data', $tab_data);

@@ -107,7 +107,7 @@ class Push extends Home
         }
         // 复制应用图标
         $icon = ROOT_DIR.'static/admin/image/app.png';
-        if (is_file($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.$this->app_name.'.png')) {
+        if (is_file($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.'icon.png')) {
             copy($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.'icon.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$this->app_name.'.png');
             $icon = ROOT_DIR.'static/app_icon/'.$this->app_name.'.png';
         }

@@ -15,7 +15,7 @@
             </tr> 
         </thead>
         <tbody>
-            {volist name="data_list" id="vo"}
+            {volist name="data_list" id="vo" empty="<tr><td colspan='5' align='center' height='100'>未发现相关插件，快去<a href='http://store.hisiphp.com/addons' target='_blank'> <strong style='color:#428bca'>应用市场</strong> </a>看看吧！</td></tr>"}
             <tr>
                 <td>
                     <div class="module-list-info">

@@ -67,23 +67,27 @@ class AdminMenu extends Model
         }
         $title = $data['title'];
         if (isset($data['id']) && !empty($data['id'])) {
-            if (Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->find()) {
-                Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->update(['title' => $title]);
-            } else {
-                $map = [];
-                $map['menu_id'] = $data['id'];
-                $map['title'] = $title;
-                $map['lang'] = dblang('admin');
-                Db::name('admin_menu_lang')->insert($map);
+            if (config('sys.multi_language') == 1) {
+                if (Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->find()) {
+                    Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->update(['title' => $title]);
+                } else {
+                    $map = [];
+                    $map['menu_id'] = $data['id'];
+                    $map['title'] = $title;
+                    $map['lang'] = dblang('admin');
+                    Db::name('admin_menu_lang')->insert($map);
+                }
             }
             $res = $this->update($data);
         } else {
             $res = $this->create($data);
-            $map = [];
-            $map['menu_id'] = $res->id;
-            $map['title'] = $title;
-            $map['lang'] = dblang('admin');
-            Db::name('admin_menu_lang')->insert($map);
+            if (config('sys.multi_language') == 1) {
+                $map = [];
+                $map['menu_id'] = $res->id;
+                $map['title'] = $title;
+                $map['lang'] = dblang('admin');
+                Db::name('admin_menu_lang')->insert($map);
+            }
         }
         if (!$res) {
             $this->error = '保存失败！';
@@ -101,45 +105,51 @@ class AdminMenu extends Model
      * @author 橘子俊 <364666827@qq.com>
      * @return array
      */
-    public static function getAllChild($pid = 0, $status = 1, $field = 'id,pid,module,title,url,param,target,icon,sort,status', $cache_tag = '_admin_child_menu', $level = 0)
+    public static function getAllChild($pid = 0, $status = 1, $field = 'id,pid,module,title,url,param,target,icon,sort,status', $level = 0, $data = [])
     {
-        $cache_tag = $cache_tag.$pid.$status.dblang('admin');
-        $menus = [];
+        $cache_tag = md5('_admin_child_menu'.$pid.$field.$status.dblang('admin'));
+        $trees = [];
         if (config('develop.app_debug') == 0) {
-            $menus = cache($cache_tag);
+            $trees = cache($cache_tag);
         }
-        if (!$menus) {
-            $map = [];
-            // 非开发模式，只显示可以显示的菜单
-            if (config('develop.app_debug') == 0) {
-                $map['debug'] = 0;
-            }
-            $map['uid'] = 0;
-            if ($status == 1) {
-                $map['status'] = 1;
+
+        if (empty($trees)) {
+            if (empty($data)) {
+                $map = [];
+                $map['uid'] = 0;
+                if ($status == 1) {
+                    $map['status'] = 1;
+                }
+                $data = self::where($map)->order('sort asc')->column($field);
+                $data = array_values($data); 
             }
 
-            $map['pid']    = $pid;
-            $menus = self::where($map)->order('sort,id')->field($field)->select();
-            $level++;
-            foreach ($menus as $key => &$menu) {
-                // 多语言
-                $title = Db::name('admin_menu_lang')->where(['menu_id' => $menu['id'], 'lang' => dblang('admin')])->value('title');
-                if ($title) {
-                    $menu['title'] = $title;
-                } 
-                $menu['childs'] = '';
-                if (self::where('pid = ' . $menu['id'])->find()) {
-                    $menu['childs'] = self::getAllChild($menu['id'], $status, $field, $cache_tag, $level);
+            foreach ($data as $k => $v) {
+                if ($v['pid'] == $pid) {
+                    // 过滤没访问权限的节点
+                    if (!RoleModel::checkAuth($v['id'])) {
+                        unset($data[$k]);
+                        continue;
+                    }
+                    // 多语言支持
+                    if (config('sys.multi_language') == 1) {
+                        $title = Db::name('admin_menu_lang')->where(['menu_id' => $v['id'], 'lang' => dblang('admin')])->value('title');
+                        if ($title) {
+                            $v['title'] = $title;
+                        }
+                    }
+                    unset($data[$k]);
+                    $v['childs'] = self::getAllChild($v['id'], $status, $field, $level+1, $data);
+                    $trees[] = $v;
                 }
             }
-
             // 非开发模式，缓存菜单
-            if (config('develop.app_debug') == 0 && $level == 1) {
-                cache($cache_tag, $menus);
+            if (config('develop.app_debug') == 0) {
+                cache($cache_tag, $trees);
             }
         }
-        return $menus;
+
+        return $trees;
     }
 
     /**
@@ -151,57 +161,53 @@ class AdminMenu extends Model
      * @author 橘子俊 <364666827@qq.com>
      * @return array
      */
-    public static function getMainMenu($update = false, $pid = 0, $level = 0, $uid = 0)
+    public static function getMainMenu($update = false, $pid = 0, $level = 0, $data = [])
     {
-        
         $cache_tag = '_admin_menu'.ADMIN_ID.dblang('admin');
-        $menus = [];
+        $trees = [];
         if (config('develop.app_debug') == 0) {
-            $menus = cache($cache_tag);
+            $trees = cache($cache_tag);
         }
-        if (!$menus || $update === true) {
-            $map = [];
-            // 非开发模式，只显示可以显示的菜单
-            if (config('develop.app_debug') == 0) {
-                $map['debug'] = 0;
+
+        if (empty($trees) || $update === true) {
+            if (empty($data)) {
+                $map = [];
+                $map['status'] = 1;
+                $map['nav'] = 1;
+                $map['uid'] = 0;
+                $data = self::where($map)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
+                $data = array_values($data); 
             }
-            // 根据管理员ID获取[快捷菜单专用]
-            if ($uid > 0) {
-                $map['uid'] = $uid;
-            }
-            $map['status'] = 1;
-            $map['nav']     = 1;
-            $map['pid']    = $pid;
-            $menus = self::where($map)->order('sort,id')->column('id,uid,pid,module,title,url,param,target,icon');
-            $level++;
-            foreach ($menus as $key => &$menu) {
-                // 多语言
-                $title = Db::name('admin_menu_lang')->where(['menu_id' => $menu['id'], 'lang' => dblang('admin')])->value('title');
-                if ($title) {
-                    $menu['title'] = $title;
-                }
-                // 过滤没访问权限的节点
-                if (!RoleModel::checkAuth($menu['id']) && $menu['uid'] == 0) {
-                    unset($menus[$key]);
-                    continue;
-                }
-                if ($level < 4) {
-                    $menu['childs'] = '';
-                    if (self::where('pid = ' . $menu['id'])->find()) {
-                        if ($menu['title'] == '快捷菜单') {
-                            $menu['childs'] = self::getMainMenu($update, $menu['id'], $level, ADMIN_ID);
-                        } else {
-                            $menu['childs'] = self::getMainMenu($update, $menu['id'], $level);
+
+            foreach ($data as $k => $v) {
+                if ($v['pid'] == $pid) {
+                    if ($level == 3) {
+                        return $trees;
+                    }
+                    // 过滤没访问权限的节点
+                    if (!RoleModel::checkAuth($v['id'])) {
+                        unset($data[$k]);
+                        continue;
+                    }
+                    // 多语言支持
+                    if (config('sys.multi_language') == 1) {
+                        $title = Db::name('admin_menu_lang')->where(['menu_id' => $v['id'], 'lang' => dblang('admin')])->value('title');
+                        if ($title) {
+                            $v['title'] = $title;
                         }
                     }
+                    unset($data[$k]);
+                    $v['childs'] = self::getMainMenu($update, $v['id'], $level+1, $data);
+                    $trees[] = $v;
                 }
             }
             // 非开发模式，缓存菜单
-            if (config('develop.app_debug') == 0 && $level == 1) {
-                cache($cache_tag, $menus);
+            if (config('develop.app_debug') == 0) {
+                cache($cache_tag, $trees);
             }
         }
-        return $menus;
+
+        return $trees;
     }
 
     /**
@@ -397,8 +403,9 @@ class AdminMenu extends Model
         if ($type == 'module') {// 模型菜单
             foreach ($data as $v) {
                 if (!isset($v['pid'])) {
-                    $v['pid'] = $pid;
+                    $v['pid'] = $pid;  
                 }
+
                 $childs = '';
                 if (isset($v['childs'])) {
                     $childs = $v['childs'];
@@ -420,16 +427,13 @@ class AdminMenu extends Model
                 }
             }
             foreach ($data as $v) {
+                if (empty($v['param']) && empty($v['url'])) {
+                    return false;
+                }
                 if (!isset($v['pid'])) {
-                    $v['pid'] = $pid;
+                    $v['pid'] = $pid;  
                 }
                 $v['module'] = $mod;
-                if (strpos($v['url'], 'http') == false) {
-                    $v['url'] = 'admin/plugins/run';
-                    if (empty($v['param'])) {
-                        return false;
-                    }
-                }
                 $childs = '';
                 if (isset($v['childs'])) {
                     $childs = $v['childs'];

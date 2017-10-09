@@ -88,7 +88,6 @@ class Error extends Common
                 'hostport|数据库端口' => 'require|number',
                 'database|数据库名称' => 'require',
                 'username|数据库账号' => 'require',
-                'password|数据库密码' => 'require',
                 'prefix|数据库前缀' => 'require|regex:^[a-z0-9]{1,20}[_]{1}',
                 'cover|覆盖数据库' => 'require|in:0,1',
             ];

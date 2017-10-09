@@ -27,6 +27,23 @@ if (!function_exists('dblang')) {
     }
 }
 
+if (!function_exists('get_domain')) {
+    /**
+     * 获取当前域名
+     * @param bool $http true 返回http协议头,false 只返回域名
+     * @return string
+     */
+    function get_domain($http = true) {
+        if ($http) {
+            if (input('server.https') && input('server.https') == 'on') {
+                return 'https://'.input('server.http_host');
+            }
+            return 'http://'.input('server.http_host');
+        }
+        return input('server.http_host');
+    }
+}
+
 if (!function_exists('get_num')) {
     /**
      * 获取数值型
@@ -508,6 +525,7 @@ if (!function_exists('editor')) {
         if (empty($url)){
             $url = url("admin/annex/upload?thumb=no&from=".$name);
         }
+
         switch (strtolower($name)) {
             case 'ueditor':
                 $html = '<script src="'.$js_path.'ueditor/ueditor.config.js"></script>';

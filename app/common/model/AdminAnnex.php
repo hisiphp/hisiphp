@@ -54,7 +54,7 @@ class AdminAnnex extends Model
             case 'ueditor':
                 $input = 'upfile';
                 if (isset($_GET['action']) && $_GET['action'] == 'config') {
-                    $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents('.'.config('view_replace_str.__ADMIN_JS__').'/editor/ueditor/config.json')), true);
+                    $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents('.'.config('view_replace_str.__PUBLIC_JS__').'/editor/ueditor/config.json')), true);
                     echo json_encode($CONFIG);
                     exit;
                 }

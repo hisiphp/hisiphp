@@ -29,7 +29,7 @@ class Publics extends Common
             $username = input('post.username/s');
             $password = input('post.password/s');
             if (!$model->login($username, $password)) {
-                return $this->error($model->getError());
+                return $this->error($model->getError(), url('index'));
             }
             return $this->success('登陆成功，页面跳转中...', url('index/index'));
         }

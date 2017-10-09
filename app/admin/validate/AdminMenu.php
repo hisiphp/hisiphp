@@ -24,7 +24,7 @@ class AdminMenu extends Validate
         'url|菜单链接' => 'require|checkUrl:thinkphp',
         'module|所属模块' => 'require',
         'pid|所属菜单'    => 'require',
-        'title|菜单名称'  => 'require|length:3,24',
+        'title|菜单名称'  => 'require',
     ];
 
     //定义验证提示
@@ -32,7 +32,6 @@ class AdminMenu extends Validate
         'module.require' => '请选择所属模块',
         'pid.require'    => '请选择所属菜单',
         'url.require'    => '菜单链接已存在',
-        'title.length'    => '长度限制3-24个字节(1个汉字等于3个字节)',
     ];
 
     // 自定义菜单链接验证规则

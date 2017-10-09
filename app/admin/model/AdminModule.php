@@ -42,6 +42,9 @@ class AdminModule extends Model
                     continue;
                 }
                 $config = json_decode($r, 1);
+                if (!is_array($config)) {
+                    continue;
+                }
                 foreach ($config as $rr) {
                     switch ($rr['type']) {
                         case 'array':

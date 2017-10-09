@@ -13,6 +13,7 @@ namespace app\admin\controller;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminMenu as MenuModel;
 use app\common\util\Dir;
+use app\common\util\PclZip;
 use think\Db;
 use think\Xml;
 /**
@@ -46,6 +47,10 @@ class Module extends Admin
                 'title' => '<strong style="color:#428bca">应用市场</strong>',
                 'url' => 'http://store.hisiphp.com/modules',
             ],
+            [
+                'title' => '导入模块',
+                'url' => 'admin/module/import',
+            ],
         ];
         if (config('develop.app_debug') == 1) {
             array_push($tab_data['menu'], ['title' => '设计新模块', 'url' => 'admin/module/design',]);
@@ -62,15 +67,46 @@ class Module extends Admin
     {
         $tab_data = $this->tab_data;
         $tab_data['current'] = url('?status='.$status);
-
         $map = [];
         $map['status'] = $status;
         $map['system'] = 0;
-        $data_list = ModuleModel::where($map)->order('sort,id')->paginate();
-        
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
+        $modules = ModuleModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,default,system,app_id,identifier,name,version,status');
+        if ($status == 0) {
+            // 自动将本地未入库的模块导入数据库
+            $all_module = ModuleModel::order('sort,id')->column('id,name', 'name');
+            $files = Dir::getList(APP_PATH);
+            $sys_dir = config('hs_system.modules');
+            array_push($sys_dir, 'extra');
+            foreach ($files as $k => $f) {
+                // 排除系统模块和已存在数据库的模块
+                if (array_search($f, $sys_dir) !== false || array_key_exists($f, $all_module)) {
+                    continue;
+                }
+                if (file_exists(APP_PATH.$f.DS.'info.php')) {
+                    $info = include_once APP_PATH.$f.DS.'info.php';
+                    $sql = [];
+                    $sql['name'] = $info['name'];
+                    $sql['identifier'] = $info['identifier'];
+                    $sql['theme'] = $info['theme'];
+                    $sql['title'] = $info['title'];
+                    $sql['intro'] = $info['intro'];
+                    $sql['author'] = $info['author'];
+                    $sql['icon'] = $info['icon'];
+                    $sql['version'] = $info['version'];
+                    $sql['url'] = $info['author_url'];
+                    $sql['config'] = '';
+                    $sql['status'] = 0;
+                    $sql['default'] = 0;
+                    $sql['system'] = 0;
+                    $sql['app_id'] = 0;
+                    $db = ModuleModel::create($sql);
+                    $sql['id'] = $db->id;
+                    $modules = array_merge($modules, [$sql]);
+                }
+            }
+        }
+
+        $this->assign('data_list', array_values($modules));
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
         return $this->fetch();
@@ -142,26 +178,29 @@ class Module extends Admin
                                 Db::execute('DROP TABLE IF EXISTS `'.config('database.prefix').$table.'`;');
                             }
                         }
-                        $sql_list = array_filter($sql_list);
-                        foreach ($sql_list as $v) {
-                            // 过滤sql里面的系统表
-                            foreach (config('hs_system.tables') as $t) {
-                                if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
-                                    return $this->error('install.sql文件含有系统表['.$t.']');
-                                }
+                    }
+                    $sql_list = array_filter($sql_list);
+                    foreach ($sql_list as $v) {
+                        // 过滤sql里面的系统表
+                        foreach (config('hs_system.tables') as $t) {
+                            if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
+                                return $this->error('install.sql文件含有系统表['.$t.']');
                             }
-                            if (stripos($v, 'DROP TABLE') === false) {
-                                try {
-                                    Db::execute($v);
-                                } catch(\Exception $e) {
+                        }
+                        if (stripos($v, 'DROP TABLE') === false) {
+                            try {
+                                Db::execute($v);
+                            } catch(\Exception $e) {
+                                if ($post['clear'] == 1) {
                                     return $this->error('导入SQL失败，请检查install.sql的语句是否正确或者表是否存在');
+                                } else {
+                                    return $this->error('导入SQL失败，请尝试选择清除旧数据');
                                 }
                             }
                         }
                     }
                 }
             }
-
             // 导入菜单
             if ( file_exists($mod_path.'menu.php') ) {
                 $menus = include_once $mod_path.'menu.php';
@@ -278,6 +317,87 @@ class Module extends Admin
     //     $this->assign('data_info', $row);
     //     return $this->fetch();
     // }
+
+    /**
+     * 导入模块
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function import()
+    {
+        if ($this->request->isPost()) {
+            $_file = input('param.file');
+            if (empty($_file)) {
+                return $this->error('请上传模块安装包');
+            }
+            $file = ROOT_PATH.trim($_file, '/');
+            if (!file_exists($file)) {
+                return $this->error('上传文件无效');
+            }
+            $decom_path = trim($file, '.zip');
+            if (!is_dir($decom_path)) {
+                Dir::create($decom_path, 0777, true);
+            }
+            // 解压安装包到$decom_path
+            $archive = new PclZip();
+            $archive->PclZip($file);
+            if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
+                return $this->error('导入失败，请检查[upload/temp/file]权限');
+            }
+            if (!is_dir($decom_path.DS.'upload'.DS.'app')) {
+                return $this->error('导入失败，安装包不完整');
+            }
+            // 获取模块名
+            $files = Dir::getList($decom_path.DS.'upload'.DS.'app'.DS);
+            if (!isset($files[0])) {
+                return $this->error('导入失败，安装包不完整');
+            }
+            $app_name = $files[0];
+            // 应用目录
+            $app_path = $decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS;
+            // 获取安装包基本信息
+            if (!file_exists($app_path.'info.php')) {
+                return $this->error('安装包缺少[info.php]文件！');
+            }
+            $info = include_once $app_path.'info.php';
+            // 安装模块路由
+            if (file_exists($app_path.$app_name.'.php')) {
+                Dir::copyDir($app_path.$app_name.'.php', './route');
+            }
+            // 复制app目录
+            if (!is_dir(ROOT_PATH.'app'.DS.$app_name)) {
+                Dir::create(ROOT_PATH.'app'.DS.$app_name, 0777, true);
+            }
+            Dir::copyDir($app_path, './app'.DS.$app_name);
+            if (!is_dir(ROOT_PATH.'static'.DS.'app_icon'.DS)) {
+                Dir::create(ROOT_PATH.'static'.DS.'app_icon'.DS, 0755, true);
+            }
+            // 复制应用图标
+            $icon = ROOT_DIR.'static/admin/image/app.png';
+            if (file_exists($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.'icon.png')) {
+                @copy($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.'icon.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$app_name.'.png');
+                $icon = ROOT_DIR.'static/app_icon/'.$app_name.'.png';
+            }
+            // 复制static目录
+            if (is_dir($decom_path.DS.'upload'.DS.'static')) {
+                Dir::copyDir($decom_path.DS.'upload'.DS.'static', '.'.ROOT_DIR.'static');
+            }
+            // 复制theme目录
+            if (is_dir($decom_path.DS.'upload'.DS.'theme')) {
+                Dir::copyDir($decom_path.DS.'upload'.DS.'theme', '.'.ROOT_DIR.'theme');
+            }
+            // 删除临时目录和安装包
+            Dir::delDir($decom_path);
+            @unlink($file);
+            return $this->success('模块导入成功', url('index?status=0'));
+        }
+
+        $tab_data = $this->tab_data;
+        $tab_data['current'] = 'admin/module/import';
+        $this->assign('tab_data', $tab_data);
+        $this->assign('tab_type', 1);
+        return $this->fetch();
+    }
 
     /**
      * 卸载模块

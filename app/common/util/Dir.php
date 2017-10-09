@@ -297,7 +297,15 @@ class Dir {
      * @return void
      */
     public static function getList($directory) {
-        return scandir($directory);
+        $scandir = scandir($directory);
+        $dir = [];
+        foreach ($scandir as $k => $v) {
+            if ($v == '.' || $v == '..') {
+                continue;
+            }
+            $dir[] = $v;
+        }
+        return $dir;
     }
 
     /**

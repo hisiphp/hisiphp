@@ -118,11 +118,12 @@ layui.define(['element', 'form'], function(exports) {
 
     /* 添加快捷菜单 */
     $('#addQuick').click(function(){
-        var that = $(this), href = that.attr('_href');
+        var that = $(this), href = that.attr('href');
         if (href == '') return false;
         $.post(href, function(res) {
             layer.msg(res.msg);
         });
+        return false;
     });
 
     /* 删除快捷菜单 */
@@ -289,7 +290,8 @@ layui.define(['element', 'form'], function(exports) {
     $('.j-page-btns').click(function(){
         var that = $(this),
             code = function(that) {
-                if (!that.attr('data-href')) {
+                var href = that.attr('href') ? that.attr('href') : that.attr('data-href');
+                if (!href) {
                     layer.msg('请设置data-href参数');
                     return false;
                 }
@@ -303,7 +305,7 @@ layui.define(['element', 'form'], function(exports) {
                     var query = $('#pageListForm').serialize();
                 }
                 layer.msg('数据提交中...',{time:500000});
-                $.post(that.attr('data-href'), query, function(res) {
+                $.post(href, query, function(res) {
                     layer.msg(res.msg, {}, function(){
                         if (res.code != 0) {
                             location.reload();

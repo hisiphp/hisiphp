@@ -93,7 +93,7 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                     <li><a href="javascript:void(0);">{$v['title']}</a></li>
                 {/if}
             {/volist}
-            <li><a href="javascript:;" _href="{:url('menu/quick?id='.$_admin_menu_current['id'])}" title="添加到首页快捷菜单" id="addQuick">[+]</a></li>
+            <li><a href="{:url('admin/menu/quick?id='.$_admin_menu_current['id'])}" title="添加到首页快捷菜单" id="addQuick">[+]</a></li>
         </ul>
         <div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
         <script src="__ADMIN_JS__/layui/layui.js"></script>

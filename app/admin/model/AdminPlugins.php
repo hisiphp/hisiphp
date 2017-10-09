@@ -29,6 +29,7 @@ class AdminPlugins extends Model
     // 写入时,转JSON
     public function setConfigAttr($value)
     {
+        if (empty($value)) return '';
         return json_encode($value, 1);
     }
 
@@ -50,6 +51,9 @@ class AdminPlugins extends Model
                     continue;
                 }
                 $config = json_decode($r, 1);
+                if (!is_array($config)) {
+                    continue;
+                }
                 foreach ($config as $rr) {
                     switch ($rr['type']) {
                         case 'array':
