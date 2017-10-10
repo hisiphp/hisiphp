@@ -93,10 +93,10 @@ class AdminAnnex extends Model
         $_file_path = '/upload/'.$group.'/'.$type.'/';
 
         // 如果文件已经存在，直接返回数据
-        $res = self::where('hash', $file->hash())->find();
-        if ($res) {
-            return self::result('文件上传成功。', $from, 1, $res);
-        }
+        // $res = self::where('hash', $file->hash())->find();
+        // if ($res) {
+        //     return self::result('文件上传成功。', $from, 1, $res);
+        // }
 
         // 移动到upload 目录下
         $upfile = $file->rule('md5')->move($_upload_path);
@@ -116,11 +116,11 @@ class AdminAnnex extends Model
         ];
 
         // 记录入库
-        self::create($data);
-        $group_info = GroupModel::where('name', $group)->find();
-        if (!$group_info) {
-            GroupModel::create(['name' => $group]);
-        }
+        // self::create($data);
+        // $group_info = GroupModel::where('name', $group)->find();
+        // if (!$group_info) {
+        //     GroupModel::create(['name' => $group]);
+        // }
 
         $data['thumb'] = [];
         if ($type == 'image') {
@@ -203,15 +203,15 @@ class AdminAnnex extends Model
                         $file_count++;
                     }
                 }
-                if (!empty($data['thumb'])) {
-                    self::insertAll($data['thumb']);
-                }
+                // if (!empty($data['thumb'])) {
+                //     self::insertAll($data['thumb']);
+                // }
             }
         }
         
         // 附件分组统计
-        GroupModel::where('name', $group)->setInc('count', $file_count);
-        GroupModel::where('name', $group)->setInc('size', $file_size);
+        // GroupModel::where('name', $group)->setInc('count', $file_count);
+        // GroupModel::where('name', $group)->setInc('size', $file_size);
 
         runhook('system_annex_upload', $data);
         return self::result('文件上传成功。', $from, 1, $data);
