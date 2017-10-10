@@ -374,8 +374,8 @@ class Module extends Admin
             }
             // 复制应用图标
             $icon = ROOT_DIR.'static/admin/image/app.png';
-            if (file_exists($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.'icon.png')) {
-                @copy($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.'icon.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$app_name.'.png');
+            if (file_exists($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.$app_name.'.png')) {
+                @copy($decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS.$app_name.'.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$app_name.'.png');
                 $icon = ROOT_DIR.'static/app_icon/'.$app_name.'.png';
             }
             // 复制static目录
