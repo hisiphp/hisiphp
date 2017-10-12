@@ -33,6 +33,13 @@ class AdminUser extends Model
         return password_hash($value, PASSWORD_DEFAULT);
     }
 
+    // 写入时，将权限ID转成JSON格式
+    public function setAuthAttr($value)
+    {
+        if (empty($value)) return '';
+        return json_encode($value);
+    }
+
     // 获取最后登陆ip
     public function setLastLoginIpAttr()
     {
@@ -163,8 +170,8 @@ class AdminUser extends Model
             $login['nick'] = $user->nick;
 
             // 缓存角色权限
-            cache('role_auth_'.$user->role_id, json_decode($role['auth']));
-
+            cache('role_auth_'.$user->role_id, $user['auth'] ? json_decode($user['auth']) : json_decode($role['auth']));
+            // 缓存登录信息
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));
             return $user->id;
