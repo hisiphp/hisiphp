@@ -52,6 +52,8 @@ class Admin extends Common
             return $this->error('['.$c_menu['title'].'] 访问权限不足', $url);
         }
 
+        // 日志记录
+
         // 如果不是ajax请求，则读取菜单
         if (!$this->request->isAjax()) {
             $_bread_crumbs = MenuModel::getBrandCrumbs($c_menu['id']);
@@ -103,7 +105,7 @@ class Admin extends Common
      */
     public function status() {
         $val   = input('param.val');
-        $ids   = input('param.ids/a');
+        $ids   = input('param.ids/a') ? input('param.ids/a') : input('param.id/a');
         $table = input('param.table');
         $field = input('param.field', 'status');
         if (empty($ids)) {
@@ -115,7 +117,7 @@ class Admin extends Common
         // 以下表操作需排除值为1的数据
         if ($table == 'admin_menu' || $table == 'admin_user' || $table == 'admin_role' || $table == 'admin_module') {
             if (in_array('1', $ids) || ($table == 'admin_menu' && in_array('2', $ids))) {
-                return $this->error('系统限制操作！');
+                return $this->error('系统限制操作');
             }
         }
          // 获取主键
@@ -125,9 +127,9 @@ class Admin extends Common
 
         $res = Db::name($table)->where($map)->setField($field, $val);
         if ($res === false) {
-            return $this->error('状态设置失败！');
+            return $this->error('状态设置失败');
         }
-        return $this->success('状态设置成功。');
+        return $this->success('状态设置成功');
     }
 
     /**
@@ -137,21 +139,21 @@ class Admin extends Common
      * @return mixed
      */
     public function del() {
-        $ids   = input('param.ids/a');
+        $ids   = input('param.ids/a') ? input('param.ids/a') : input('param.id/a');
         $table = input('param.table');
+        if (empty($ids)) {
+            return $this->error('无权删除(原因：可能您选择的是系统菜单)');
+        }
         // 禁止以下表通过此方法操作
         if ($table == 'admin_user' || $table == 'admin_role') {
-            return $this->error('非法操作！');
+            return $this->error('非法操作');
         }
 
         // 以下表操作需排除值为1的数据
         if ($table == 'admin_menu' || $table == 'admin_module') {
             if ((is_array($ids) && in_array('1', $ids))) {
-                return $this->error('禁止操作！');
+                return $this->error('禁止操作');
             }
-        }
-        if (empty($ids)) {
-            return $this->error('无权删除(原因：可能您选择的是系统菜单)！');
         }
             
         // 获取主键
@@ -161,9 +163,9 @@ class Admin extends Common
 
         $res = Db::name($table)->where($map)->delete();
         if ($res === false) {
-            return $this->error('删除失败！');
+            return $this->error('删除失败');
         }
-        return $this->success('删除成功。');
+        return $this->success('删除成功');
     }
 
     /**
@@ -172,7 +174,7 @@ class Admin extends Common
      * @return mixed
      */
     public function sort() {
-        $ids   = input('param.ids/d');
+        $ids   = input('param.ids/d') ? input('param.ids/d') : input('param.id/d');
         $table = input('param.table');
         $field = input('param.field/s', 'sort');
         $val   = input('param.val/d');
@@ -182,8 +184,8 @@ class Admin extends Common
         $map[$pk] = ['in', $ids];
         $res = Db::name($table)->where($map)->setField($field, $val);
         if ($res === false) {
-            return $this->error('排序设置失败！');
+            return $this->error('排序设置失败');
         }
-        return $this->success('排序设置成功。');
+        return $this->success('排序设置成功');
     }
 }
