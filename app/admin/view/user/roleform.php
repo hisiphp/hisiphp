@@ -1,24 +1,22 @@
 <form class="layui-form" action="{:url()}" method="post">
-<div class="layui-tab-item layui-show  layui-form-pane">
-    <div class="page-form">
-        <div class="layui-form-item">
-            <label class="layui-form-label">角色名称</label>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input field-name" name="name" lay-verify="required" autocomplete="off" placeholder="请输入角色名称">
-            </div>
+<div class="layui-tab-item layui-show layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色名称</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-name" name="name" lay-verify="required" autocomplete="off" placeholder="请输入角色名称">
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">角色简介</label>
-            <div class="layui-input-inline">
-                <textarea  class="layui-textarea field-intro" name="intro" lay-verify="" autocomplete="off" placeholder="[选填]角色简介"></textarea>
-            </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色简介</label>
+        <div class="layui-input-inline">
+            <textarea  class="layui-textarea field-intro" name="intro" lay-verify="" autocomplete="off" placeholder="[选填]角色简介"></textarea>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">角色状态</label>
-            <div class="layui-input-inline">
-                <input type="radio" class="field-status" name="status" value="1" title="启用" checked>
-                <input type="radio" class="field-status" name="status" value="0" title="禁用">
-            </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色状态</label>
+        <div class="layui-input-inline">
+            <input type="radio" class="field-status" name="status" value="1" title="启用" checked>
+            <input type="radio" class="field-status" name="status" value="0" title="禁用">
         </div>
     </div>
 </div>
