@@ -5,6 +5,8 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css">
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css">
+    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css">
+    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css">
     <script type="text/javascript">
         var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}";
     </script>
