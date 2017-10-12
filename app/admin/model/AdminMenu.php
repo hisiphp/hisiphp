@@ -109,7 +109,7 @@ class AdminMenu extends Model
     {
         $cache_tag = md5('_admin_child_menu'.$pid.$field.$status.dblang('admin'));
         $trees = [];
-        if (config('develop.app_debug') == 0) {
+        if (config('develop.app_debug') == 0 && $level == 0) {
             $trees = cache($cache_tag);
         }
 
@@ -165,10 +165,9 @@ class AdminMenu extends Model
     {
         $cache_tag = '_admin_menu'.ADMIN_ID.dblang('admin');
         $trees = [];
-        if (config('develop.app_debug') == 0) {
+        if (config('develop.app_debug') == 0 && $level == 0) {
             $trees = cache($cache_tag);
         }
-
         if (empty($trees) || $update === true) {
             if (empty($data)) {
                 $map = [];
