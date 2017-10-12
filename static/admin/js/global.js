@@ -212,7 +212,7 @@ layui.define(['element', 'form'], function(exports) {
                 layer.msg('请设置data-href参数');
                 return false;
             }
-            $.post(href, {val:status}, function(res) {
+            $.get(href, function(res) {
                 if (res.code == 0) {
                     layer.msg(res.msg);
                 } else {
