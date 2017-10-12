@@ -82,13 +82,21 @@ class User extends Admin
             }
             unset($data['id']);
             $data['last_login_ip'] = '';
+            $data['auth'] = '';
             if (!UserModel::create($data)) {
-                return $this->error('添加失败！');
+                return $this->error('添加失败');
             }
-            return $this->success('添加成功。');
+            return $this->success('添加成功');
         }
 
+        $tab_data = [];
+        $tab_data['menu'] = [
+            ['title' => '添加用户'],
+        ];
+        $this->assign('menu_list', '');
         $this->assign('role_option', RoleModel::getOption());
+        $this->assign('tab_data', $tab_data);
+        $this->assign('tab_type', 2);
         return $this->fetch('userform');
     }
 
@@ -101,13 +109,26 @@ class User extends Admin
     public function editUser($id = 0)
     {
         if ($id == 1 && ADMIN_ID != $id) {
-            return $this->error('禁止修改超级管理员！');
+            return $this->error('禁止修改超级管理员');
         }
         if ($this->request->isPost()) {
             $data = $this->request->post();
-            // 超级管理员角色不可更改角色分组，当前登陆用户不可更改自己的分组角色
-            if ($data['id'] == 1 || ADMIN_ROLE == $data['role_id']) {
-                unset($data['role_id']);
+            $row = UserModel::where('id', $id)->field('role_id,auth')->find();
+            if ($data['id'] == 1 || ADMIN_ID == $id) {// 禁止更改超管角色，当前登陆用户不可更改自己的角色和自定义权限
+                unset($data['role_id'], $data['auth']);
+                if (!$row['auth']) {
+                    $data['auth'] = '';
+                }
+            } else if ($row['role_id'] != $data['role_id']) {// 如果分组不同，自定义权限无效
+                $data['auth'] = '';
+            }
+
+            if (isset($data['role_id']) && RoleModel::where('id', $data['role_id'])->value('auth') == json_encode($data['auth'])) {// 如果自定义权限与角色权限一致，则设置自定义权限为空
+                $data['auth'] = '';
+            }
+
+            if (!isset($data['auth'])) {
+                $data['auth'] = '';
             }
 
             // 验证
@@ -121,12 +142,28 @@ class User extends Admin
             }
 
             if (!UserModel::update($data)) {
-                return $this->error('修改失败！');
+                return $this->error('修改失败');
             }
-            return $this->success('修改成功。');
+            return $this->success('修改成功');
         }
 
-        $row = UserModel::where('id', $id)->field('id,username,role_id,nick,email,mobile,status')->find()->toArray();
+        $row = UserModel::where('id', $id)->field('id,username,role_id,nick,email,mobile,auth,status')->find()->toArray();
+        if (!$row['auth']) {
+            $auth = RoleModel::where('id', $row['role_id'])->value('auth');
+            $row['auth'] = json_decode($auth);
+        } else {
+            $row['auth'] = json_decode($row['auth']);
+        }
+        $tab_data = [];
+        $tab_data['menu'] = [
+            ['title' => '修改用户'],
+            ['title' => '设置权限'],
+        ];
+
+        $this->assign('menu_list', MenuModel::getAllChild());
+        $this->assign('role_option', RoleModel::getOption());
+        $this->assign('tab_data', $tab_data);
+        $this->assign('tab_type', 2);
         $this->assign('role_option', RoleModel::getOption($row['role_id']));
         $this->assign('data_info', $row);
         return $this->fetch('userform');
@@ -155,9 +192,9 @@ class User extends Admin
             }
 
             if (!UserModel::update($data)) {
-                return $this->error('修改失败！');
+                return $this->error('修改失败');
             }
-            return $this->success('修改成功。');
+            return $this->success('修改成功');
         }
 
         $row = UserModel::where('id', ADMIN_ID)->field('username,nick,email,mobile')->find()->toArray();
@@ -176,7 +213,7 @@ class User extends Admin
         $ids   = input('param.ids/a');
         $model = new UserModel();
         if ($model->del($ids)) {
-            return $this->success('删除成功。');
+            return $this->success('删除成功');
         }
         return $this->error($model->getError());
     }
@@ -220,9 +257,9 @@ class User extends Admin
             }
             unset($data['id']);
             if (!RoleModel::create($data)) {
-                return $this->error('添加失败！');
+                return $this->error('添加失败');
             }
-            return $this->success('添加成功。');
+            return $this->success('添加成功');
         }
         $tab_data = [];
         $tab_data['menu'] = [
@@ -250,7 +287,7 @@ class User extends Admin
             $data = $this->request->post();
             // 当前登陆用户不可更改自己的分组角色
             if (ADMIN_ROLE == $data['id']) {
-                return $this->error('禁止修改当前角色(原因：您不是超级管理员)！');
+                return $this->error('禁止修改当前角色(原因：您不是超级管理员)');
             }
 
             // 验证
@@ -259,18 +296,18 @@ class User extends Admin
                 return $this->error($result);
             }
             if (!RoleModel::update($data)) {
-                return $this->error('修改失败！');
+                return $this->error('修改失败');
             }
 
             // 更新权限缓存
             cache('role_auth_'.$data['id'], $data['auth']);
 
-            return $this->success('修改成功。');
+            return $this->success('修改成功');
         }
         $tab_data = [];
         $tab_data['menu'] = [
             ['title' => '修改角色'],
-            ['title' => '设置权限'],
+            ['title' => '自定义权限'],
         ];
         $row = RoleModel::where('id', $id)->field('id,name,intro,auth,status')->find()->toArray();
         $row['auth'] = json_decode($row['auth']);
@@ -291,7 +328,7 @@ class User extends Admin
         $ids   = input('param.ids/a');
         $model = new RoleModel();
         if ($model->del($ids)) {
-            return $this->success('删除成功。');
+            return $this->success('删除成功');
         }
         return $this->error($model->getError());
     }
