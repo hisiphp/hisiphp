@@ -145,7 +145,7 @@ class Error extends Common
         $password = input('post.password');
 
         $config = include APP_PATH.'database.php';
-        if (empty($config['hostname']) || empty($config['database']) || empty($config['username']) || empty($config['password'])) {
+        if (empty($config['hostname']) || empty($config['database']) || empty($config['username'])) {
             return $this->error('请先点击测试数据库连接！');
         }
         if (empty($account) || empty($password)) {
