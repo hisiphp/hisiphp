@@ -330,7 +330,7 @@ class Module extends Admin
             if (empty($_file)) {
                 return $this->error('请上传模块安装包');
             }
-            $file = ROOT_PATH.trim($_file, '/');
+            $file = realpath('.'.$_file);
             if (!file_exists($file)) {
                 return $this->error('上传文件无效');
             }
@@ -342,21 +342,35 @@ class Module extends Admin
             $archive = new PclZip();
             $archive->PclZip($file);
             if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
+                Dir::delDir($decom_path);
+                @unlink($file);
                 return $this->error('导入失败，请检查[upload/temp/file]权限');
             }
             if (!is_dir($decom_path.DS.'upload'.DS.'app')) {
+                Dir::delDir($decom_path);
+                @unlink($file);
                 return $this->error('导入失败，安装包不完整');
             }
             // 获取模块名
             $files = Dir::getList($decom_path.DS.'upload'.DS.'app'.DS);
             if (!isset($files[0])) {
+                Dir::delDir($decom_path);
+                @unlink($file);
                 return $this->error('导入失败，安装包不完整');
             }
             $app_name = $files[0];
+            // 防止重复导入模块
+            if (is_dir(APP_PATH.$app_name)) {
+                Dir::delDir($decom_path);
+                @unlink($file);
+                return $this->error('模块可已存在');
+            }
             // 应用目录
             $app_path = $decom_path.DS.'upload'.DS.'app'.DS.$app_name.DS;
             // 获取安装包基本信息
             if (!file_exists($app_path.'info.php')) {
+                Dir::delDir($decom_path);
+                @unlink($file);
                 return $this->error('安装包缺少[info.php]文件！');
             }
             $info = include_once $app_path.'info.php';

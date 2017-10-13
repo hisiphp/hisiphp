@@ -266,7 +266,6 @@ class AdminMenu extends Model
                 foreach ($rows as $k => $v) {
                     if ($v['param'] == '') {
                         return $rows[$k];
-                        break;
                     }
                 }
             }
@@ -286,7 +285,6 @@ class AdminMenu extends Model
                     $res = self::where($sqlmap)->field('id,title,url,param')->find();
                     if ($res) {
                         return $res;
-                        break;
                     }
                 }
             }

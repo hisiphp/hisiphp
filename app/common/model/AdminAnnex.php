@@ -106,7 +106,7 @@ class AdminAnnex extends Model
         $file_count = 1;
         $file_size = round($upfile->getInfo('size')/1024, 2);
         $data = [
-            'file'  => $_file_path.$upfile->getSaveName(),
+            'file'  => $_file_path.str_replace('\\', '/', $upfile->getSaveName()),
             'hash'  => $upfile->hash(),
             'data_id' => input('param.data_id', 0),
             'type'  => $type,
