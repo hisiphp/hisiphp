@@ -183,6 +183,7 @@ class Error extends Common
         $map['nick'] = '超级管理员';
         $map['username'] = $account;
         $map['password'] = $password;
+        $map['auth'] = '';
         $map['email'] = '';
         $map['mobile'] = '';
         $map['last_login_ip'] = '';
