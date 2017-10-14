@@ -323,7 +323,7 @@ VALUES
   (69,0,17,'admin','删除模块','','admin/module/del','','_self',5,0,1,1,1,1490315067),
   (70,0,21,'admin','添加会员','','admin/member/add','','_self',1,0,1,1,1,1490315067),
   (71,0,21,'admin','修改会员','','admin/member/edit','','_self',2,0,1,1,1,1490315067),
-  (72,0,21,'admin','删除会员','','admin/member/del','','_self',3,0,1,1,1,1490315067),
+  (72,0,21,'admin','删除会员','','admin/member/del','table=admin_member','_self',3,0,1,1,1,1490315067),
   (73,0,21,'admin','状态设置','','admin/member/status','','_self',4,0,1,1,1,1490315067),
   (74,0,21,'admin','[弹窗]会员选择','','admin/member/pop','','_self',5,0,1,1,1,1490315067),
   (75,0,20,'admin','添加会员等级','','admin/member/addlevel','','_self',0,0,1,1,1,1490315067),

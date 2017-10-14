@@ -55,7 +55,7 @@ www  WEB部署目录（或者子目录）
 感谢[ThinkPHP](http://www.thinkphp.cn)、[JQuery](http://jquery.com)、[Layui](http://www.layui.com)等优秀开源项目。
 
 ## 版权信息
-HisiPHP提供个人非商业用途免费使用，商业需授权。
+HisiPHP承诺基础框架永久免费开源，您可用于学习和商用，但必须保留软件版权信息。
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
 版权所有Copyright © 2017 HisiPHP.COM (http://www.hisiphp.com)
