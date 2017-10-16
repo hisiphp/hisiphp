@@ -130,9 +130,9 @@ class Error extends Common
             // 生成配置文件
             self::mkDatabase($data);
             return $this->success('数据库连接成功', '');
+        } else {
+            return $this->error('非法访问');
         }
-
-        return $this->fetch('step4');
     }
     
     /**

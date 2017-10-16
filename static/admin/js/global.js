@@ -46,8 +46,11 @@ layui.define(['element', 'form'], function(exports) {
     if (window.localStorage.getItem("adminNavTag")) {
         $('#switchNav a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
     }
-
-    layer.config({offset:LAYUI_OFFSET+'px'});
+    if (typeof(LAYUI_OFFSET) == 'undefined') {
+        layer.config({offset:'60px'});  
+    } else {
+        layer.config({offset:LAYUI_OFFSET+'px'});  
+    }
     /* 打开/关闭左侧导航 */
     $('#foldSwitch').click(function(){
         var that = $(this);
