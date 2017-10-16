@@ -1,4 +1,4 @@
-body{background-color:#f5f5f5;}
+body{background-color:#fff;}
 .fl{float:left;}
 .fr{float:right;}
 .nobg{background-color:transparent!important}
@@ -46,6 +46,7 @@ body{background-color:#f5f5f5;}
 #switchNav .layui-nav-child dd .j-del-menu:hover{color:#fff;}
 #switchBody{z-index:;}
 #switchNav .fold-mark i.aicon{margin-right:20px;}
+#switchNav a{cursor:pointer;}
 .bread-crumbs{display:block;background-color:#f9f9f9;padding:10px 0 0 10px;height:30px;overflow:hidden;}
 .bread-crumbs li{float:left;margin:0 5px;color:#666;height:30px;line-height:30px}
 .bread-crumbs li a{color:#666;}
@@ -133,9 +134,9 @@ body{background-color:#f5f5f5;}
 .hook-plugins-sort li{float:left;width:100%;padding:5px 10px;border-bottom:1px dotted #eee;overflow:hidden;}
 .hook-plugins-sort li span{float:left;margin-right:20px;width:150px;height:20px;line-height:22px;}
 /*layui*/
+.layui-layout-admin{min-width:1000px;}
 .layui-form-label{min-width:90px;}
-.layui-tab-title li{padding:0;}
-.layui-tab-title li a{padding:0 10px;}
+.layui-tab-title li{padding:0 10px;}
 .page-tips .layui-colla-content{/*color:#999;background-color:#f9f9f9*/}
 .layui-form-mid{font-size:12px!important;}
 /*themes*/

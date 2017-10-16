@@ -54,6 +54,7 @@
                     <div class="layui-btn-group">
                         <div class="layui-btn-group">
                         <a href="{:url('editUser?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe642;</i></a>
+                        <a href="{:url('log/index?uid='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small" title="查看操作日志"><i class="layui-icon">&#xe60e;</i></a>
                         <a data-href="{:url('delUser?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del"><i class="layui-icon">&#xe640;</i></a>
                         </div>
                     </div>

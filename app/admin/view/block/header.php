@@ -1,14 +1,41 @@
+{if condition="input('param.hisi_iframe') || cookie('hisi_iframe')"}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{$_admin_menu_current['title']}-后台首页 -  Powered by {:config('hisiphp.name')}</title>
+    <title>{$_admin_menu_current['title']} -  Powered by {:config('hisiphp.name')}</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css">
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css">
-    <script type="text/javascript">
-        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}";
+    <script src="__ADMIN_JS__/layui/layui.js"></script>
+    <script>
+        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 0;
+        layui.config({
+            base: '__ADMIN_JS__/',
+            version: '{:config("hisiphp.version")}'
+        }).use('global');
+    </script>
+</head>
+<body>
+<div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
+{else /}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{if condition="$_admin_menu_current['url'] eq 'admin/index/index'"}管理控制台{else /}{$_admin_menu_current['title']}{/if} -  Powered by {:config('hisiphp.name')}</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css">
+    <link rel="stylesheet" href="__ADMIN_CSS__/style.css">
+    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css">
+    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css">
+    <script src="__ADMIN_JS__/layui/layui.js"></script>
+    <script>
+        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 60;
+        layui.config({
+            base: '__ADMIN_JS__/',
+            version: '{:config("hisiphp.version")}'
+        }).use('global');
     </script>
 </head>
 <body>
@@ -29,10 +56,15 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                 <a href="javascript:;">{$vo['title']}</a></li>
             {/volist}
         </ul>
-        <ul class="layui-nav fr nobg head-info" lay-filter="">
-            <li class="layui-nav-item"><a href="/" target="_blank">前台</a></li>
-            <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">锁屏</a></li>
-            <li class="layui-nav-item"><a href="{:url('admin/index/clear')}">清缓存</a></li>
+        <ul class="layui-nav fr nobg head-info">
+            <li class="layui-nav-item">
+                <a href="javascript:void(0);">{$admin_user['nick']}&nbsp;&nbsp;</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="{:url('admin/user/info')}">个人设置</a></dd>
+                    <dd><a href="{:url('admin/user/iframe?val=1')}" class="j-ajax" refresh="1">框架布局</a></dd>
+                    <dd><a href="{:url('admin/publics/logout')}">退出登陆</a></dd>
+                </dl>
+            </li>
             <li class="layui-nav-item">
                 <a href="javascript:void(0);">{$languages[cookie('admin_language')]['name']}&nbsp;&nbsp;</a>
                 <dl class="layui-nav-child">
@@ -44,13 +76,9 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                     <dd><a href="{:url('admin/language/index')}">语言包管理</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item">
-                <a href="javascript:void(0);">{$admin_user['nick']}&nbsp;&nbsp;</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="{:url('admin/user/info')}">个人设置</a></dd>
-                    <dd><a href="{:url('admin/publics/logout')}">退出登陆</a></dd>
-                </dl>
-            </li>
+            <li class="layui-nav-item"><a href="__ROOT_DIR__" target="_blank">前台</a></li>
+            <li class="layui-nav-item"><a href="{:url('admin/index/clear')}" class="j-ajax">清缓存</a></li>
+            <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">锁屏</a></li>
         </ul>
     </div>
     <div class="layui-side layui-bg-black" id="switchNav">
@@ -95,14 +123,8 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                     <li><a href="javascript:void(0);">{$v['title']}</a></li>
                 {/if}
             {/volist}
-            <li><a href="{:url('admin/menu/quick?id='.$_admin_menu_current['id'])}" title="添加到首页快捷菜单" id="addQuick">[+]</a></li>
+            <li><a href="{:url('admin/menu/quick?id='.$_admin_menu_current['id'])}" title="添加到首页快捷菜单" class="j-ajax">[+]</a></li>
         </ul>
         <div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
-        <script src="__ADMIN_JS__/layui/layui.js"></script>
-        <script>
-        layui.config({
-          base: '__ADMIN_JS__/',
-          version: '{:config("hisiphp.version")}'
-        }).use('global');
-        </script>
         <div class="page-body">
+{/if}

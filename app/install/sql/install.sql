@@ -266,7 +266,7 @@ VALUES
   (12,0,6,'admin','系统菜单','','admin/menu/index','','_self',3,0,1,1,1,1490315067),
   (13,0,6,'admin','管理员角色','','admin/user/role','','_self',4,0,1,0,1,1490315067),
   (14,0,6,'admin','系统管理员','','admin/user/index','','_self',5,0,1,1,1,1490315067),
-  (15,0,6,'admin','系统日志','','admin/log/index','','_self',6,0,1,1,0,1490315067),
+  (15,0,6,'admin','系统日志','','admin/log/index','','_self',6,0,1,1,1,1490315067),
   (16,0,6,'admin','附件管理','','admin/annex/index','','_self',7,0,1,0,1,1490315067),
   (17,0,8,'admin','模块管理','','admin/module/index','','_self',1,0,1,1,1,1490315067),
   (18,0,8,'admin','插件管理','','admin/plugins/index','','_self',2,0,1,1,1,1490315067),
@@ -356,10 +356,10 @@ VALUES
   (102,0,97,'admin','状态设置','','admin/language/status','','_self',100,0,1,0,1,1490315067),
   (103,0,16,'admin','收藏夹图标上传','','admin/annex/favicon','','_self',3,0,1,0,1,1490315067),
   (104,0,17,'admin','导入模块','','admin/module/import','','_self',11,0,1,0,1,1490315067),
-  (105,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
-  (106,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
-  (107,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
-  (108,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
+  (105,0,4,'admin','欢迎页面','','admin/index/welcome','','_self',100,0,1,0,1,1490315067),
+  (106,0,4,'admin','布局切换','','admin/user/iframe','','_self',100,0,1,0,1,1490315067),
+  (107, 0, 15, 'admin', '删除日志', '', 'admin/log/del', 'table=admin_log', '_self', 100, 0, 1, 0, 1, 1490315067),
+  (108, 0, 15, 'admin', '清空日志', '', 'admin/log/clear', '', '_self', 100, 0, 1, 0, 1, 1490315067),
   (109,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
   (110,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
   (111,0,4,'admin','预留占位','','','','_self',100,0,1,1,0,1490315067),
@@ -503,10 +503,10 @@ VALUES
   (102,'状态设置',1),
   (103,'收藏夹图标上传',1),
   (104,'导入模块',1),
-  (105,'预留占位',1),
-  (106,'预留占位',1),
-  (107,'预留占位',1),
-  (108,'预留占位',1),
+  (105,'欢迎页面',1),
+  (106,'布局切换',1),
+  (107,'删除日志',1),
+  (108,'清空日志',1),
   (109,'预留占位',1),
   (110,'预留占位',1),
   (111,'预留占位',1),
@@ -628,6 +628,7 @@ CREATE TABLE `hisiphp_admin_user` (
   `mobile` varchar(11) NOT NULL,
   `email` varchar(50) NOT NULL COMMENT '邮箱',
   `auth` text NOT NULL COMMENT '权限',
+  `iframe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0默认，1框架',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `last_login_ip` varchar(128) NOT NULL COMMENT '最后登陆IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登陆时间',
@@ -635,3 +636,23 @@ CREATE TABLE `hisiphp_admin_user` (
   `mtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='[系统] 管理用户';
+
+
+# Dump of table hisiphp_admin_log
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `hisiphp_admin_log`;
+
+CREATE TABLE `hisiphp_admin_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL DEFAULT '0',
+  `title` varchar(100) DEFAULT '',
+  `url` varchar(200) DEFAULT '',
+  `param` text,
+  `remark` varchar(255) DEFAULT '',
+  `count` int(10) unsigned NOT NULL DEFAULT '1',
+  `ip` varchar(128) DEFAULT '',
+  `ctime` int(10) unsigned NOT NULL DEFAULT '0',
+  `mtime` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='[系统] 操作日志';

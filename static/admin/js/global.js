@@ -44,10 +44,10 @@ layui.define(['element', 'form'], function(exports) {
         window.localStorage.setItem("adminNavTag", $(this).attr('href'));
     });
     if (window.localStorage.getItem("adminNavTag")) {
-        $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
+        $('#switchNav a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
     }
 
-    layer.config({offset:'60px'});
+    layer.config({offset:LAYUI_OFFSET+'px'});
     /* 打开/关闭左侧导航 */
     $('#foldSwitch').click(function(){
         var that = $(this);
@@ -114,16 +114,6 @@ layui.define(['element', 'form'], function(exports) {
             item.checked = data.elem.checked;
         });
         form.render('checkbox');
-    });
-
-    /* 添加快捷菜单 */
-    $('#addQuick').click(function(){
-        var that = $(this), href = that.attr('href');
-        if (href == '') return false;
-        $.post(href, function(res) {
-            layer.msg(res.msg);
-        });
-        return false;
     });
 
     /* 删除快捷菜单 */
@@ -225,27 +215,46 @@ layui.define(['element', 'form'], function(exports) {
     });
 
     /* ajax请求操作 */
-    $('.j-ajax').click(function() {
+    $(document).on('click', '.j-ajax', function() {
         var that = $(this), 
-            title = !that.attr('title') ? '确定要执行此操作吗？' : that.attr('title'),
-            href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
+            href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href'),
+            refresh = !that.attr('refresh') ? 0 : 1;
         if (!href) {
             layer.msg('请设置data-href参数');
             return false;
         }
-        layer.confirm(title, {title:false, closeBtn:0}, function(index){
-            layer.msg('数据提交中...',{time:500000});
-            $.post(href, {}, function(res) {
-                layer.msg(res.msg, {},function() {
-                    if ((res.url).length > 0) {
-                        location.href= res.url;
-                    } else {
-                        location.reload();
+
+        if (!that.attr('confirm')) {
+            layer.msg('数据提交中...', {time:500000});
+            $.get(href, {}, function(res) {
+                layer.msg(res.msg, {}, function() {
+                    if (refresh == 1) {
+                        if ((res.url).length > 0) {
+                            location.href = res.url;
+                        } else {
+                            location.reload();
+                        }
                     }
                 });
             });
-            layer.close(index);
-        });
+            layer.close();
+        } else {
+            layer.confirm(that.attr('confirm'), {title:false, closeBtn:0}, function(index){
+                layer.msg('数据提交中...', {time:500000});
+                $.get(href, {}, function(res) {
+                    layer.msg(res.msg, {}, function() {
+                        if (refresh == 1) {
+                            if ((res.url).length > 0) {
+                                location.href = res.url;
+                            } else {
+                                location.reload();
+                            }
+                        }
+                    });
+                });
+                layer.close(index);
+            });
+        }
         return false;
     });
 

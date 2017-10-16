@@ -173,7 +173,7 @@ class AdminMenu extends Model
                 $map = [];
                 $map['status'] = 1;
                 $map['nav'] = 1;
-                $map['uid'] = 0;
+                $map['uid'] = ['in', '0,'.ADMIN_ID];
                 $data = self::where($map)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
                 $data = array_values($data); 
             }

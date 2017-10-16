@@ -25,7 +25,22 @@ class Index extends Admin
      */
     public function index()
     {
-        return $this->fetch();
+        if (cookie('hisi_iframe')) {
+            $this->view->engine->layout(false);
+            return $this->fetch('iframe');
+        } else {
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 欢迎首页
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function welcome()
+    {
+        return $this->fetch('index');
     }
 
     /**

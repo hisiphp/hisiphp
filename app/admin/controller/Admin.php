@@ -14,6 +14,7 @@ use app\common\controller\Common;
 use app\admin\model\AdminMenu as MenuModel;
 use app\admin\model\AdminRole as RoleModel;
 use app\admin\model\AdminUser as UserModel;
+use app\admin\model\AdminLog as LogModel;
 use think\Db;
 /**
  * 后台公共控制器
@@ -52,14 +53,32 @@ class Admin extends Common
             return $this->error('['.$c_menu['title'].'] 访问权限不足', $url);
         }
 
-        // 日志记录
+        // 系统日志记录
+        $log = [];
+        $log['uid'] = ADMIN_ID;
+        $log['title'] = $c_menu['title'];
+        $log['url'] = $c_menu['url'];
+        $log['param'] = json_encode(input('param.'));
+        $log['remark'] = '浏览数据';
+        if ($this->request->isPost()) {
+            $log['remark'] = '保存数据';
+        }
+        $log_result = LogModel::where($log)->find();
+        $log['ip'] = $this->request->ip();
+        if (!$log_result) {
+            LogModel::create($log);
+        } else {
+            $log['id'] = $log_result->id;
+            $log['count'] = $log_result->count+1;
+            LogModel::update($log);
+        }
 
         // 如果不是ajax请求，则读取菜单
         if (!$this->request->isAjax()) {
-            $_bread_crumbs = MenuModel::getBrandCrumbs($c_menu['id']);
-            $this->assign('_bread_crumbs', $_bread_crumbs);
             // 获取当前访问的节点信息
             $this->assign('_admin_menu_current', $c_menu);
+            $_bread_crumbs = MenuModel::getBrandCrumbs($c_menu['id']);
+            $this->assign('_bread_crumbs', $_bread_crumbs);
             // 获取当前访问的节点的顶级节点
             $this->assign('_admin_menu_parents', current($_bread_crumbs));
             // 获取导航菜单
@@ -81,8 +100,6 @@ class Admin extends Common
             $this->assign('admin_user', $login);
             $this->assign('languages', model('AdminLanguage')->lists());
         }
-        // 分页设置
-        // config('paginate.list_rows', 2);
     }
 
     /**

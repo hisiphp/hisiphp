@@ -67,6 +67,28 @@ class User extends Admin
     }
 
     /**
+     * 布局切换
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function iframe()
+    {
+        $val = input('param.val', 0);
+        if ($val != 0 && $val != 1) {
+            return $this->error('参数传递错误');
+        }
+        if (UserModel::where('id', ADMIN_ID)->setField('iframe', $val) === false) {
+            return $this->error('切换失败');
+        }
+        if ($val == 1) {
+            cookie('hisi_iframe', 'yes');
+        } else {
+            cookie('hisi_iframe', null);
+        }
+        return $this->success('布局切换成功，跳转中...', url('index/index'));
+    }
+
+    /**
      * 添加用户
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed

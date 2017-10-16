@@ -729,9 +729,12 @@ if (!function_exists('plugins_url')) {
      * @param string $url 链接：插件名称/控制器/操作
      * @param array $param 参数
      * @param string $group 控制器分组[admin,home]
+     * @param integer $urlmode URL模式
+     * URL模式1 [/plugins/插件名/控制器/[方法]?参数1=参数值&参数2=参数值]
+     * URL模式2 [/plugins.php?_p=插件名&_c=控制器&_a=方法&参数1=参数值&参数2=参数值] 推荐
      * @return string
      */
-    function plugins_url($url = '', $param = [], $group = 'admin')
+    function plugins_url($url = '', $param = [], $group = '', $urlmode = 2)
     {
         if (empty($url)) {
             return '#链接错误';
@@ -742,7 +745,24 @@ if (!function_exists('plugins_url')) {
         $params['_c'] =  isset($url[1]) ? ucfirst($url[1]) : 'Index';
         $params['_p'] = $url[0];
         $params = array_merge($params, $param);
-        return url($group .'/plugins/run', $params);
+        if (empty($group)) {
+            if (defined('ENTRANCE')) {
+                return url('admin/plugins/run', $params);
+            } else {
+                if ($urlmode == 2) {
+                    return ROOT_DIR.'plugins.php?'.http_build_query($params);
+                }
+                return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
+            }
+        }
+        if ($group == 'admin') {
+            return url('admin/plugins/run', $params);
+        } else {
+            if ($urlmode == 2) {
+                return ROOT_DIR.'plugins.php?'.http_build_query($params);
+            }
+            return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
+        }
     }
 }
 
