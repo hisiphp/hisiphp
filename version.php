@@ -11,7 +11,7 @@
 return [
     'hisiphp' => [
         'name' => 'HisiPHP',
-        'version' => '1.0.1',
+        'version' => '1.0.0',
         'release' => 0,
         'copyright' => 'HisiPHP.COM',
         'url' => 'http://www.hisiphp.com?v=thinkphp5',
