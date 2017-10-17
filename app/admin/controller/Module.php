@@ -79,7 +79,7 @@ class Module extends Admin
             array_push($sys_dir, 'extra');
             foreach ($files as $k => $f) {
                 // 排除系统模块和已存在数据库的模块
-                if (array_search($f, $sys_dir) !== false || array_key_exists($f, $all_module)) {
+                if (array_search($f, $sys_dir) !== false || array_key_exists($f, $all_module) || !is_dir(APP_PATH.$f)) {
                     continue;
                 }
                 if (file_exists(APP_PATH.$f.DS.'info.php')) {
