@@ -9,6 +9,7 @@
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
 namespace app\common\behavior;
+use think\Request;
 use app\admin\model\AdminModule as ModuleModel;
 /**
  * 应用初始化行为
@@ -18,16 +19,17 @@ class Init
     public function run(&$params)
     {
         define('IN_SYSTEM', true);
+        $request = Request::instance();
         // 安装操作直接return
         if(defined('BIND_MODULE') && BIND_MODULE == 'install') return;
-        $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+        $_path = $request->path();
         $default_module = false;
-        if ($path_info != '/') {
-            $_path_info = explode('/', $path_info);
-            if (isset($_path_info[1]) && !empty($_path_info[1])) {
-                if (is_dir('./app/'.$_path_info[1]) || $_path_info[1] == 'plugins') {
+        if ($_path != '/') {
+            $_path = explode('/', $_path);
+            if (isset($_path[0]) && !empty($_path[0])) {
+                if (is_dir('./app/'.$_path[0]) || $_path[0] == 'plugins') {
                     $default_module = true;
-                    if ($_path_info[1] == 'plugins') {
+                    if ($_path[0] == 'plugins') {
                         define('BIND_MODULE', 'index');
                         define('PLUGIN_ENTRANCE', true);
                     }
