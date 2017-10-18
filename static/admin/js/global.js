@@ -179,6 +179,12 @@ layui.define(['element', 'form'], function(exports) {
         } else {
             _form = $(this).parents('form');
         }
+        // CKEditor专用
+        if (typeof(CKEDITOR) != 'undefined') {
+            for (instance in CKEDITOR.instances) {
+                CKEDITOR.instances[instance].updateElement();
+            }
+        }
         layer.msg('数据提交中...',{time:500000});
         $.ajax({
             type: "POST",
