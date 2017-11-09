@@ -2,10 +2,10 @@
     <table class="layui-table mt10" lay-even="" lay-skin="row">
         <colgroup>
             <col>
-            <col width="120">
-            <col width="120">
-            <col width="120">
-            <col width="240">
+            <col width="100">
+            <col width="100">
+            <col width="100">
+            <col width="310">
         </colgroup>
         <thead>
             <tr>
@@ -45,12 +45,12 @@
                             {switch name="vo['status']"}
                                 {case value="0"}
                                     <a href="{:url('install?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">安装</a>
-                                    {if condition="$vo['app_id'] eq 0"}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
-                                    {/if}
                                     <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del">删除</a>
                                 {/case}
                                 {case value="1"}
+                                    {if condition="config('develop.app_debug')"}
+                                        <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small red">编辑</a>
+                                    {/if}
                                     {if condition="!empty($vo['config'])"}
                                     <a href="{:url('system/index?group='.$vo['name'])}" class="layui-btn layui-btn-primary layui-btn-small">配置</a>
                                     {/if}
@@ -58,11 +58,13 @@
                                     {if condition="$vo['app_id'] gt 0"}
                                     <a href="{:url('upgrade/lists?app_type=module&app_id='.$vo['app_id'])}" class="layui-btn layui-btn-primary layui-btn-small">更新</a>
                                     {else /}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
                                     {/if}
                                     <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">卸载</a>
                                 {/case}
                                 {case value="2"}
+                                    {if condition="config('develop.app_debug')"}
+                                        <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small red">编辑</a>
+                                    {/if}
                                     {if condition="!empty($vo['config'])"}
                                     <a href="{:url('system/index?group='.$vo['name'])}" class="layui-btn layui-btn-primary layui-btn-small">配置</a>
                                     {/if}
@@ -71,7 +73,6 @@
                                     {if condition="$vo['app_id'] gt 0"}
                                     <a href="{:url('upgrade/lists?app_type=module&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-small">更新</a>
                                     {else /}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
                                     {/if}
                                     <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">卸载</a>
                                 {/case}

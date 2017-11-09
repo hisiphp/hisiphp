@@ -23,7 +23,7 @@
 
     # 插件目录
     RewriteCond %{QUERY_STRING} ^(.*)$
-    RewriteRule ^plugins/(.*).php|.sql$ index.php
+    RewriteRule ^plugins/(.*)(.php|.sql)$ index.php
 
     # 安装包目录
     RewriteCond %{QUERY_STRING} ^(.*)$

@@ -192,11 +192,14 @@ layui.define(['element', 'form'], function(exports) {
             data: _form.serialize(),
             success: function(res) {
                 layer.msg(res.msg, {},function() {
-                    if ((res.url).length > 0) {
-                        location.href= res.url;
+                    if (res.code == 1) {
+                        if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
+                            location.href = res.url;
+                        } else {
+                            location.reload();
+                        }
                     }
                 });
-
             }
         });
         return false;
@@ -227,7 +230,7 @@ layui.define(['element', 'form'], function(exports) {
     $(document).on('click', '.j-ajax', function() {
         var that = $(this), 
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href'),
-            refresh = !that.attr('refresh') ? 0 : 1;
+            refresh = !that.attr('refresh') ? 'yes' : that.attr('refresh');
         if (!href) {
             layer.msg('请设置data-href参数');
             return false;
@@ -237,8 +240,8 @@ layui.define(['element', 'form'], function(exports) {
             layer.msg('数据提交中...', {time:500000});
             $.get(href, {}, function(res) {
                 layer.msg(res.msg, {}, function() {
-                    if (refresh == 1) {
-                        if ((res.url).length > 0) {
+                    if (refresh == 'yes') {
+                        if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                             location.href = res.url;
                         } else {
                             location.reload();
@@ -252,8 +255,8 @@ layui.define(['element', 'form'], function(exports) {
                 layer.msg('数据提交中...', {time:500000});
                 $.get(href, {}, function(res) {
                     layer.msg(res.msg, {}, function() {
-                        if (refresh == 1) {
-                            if ((res.url).length > 0) {
+                        if (refresh == 'yes') {
+                            if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                                 location.href = res.url;
                             } else {
                                 location.reload();

@@ -90,7 +90,7 @@ class AdminAnnex extends Model
         // 上传附件路径
         $_upload_path = ROOT_PATH . 'upload' . DS . $group . DS . $type . DS;
         // 附件访问路径
-        $_file_path = '/upload/'.$group.'/'.$type.'/';
+        $_file_path = ROOT_DIR.'upload/'.$group.'/'.$type.'/';
 
         // 如果文件已经存在，直接返回数据
         // $res = self::where('hash', $file->hash())->find();
@@ -236,7 +236,6 @@ class AdminAnnex extends Model
     private static function result($info = '', $from = 'input', $status = 0, $data = [])
     {
         unset($data['hash'], $data['group'], $data['ctime']);
-        $data['file'] = ROOT_DIR.ltrim($data['file'], '/');
         $arr = [];
         switch ($from) {
             case 'kindeditor':

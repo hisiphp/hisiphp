@@ -135,6 +135,10 @@ class User extends Admin
         }
         if ($this->request->isPost()) {
             $data = $this->request->post();
+            if (!isset($data['auth'])) {
+                $data['auth'] = '';
+            }
+            
             $row = UserModel::where('id', $id)->field('role_id,auth')->find();
             if ($data['id'] == 1 || ADMIN_ID == $id) {// 禁止更改超管角色，当前登陆用户不可更改自己的角色和自定义权限
                 unset($data['role_id'], $data['auth']);
@@ -146,10 +150,6 @@ class User extends Admin
             }
 
             if (isset($data['role_id']) && RoleModel::where('id', $data['role_id'])->value('auth') == json_encode($data['auth'])) {// 如果自定义权限与角色权限一致，则设置自定义权限为空
-                $data['auth'] = '';
-            }
-
-            if (!isset($data['auth'])) {
                 $data['auth'] = '';
             }
 

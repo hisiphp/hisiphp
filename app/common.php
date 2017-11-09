@@ -259,6 +259,7 @@ if (!function_exists('parse_attr')) {
      * @return array|string
      */
     function parse_attr($value = '') {
+        if (is_array($value)) return $value;
         $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
         if (strpos($value, ':')) {
             $value  = array();
@@ -634,49 +635,44 @@ if (!function_exists('str_coding')) {
     }
 }
 
-if (!function_exists('plugins_url')) {
+if (!function_exists('is_empty')) {
     /**
-     * 生成插件URL
-     * @param string $url 链接：插件名称/控制器/操作
-     * @param array $param 参数
-     * @param string $group 控制器分组[admin,home]
-     * @param integer $urlmode URL模式
-     * URL模式1 [/plugins/插件名/控制器/[方法]?参数1=参数值&参数2=参数值]
-     * URL模式2 [/plugins.php?_p=插件名&_c=控制器&_a=方法&参数1=参数值&参数2=参数值] 推荐
-     * @return string
+     * 判断是否为空值
      */
-    function action_log($url = '', $param = [], $group = '', $urlmode = 2)
-    {
-        if (empty($url)) {
-            return '#链接错误';
+    function is_empty($value) {
+        if (!isset($value)){
+            return true;
         }
-        $params = [];
-        $url = explode('/', $url);
-        $params['_a'] = isset($url[2]) ? $url[2] : 'index';
-        $params['_c'] =  isset($url[1]) ? ucfirst($url[1]) : 'Index';
-        $params['_p'] = $url[0];
-        $params = array_merge($params, $param);
-        if (empty($group)) {
-            if (defined('ENTRANCE')) {
-                return url('admin/plugins/run', $params);
-            } else {
-                if ($urlmode == 2) {
-                    return ROOT_DIR.'plugins.php?'.http_build_query($params);
-                }
-                return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
-            }
+        if ($value === null){
+            return true;
         }
-        if ($group == 'admin') {
-            return url('admin/plugins/run', $params);
-        } else {
-            if ($urlmode == 2) {
-                return ROOT_DIR.'plugins.php?'.http_build_query($params);
-            }
-            return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
+        if (trim($value) === ''){
+            return true;
         }
+        return false;
     }
 }
 
+if (!function_exists('module_info')) {
+    /**
+     * 获取模块信息[非系统模块]
+     * @param string $name 模块名
+     * @return bool|array
+     */
+    function module_info($name = '')
+    {
+        if (is_empty($name)) {
+            $name = request()->module();
+        }
+
+        $path = APP_PATH.strtolower($name).DS.'info.php';
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        return include_once $path;
+    }
+}
 
 // +----------------------------------------------------------------------
 // | 插件相关函数 start

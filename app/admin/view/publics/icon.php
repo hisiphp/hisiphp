@@ -25,21 +25,47 @@
         <div class="layui-tab-content page-tab-content">
             <div class="layui-tab-item layui-show">
                 <ul class="icon-list">
+                    <li><i class="aicon ai-jinzhi"></i></li>
                     <li><i class="aicon ai-shezhi"></i></li>
                     <li><i class="aicon ai-icon01"></i></li>
                     <li><i class="aicon ai-tuichu"></i></li>
+                    <li><i class="aicon ai-daoru"></i></li>
+                    <li><i class="aicon ai-shouye"></i></li>
                     <li><i class="aicon ai-shouyeshouye"></i></li>
+                    <li><i class="aicon ai-tishi"></i></li>
                     <li><i class="aicon ai-shuaxin2"></i></li>
                     <li><i class="aicon ai-jinyong"></i></li>
+                    <li><i class="aicon ai-iconfontshengji"></i></li>
+                    <li><i class="aicon ai-gou"></i></li>
                     <li><i class="aicon ai-tianjia"></i></li>
                     <li><i class="aicon ai-caidan"></i></li>
                     <li><i class="aicon ai-clear"></i></li>
                     <li><i class="aicon ai-jinyong1"></i></li>
+                    <li><i class="aicon ai-chu"></i></li>
                     <li><i class="aicon ai-qiyong"></i></li>
+                    <li><i class="aicon ai-success"></i></li>
                     <li><i class="aicon ai-mokuaiguanli"></i></li>
                     <li><i class="aicon ai-quanping"></i></li>
+                    <li><i class="aicon ai-cha"></i></li>
+                    <li><i class="aicon ai-systemmenu"></i></li>
+                    <li><i class="aicon ai-error"></i></li>
                     <li><i class="aicon ai-fanhui"></i></li>
+                    <li><i class="aicon ai-tubiao05"></i></li>
+                    <li><i class="aicon ai-icon-test"></i></li>
+                    <li><i class="aicon ai-chu1"></i></li>
+                    <li><i class="aicon ai-daochu"></i></li>
                     <li><i class="aicon ai-quanping1"></i></li>
+                    <li><i class="aicon ai-huiyuandengji"></i></li>
+                    <li><i class="aicon ai-huiyuanliebiao"></i></li>
+                    <li><i class="aicon ai-shujukuguanli"></i></li>
+                    <li><i class="aicon ai-xitonggongneng"></i></li>
+                    <li><i class="aicon ai-peizhiguanli"></i></li>
+                    <li><i class="aicon ai-chajianguanli"></i></li>
+                    <li><i class="aicon ai-mokuaiguanli1"></i></li>
+                    <li><i class="aicon ai-xitongrizhi-tiaoshi"></i></li>
+                    <li><i class="aicon ai-gongneng"></i></li>
+                    <li><i class="aicon ai-doubleleft"></i></li>
+
                 </ul>
             </div>
             <div class="layui-tab-item">

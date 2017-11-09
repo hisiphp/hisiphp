@@ -3,11 +3,11 @@
 <head>
     <title>管理控制台 -  Powered by {:config('hisiphp.name')}</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
-    <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css">
-    <link rel="stylesheet" href="__ADMIN_CSS__/style.css">
-    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css">
-    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css">
-    <script src="__ADMIN_JS__/layui/layui.js"></script>
+    <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
+    <script src="__ADMIN_JS__/layui/layui.js?v={:config('hisiphp.version')}"></script>
     <script>
         window.localStorage.clear();
         var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 60;
@@ -63,7 +63,7 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                 </dl>
             </li>
             <li class="layui-nav-item"><a href="__ROOT_DIR__" target="_blank">前台</a></li>
-            <li class="layui-nav-item"><a href="{:url('admin/index/clear')}" class="j-ajax">清缓存</a></li>
+            <li class="layui-nav-item"><a href="{:url('admin/index/clear')}" class="j-ajax" refresh="yes">清缓存</a></li>
             <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">锁屏</a></li>
         </ul>
     </div>
@@ -80,13 +80,13 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                     <a href="javascript:;"><i class="{$vv['icon']}"></i>{$vv['title']}<span class="layui-nav-more"></span></a>
                     <dl class="layui-nav-child">
                         {if condition="$vv['title'] eq '快捷菜单'"}
-                            <dd><a class="admin-nav-item" data-id="0" href="{:url('admin/index/welcome')}">后台首页</a></dd>
+                            <dd><a class="admin-nav-item" data-id="0" href="{:url('admin/index/welcome')}"><i class="aicon ai-shouye"></i> 后台首页</a></dd>
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{:url($vvv['url'].'?'.$vvv['param'])}">{$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
+                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{:url($vvv['url'].'?'.$vvv['param'])}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
                             {/volist}
                         {else /}
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'].'?'.$vvv['param'])}{else /}{$vvv['url']}{/if}">{$vvv['title']}</a></dd>
+                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'].'?'.$vvv['param'])}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a></dd>
                             {/volist}
                         {/if}
                     </dl>

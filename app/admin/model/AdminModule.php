@@ -240,8 +240,11 @@ class AdminModule extends Model
      * 生成SQL文件
      * @author 橘子俊 <364666827@qq.com>
      */
-    public static function mkSql($path = '', $data = [])
+    public static function mkSql($path = '')
     {
+        if (!is_dir($path . 'sql')) {
+            mkdir($path . 'sql', 0755, true);
+        }
         file_put_contents($path . 'sql'.DS.'install.sql', "/*\n sql安装文件\n*/");
         file_put_contents($path . 'sql'.DS.'uninstall.sql', "/*\n sql卸载文件\n*/");
     }

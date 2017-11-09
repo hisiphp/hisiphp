@@ -1,3 +1,5 @@
+/*后台图标*/
+@import url(//at.alicdn.com/t/font_247300_8azul59xdme1m7vi.css);
 body{background-color:#fff;}
 .fl{float:left;}
 .fr{float:right;}
@@ -162,38 +164,3 @@ body{background-color:#fff;}
 .lock-screen input::-moz-placeholder{color:#fff;} 
 .lock-screen input:-ms-input-placeholder{color:#fff;} 
 .lock-screen button{float:left;margin-left:20px;}
-
-/*后台图标*/
-@font-face {font-family: "iconfont";
-  src: url('//at.alicdn.com/t/font_8k17sk7xh8hq6w29.eot?t=1497854639060'); /* IE9*/
-  src: url('//at.alicdn.com/t/font_8k17sk7xh8hq6w29.eot?t=1497854639060#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('//at.alicdn.com/t/font_8k17sk7xh8hq6w29.woff?t=1497854639060') format('woff'), /* chrome, firefox */
-  url('//at.alicdn.com/t/font_8k17sk7xh8hq6w29.ttf?t=1497854639060') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('//at.alicdn.com/t/font_8k17sk7xh8hq6w29.svg?t=1497854639060#iconfont') format('svg'); /* iOS 4.1- */
-}
-.aicon{font-family:"iconfont"!important;font-size:16px;font-style:normal;display:inline-block;padding:0 3px;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
-.ai-jinzhi:before { content: "\e604"; }
-.ai-shezhi:before { content: "\e600"; }
-.ai-icon01:before { content: "\e601"; }
-.ai-tuichu:before { content: "\e6a3"; }
-.ai-daoru:before { content: "\e614"; }
-.ai-shouyeshouye:before { content: "\e60a"; }
-.ai-tishi:before { content: "\e60d"; }
-.ai-shuaxin2:before { content: "\e657"; }
-.ai-jinyong:before { content: "\e74d"; }
-.ai-gou:before { content: "\e6a1"; }
-.ai-tianjia:before { content: "\e634"; }
-.ai-caidan:before { content: "\e602"; }
-.ai-clear:before { content: "\e650"; }
-.ai-jinyong1:before { content: "\e6d8"; }
-.ai-chu:before { content: "\e60f"; }
-.ai-qiyong:before { content: "\e652"; }
-.ai-success:before { content: "\e6f0"; }
-.ai-mokuaiguanli:before { content: "\e665"; }
-.ai-quanping:before { content: "\e653"; }
-.ai-cha:before { content: "\e696"; }
-.ai-error:before { content: "\e668"; }
-.ai-fanhui:before { content: "\e60c"; }
-.ai-chu1:before { content: "\e605"; }
-.ai-daochu:before { content: "\e603"; }
-.ai-quanping1:before { content: "\e610"; }

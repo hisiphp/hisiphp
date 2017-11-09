@@ -143,6 +143,7 @@ class AdminMember extends Model
         $map['email'] = '';
         $map['mobile'] = '';
         $map['username'] = '';
+        $map['avatar'] = '';
         $map['last_login_ip'] = get_client_ip();
         $map['last_login_time'] = request()->time();
         if ($level) {

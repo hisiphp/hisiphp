@@ -80,10 +80,11 @@ class AdminPlugins extends Model
     {
         $path = ROOT_PATH.'plugins'.DS.$data['name'].DS;
         $dir_list = parse_attr($data['dir']);
-        if (in_array('admin', $dir_list) != false) {
+
+        if (in_array('admin', $dir_list) !== false) {
             $dir_list[] = 'view/admin/index';
         }
-        if (in_array('home', $dir_list) != false) {
+        if (in_array('home', $dir_list) !== false) {
             $dir_list[] = 'view/index';
         }
         unset($data['dir']);
@@ -133,7 +134,9 @@ class AdminPlugins extends Model
         // 生成独立配置文件
         // $this->mkConfig($path, $config);
         // 生成sql文件
-        $this->mkSql($path);
+        if (in_array('sql', $dir_list) !== false) {
+            $this->mkSql($path);
+        }
         // 生成菜单文件
         $this->mkMenu($path, $data);
         // 生成钩子文件
@@ -176,12 +179,12 @@ class AdminPlugins extends Model
      */
     public function mkExample($path = '', $data = [])
     {
-        if (is_dir($path.'/admin')) {
+        if (is_dir($path.'admin')) {
             $admin = "<?php\nnamespace plugins\\".$data["name"]."\\admin;\nuse app\common\controller\Common;\ndefined('IN_SYSTEM') or die('Access Denied');\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->pFetch()'.";\n    }\n}";
             file_put_contents($path . 'admin'.DS.'Index.php', $admin);
             file_put_contents($path.'view'.DS.'admin'.DS.'index'.DS.'index.php', '<?php defined("IN_SYSTEM") or die("Access Denied");//防止模板被盗?>');
         }
-        if (is_dir($path.'/home')) {
+        if (is_dir($path.'home')) {
             $home = "<?php\nnamespace plugins\\".$data["name"]."\\home;\nuse app\common\controller\Common;\ndefined('IN_SYSTEM') or die('Access Denied');\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->pFetch()'.";\n    }\n}";
             file_put_contents($path . 'home'.DS.'Index.php', $home);
             file_put_contents($path.'view'.DS.'index'.DS.'index.php', '<?php defined("IN_SYSTEM") or die("Access Denied");//防止模板被盗?>');
@@ -211,8 +214,11 @@ class AdminPlugins extends Model
      */
     public function mkSql($path = '')
     {
-        file_put_contents($path . 'install.sql', "/*\n sql安装文件\n*/");
-        file_put_contents($path . 'uninstall.sql', "/*\n sql卸载文件\n*/");
+        if (!is_dir($path . 'sql')) {
+            mkdir($path . 'sql', 0755, true);
+        }
+        file_put_contents($path . 'sql'.DS.'install.sql', "/*\n sql安装文件\n*/");
+        file_put_contents($path . 'sql'.DS.'uninstall.sql', "/*\n sql卸载文件\n*/");
     }
 
     /**
@@ -240,7 +246,7 @@ namespace plugins\\{$data['name']};
 use app\common\controller\Plugins;
 defined('IN_SYSTEM') or die('Access Denied');
 /**
- * 插件钩子
+ * {$data['title']}插件
  * @package plugins\\{$data['name']}
  */
 class {$data['name']} extends Plugins
@@ -431,7 +437,7 @@ return [
     // 模块唯一标识[必填]，格式：插件名.[应用市场ID].plugins.[应用市场分支ID]
     'identifier'  => '{$data['identifier']}',
     // 插件图标[必填]
-    'icon'        => '/plugins/{$data['name']}/icon.png',
+    'icon'        => '/plugins/{$data['name']}/{$data['name']}.png',
     // 插件描述[选填]
     'intro' => '{$data['intro']}',
     // 插件作者[必填]

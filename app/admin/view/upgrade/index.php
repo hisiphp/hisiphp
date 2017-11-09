@@ -99,12 +99,12 @@ layui.use(['jquery', 'layer'], function() {
                 $.post('{:url('')}', $('#editForm').serialize(), function(res) {
                     if (res.code == 1) {
                         layer.msg(res.msg);
-                        setInterval(function() {
+                        setTimeout(function() {
                             location.reload();
                         }, 3000);
                     } else {
                         tips.addClass('red').html(res.msg);
-                        setInterval(function() {
+                        setTimeout(function() {
                             tips.removeClass('red').html('');
                         }, 3000);
                     }

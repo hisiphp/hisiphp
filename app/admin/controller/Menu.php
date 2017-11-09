@@ -24,7 +24,7 @@ class Menu extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function index($q = '')
+    public function index()
     {
         $menu_list = MenuModel::getAllChild(0, 0);
         $tab_data = [];
@@ -75,7 +75,7 @@ class Menu extends Admin
 
         $row = MenuModel::where('id', $id)->find();
         // admin模块 只允许超级管理员在开发模式下修改
-        if ($row['module'] == 'admin' && ADMIN_ID != 1 && config('develop.app_debug') == 1) {
+        if ($row['module'] == 'admin' && (ADMIN_ID != 1 || config('develop.app_debug') == 0)) {
             return $this->error('禁止修改系统模块！');
         }
         // 多语言
@@ -154,7 +154,10 @@ class Menu extends Admin
         if (!$menu) {
             return $this->error('模块不存在！');
         }
-        if ($menu['pid'] > 0) {
+        if ($menu['pid'] > 0 && $menu['url'] != 'admin/plugins/run') {
+            return $this->error('只能通过顶级菜单导出！');
+        }
+        if ($menu['url'] == 'admin/plugins/run' && MenuModel::where('id', $menu['pid'])->value('url') == 'admin/plugins/run') {
             return $this->error('只能通过顶级菜单导出！');
         }
         unset($menu['pid'], $menu['id']);

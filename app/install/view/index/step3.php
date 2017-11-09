@@ -62,7 +62,7 @@
             <div class="layui-form-mid layui-word-aux">建议使用默认,数据库前缀必须带 '_'</div>
         </div>
         <div class="layui-form-item">
-            <button type="submit" class="layui-btn fl" style="margin-left:120px;" lay-submit="" lay-filter="formSubmit">测试数据库连接</button>
+            <button type="submit" class="layui-btn fl" style="margin-left:120px;" lay-submit="" lay-filter="formTest">测试数据库连接</button>
         </div>
     </form>
     <form class="layui-form layui-form-pane" action="?step=5" method="post">
@@ -90,3 +90,27 @@
     </form>
 </div>
 {include file="index/foot" /}
+<script type="text/javascript">
+layui.define(['element', 'form'], function(exports) {
+    var $ = layui.jquery, layer = layui.layer, form = layui.form;
+    form.on('submit(formTest)', function(data) {
+        var _form = '';
+        if ($(this).attr('data-form')) {
+            _form = $($(this).attr('data-form'));
+        } else {
+            _form = $(this).parents('form');
+        }
+        
+        layer.msg('数据提交中...',{time:500000});
+        $.ajax({
+            type: "POST",
+            url: _form.attr('action'),
+            data: _form.serialize(),
+            success: function(res) {
+                layer.msg(res.msg);
+            }
+        });
+        return false;
+    });
+});
+</script>

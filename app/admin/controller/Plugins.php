@@ -14,6 +14,7 @@ use app\admin\model\AdminHookPlugins as HookPluginsModel;
 use app\admin\model\AdminMenu as MenuModel;
 use think\Db;
 use app\common\util\Dir;
+use app\common\util\PclZip;
 /**
  * 插件管理控制器
  * @package app\admin\controller
@@ -45,6 +46,10 @@ class Plugins extends Admin
                 'title' => '<strong style="color:#428bca">应用市场</strong>',
                 'url' => 'http://store.hisiphp.com/addons',
             ],
+            [
+                'title' => '导入插件',
+                'url' => 'admin/plugins/import',
+            ],
         ];
         if (config('develop.app_debug') == 1) {
             array_push($tab_data['menu'], ['title' => '设计新插件', 'url' => 'admin/plugins/design',]);
@@ -63,11 +68,39 @@ class Plugins extends Admin
         $tab_data['current'] = url('?status='.$status);
         $map = [];
         $map['status'] = $status;
-        $data_list = PluginsModel::where($map)->order('sort,id')->paginate();
-        $pages = $data_list->render();
-
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
+        $plugins = PluginsModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,system,app_id,identifier,name,version,status');
+        if ($status == 0) {
+            $plugins_path = ROOT_PATH.DS.'plugins'.DS;
+            // 自动将本地未入库的插件导入数据库
+            $all_plugins = PluginsModel::order('sort,id')->column('id,name', 'name');
+            $files = Dir::getList($plugins_path);
+            foreach ($files as $k => $f) {
+                // 排除已存在数据库的插件
+                if (array_key_exists($f, $all_plugins) || !is_dir($plugins_path.$f)) {
+                    continue;
+                }
+                if (file_exists($plugins_path.$f.DS.'info.php')) {
+                    $info = include_once $plugins_path.$f.DS.'info.php';
+                    $sql = [];
+                    $sql['name'] = $info['name'];
+                    $sql['identifier'] = $info['identifier'];
+                    $sql['title'] = $info['title'];
+                    $sql['intro'] = $info['intro'];
+                    $sql['author'] = $info['author'];
+                    $sql['icon'] = ROOT_DIR.substr($info['icon'], 1);
+                    $sql['version'] = $info['version'];
+                    $sql['url'] = $info['author_url'];
+                    $sql['config'] = '';
+                    $sql['status'] = 0;
+                    $sql['system'] = 0;
+                    $sql['app_id'] = 0;
+                    $db = PluginsModel::create($sql);
+                    $sql['id'] = $db->id;
+                    $plugins = array_merge($plugins, [$sql]);
+                }
+            }
+        }
+        $this->assign('data_list', array_values($plugins));
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
         return $this->fetch();
@@ -211,8 +244,17 @@ class Plugins extends Admin
         if (isset($info['config']) && !empty($info['config'])) {
             PluginsModel::where('id', $id)->setField('config', json_encode($info['config'], 1));
         }
-        // 更新插件状态为已安装并启用
-        PluginsModel::where('id', $id)->setField('status', 2);
+
+        // 更新插件基础信息
+        $sqlmap = [];
+        $sqlmap['title'] = $info['title'];
+        $sqlmap['identifier'] = $info['identifier'];
+        $sqlmap['intro'] = $info['intro'];
+        $sqlmap['author'] = $info['author'];
+        $sqlmap['url'] = $info['author_url'];
+        $sqlmap['version'] = $info['version'];
+        $sqlmap['status'] = 2;
+        PluginsModel::where('id', $id)->update($sqlmap);
         PluginsModel::getConfig('', true);
         return $this->success('插件已安装成功。', url('index?status=2'));
     }
@@ -284,6 +326,78 @@ class Plugins extends Admin
         PluginsModel::where('id', $id)->setField('config', '');
         PluginsModel::getConfig('', true);
         return $this->success('插件已卸载成功。', url('index?status=0'));
+    }
+
+    /**
+     * 导入插件
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function import()
+    {
+        if ($this->request->isPost()) {
+            $_file = input('param.file');
+            if (empty($_file)) {
+                return $this->error('请上传模块安装包');
+            }
+
+            $file = realpath('.'.$_file);
+            if (ROOT_DIR != '/') {// 针对子目录处理
+                $file = realpath('.'.str_replace(ROOT_DIR, '/', $_file));
+            }
+            
+            if (!file_exists($file)) {
+                return $this->error('上传文件无效');
+            }
+            
+            $decom_path = '.'.trim(str_replace(ROOT_DIR, '/', $_file), '.zip');
+            if (!is_dir($decom_path)) {
+                Dir::create($decom_path, 0777, true);
+            }
+
+            // 解压安装包到$decom_path
+            $archive = new PclZip();
+            $archive->PclZip($file);
+            if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
+                Dir::delDir($decom_path);
+                @unlink($file);
+                return $this->error('导入失败('.$archive->error_string.')');
+            }
+            
+            // 获取插件名
+            $files = Dir::getList($decom_path.'/upload/');
+
+            if (!isset($files[0])) {
+                Dir::delDir($decom_path);
+                @unlink($file);
+                return $this->error('导入失败，安装包不完整');
+            }
+
+            $app_name = $files[0];
+            // 防止重复导入插件
+            if (is_dir(ROOT_PATH.'plugins'.DS.$app_name)) {
+                Dir::delDir($decom_path);
+                @unlink($file);
+                return $this->error('插件已存在');
+            } else {
+                Dir::create(ROOT_PATH.'plugins'.DS.$app_name, 0777, true);
+            }
+
+            // 复制插件
+            Dir::copyDir($decom_path.'/upload/'.$app_name.'/', ROOT_PATH.'plugins'.DS.$app_name);
+
+            // 删除临时目录和安装包
+            Dir::delDir($decom_path);
+            @unlink($file);
+
+            return $this->success('插件导入成功', url('index?status=0'));
+        }
+
+        $tab_data = $this->tab_data;
+        $tab_data['current'] = 'admin/plugins/import';
+        $this->assign('tab_data', $tab_data);
+        $this->assign('tab_type', 1);
+        return $this->fetch();
     }
 
     /**
