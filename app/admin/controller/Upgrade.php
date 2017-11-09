@@ -655,5 +655,8 @@ class Upgrade extends Admin
         if (is_dir($this->update_path)) {
             Dir::delDir($this->update_path);
         }
+        // 删除系统缓存
+        Dir::delDir(RUNTIME_PATH.'cache');
+        Dir::delDir(RUNTIME_PATH.'temp');
     }
 }
