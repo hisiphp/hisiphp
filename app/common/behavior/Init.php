@@ -24,7 +24,7 @@ class Init
         if(defined('BIND_MODULE') && BIND_MODULE == 'install') return;
         $_path = $request->path();
         $default_module = false;
-        if ($_path != '/') {
+        if ($_path != '/' && !defined('BIND_MODULE')) {
             $_path = explode('/', $_path);
             if (isset($_path[0]) && !empty($_path[0])) {
                 if (is_dir('./app/'.$_path[0]) || $_path[0] == 'plugins') {
@@ -39,7 +39,7 @@ class Init
         
         // 设置路由
         config('route_config_file', ModuleModel::moduleRoute());
-        if (!defined('PLUGIN_ENTRANCE') && !defined('CLOUD_ENTRANCE') && $default_module === false) {
+        if (!defined('PLUGIN_ENTRANCE') && !defined('CLOUD_ENTRANCE') && $default_module === false && !defined('BIND_MODULE')) {
             // 设置前台默认模块
             $map = [];
             $map['default'] = 1;

@@ -145,6 +145,7 @@
         </div>
     </div>
 </form>
+{include file="block/layui" /}
 <script>
 layui.use(['jquery', 'laydate', 'upload'], function() {
     var $ = layui.jquery, laydate = layui.laydate, layer = layui.layer, upload = layui.upload;

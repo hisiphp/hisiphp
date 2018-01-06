@@ -15,3 +15,4 @@
         <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
     </li>
 </ul>
+{include file="block/layui" /}

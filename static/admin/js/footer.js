@@ -13,8 +13,10 @@ layui.use(['jquery'], function() {
                     input.prop('checked', true);
                     break;
                 case 'checkbox':
-                    input = $('.field-'+i+'[value="'+formData[i]+'"]');
-                    input.val(formData[i]);
+                    for(var j in formData[i]) {
+                        input = $('.field-'+i+'[value="'+formData[i][j]+'"]');
+                        input.prop('checked', true);
+                    }
                     break;
                 case 'img':
                     input = $('.field-'+i);
@@ -31,6 +33,5 @@ layui.use(['jquery'], function() {
                 input.prop('readonly', true);
             }
         }
-        // form.render('checkbox');
     }
 });

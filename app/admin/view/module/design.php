@@ -88,3 +88,4 @@ view</textarea>
         </div>
     </div>
 </form>
+{include file="block/layui" /}

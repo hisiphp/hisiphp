@@ -67,14 +67,14 @@ layui.use(['jquery', 'layer', 'laytpl'], function() {
         $.ajax({
             type: "POST",
             url: '{:url("download")}',
-            data: 'identifier={$identifier}&app_type={$app_type}&app_version={$app_version}&version='+that.attr('data-version'),
+            data: 'version='+that.attr('data-version'),
             success: function(res) {
                 if (res.code == 1) {
                     layer.msg('升级包获取成功，正在安装 '+that.attr('data-version')+' ...', {time:50000});
                     $.ajax({
                         type: "POST",
                         url: '{:url("install")}',
-                        data: 'identifier={$identifier}&app_type={$app_type}&app_version={$app_version}&file='+res.msg+'&version='+that.attr('data-version'),
+                        data: 'file='+res.msg+'&version='+that.attr('data-version'),
                         success: function(res) {
                             layer.msg(res.msg, {}, function() {
                                 location.href= res.url;
@@ -98,8 +98,7 @@ function getVersion() {
     $('#loading').html('请稍等，正在检查最新版......');
     $.ajax({
         type: "POST",
-        url: '{:url("lists")}',
-        data: 'identifier={$identifier}&app_type={$app_type}&app_version={$app_version}',
+        url: '{:url("upgrade?app_id=".$data['app_id'])}',
         success: function(res) {
             if (res.code == 1) {
                 var getTpl = template.innerHTML;

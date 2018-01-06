@@ -151,6 +151,7 @@ static</textarea>
         <td><a href="javascript:;" class="config-tr-del">删除</a></td>
     </tr>
 </script>
+{include file="block/layui" /}
 <script type="text/javascript">
     layui.use(['jquery', 'form'], function(){
         var $ = layui.jquery, form = layui.form;

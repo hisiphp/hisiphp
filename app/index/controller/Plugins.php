@@ -23,19 +23,19 @@ class Plugins extends Home
          */
         $path = $this->request->path();
         $path = explode('/', $path);
-        if (isset($path[1]) && !empty(($path[1]))) {
+        if (isset($path[1]) && !empty($path[1])) {
             $plugin = $_GET['_p'] = $path[1];
         } else {
             return $this->error('参数传递错误！');
         }
-        if (isset($path[2]) && !empty(($path[2]))) {
+        if (isset($path[2]) && !empty($path[2])) {
             $controller = $_GET['_c'] = $path[2];
         } else {
             $controller = $_GET['_c'] = input('param._c', 'Index');
         }
         $controller = ucfirst($controller);
         
-        if (isset($path[3]) && !empty(($path[3]))) {
+        if (isset($path[3]) && !empty($path[3])) {
             $action = $_GET['_a'] = $path[3];
         } else {
             $action = $_GET['_a'] = input('param._a', 'index');

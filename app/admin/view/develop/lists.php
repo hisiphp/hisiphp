@@ -82,6 +82,7 @@ value="100" data-value="" data-href="">
     </div>
     </form>
 </div>
+{include file="block/layui" /}
 <div class="layui-tab-item">
     <style type="text/css">
     .site-demo-code{
@@ -184,5 +185,8 @@ value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=te
     </table>
 </div>
 </form>
+{literal}
+{include file="admin@block/layui" /}
+{/literal}
     </textarea>
 </div>

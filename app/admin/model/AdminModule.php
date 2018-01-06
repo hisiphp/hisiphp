@@ -225,14 +225,14 @@ class AdminModule extends Model
             // 删除框架生成的html文件
             @unlink($path . 'view'.DS.'index'.DS.'index.html');
             file_put_contents($path . 'admin'.DS.'Index.php', $admin_contro);
-            file_put_contents($path . 'view'.DS.'index'.DS.'index.php', 'Hellow '.$data["name"]);
+            file_put_contents($path . 'view'.DS.'index'.DS.'index.php', 'Hellow '.$data["name"]."\n{include file=\"admin@block/layui\" /}");
         }
 
         // 生成前台默认控制器
         if (is_dir($path.'home')) {
             $home_contro = "<?php\nnamespace app\\".$data["name"]."\\home;\nuse app\common\controller\Common;\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
             file_put_contents($path . 'home'.DS.'Index.php', $home_contro);
-            file_put_contents(ROOT_PATH.'theme'.DS.$data['name'].DS.'default'.DS.'index'.DS.'index.php', '<?php defined("IN_SYSTEM") or die("Access Denied");//防止模板被盗?>');
+            file_put_contents(ROOT_PATH.'theme'.DS.$data['name'].DS.'default'.DS.'index'.DS.'index.php', '<?php defined("IN_SYSTEM") or die("Access Denied");/* 防止模板被盗 */?>');
         }
     }
 

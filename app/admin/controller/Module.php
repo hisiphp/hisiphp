@@ -236,6 +236,17 @@ class Module extends Admin
             if (!$this->mkInfo($data)) {
                 return $this->error('配置文件更新失败');
             }
+            
+            $sqlmap = [];
+            $sqlmap['title'] = $data['title'];
+            $sqlmap['identifier'] = $data['identifier'];
+            $sqlmap['icon'] = $data['icon'];
+            $sqlmap['intro'] = $data['intro'];
+            $sqlmap['author'] = $data['author'];
+            $sqlmap['url'] = $data['url'];
+            $sqlmap['version'] = $data['version'];
+            $sqlmap['config'] = '';
+            
             // 将配置更新到数据库
             if ($config) {
                 // 重组旧配置，以方便后面找值
@@ -250,11 +261,13 @@ class Module extends Admin
                         $v['value'] = $old_config_arr[$v['name']]['value'];
                     }
                 }
-                ModuleModel::where('id', $_id)->setField('config', json_encode($config, 1));
-            } else {
-                ModuleModel::where('id', $_id)->setField('config', '');
+                $sqlmap['config'] = json_encode($config, 1);
             }
 
+            $res = ModuleModel::where('id', $_id)->update($sqlmap);
+            if (!$res) {
+                return $this->error('保存失败');
+            }
             return $this->success('保存成功');
         }
 
@@ -766,8 +779,9 @@ class Module extends Admin
      */
     public function status()
     {
-        $val   = input('param.val/d');
-        $id    = input('param.id/d');
+        $val    = input('param.val/d');
+        $id     = input('param.id/d');
+        $val    = $val+1;// 因为layui开关效果只支持0和1
 
         if ($id == 1) {
             return $this->error('禁止设置系统模块');

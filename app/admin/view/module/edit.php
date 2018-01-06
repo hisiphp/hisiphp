@@ -286,7 +286,7 @@
         <td><input type="text" name="module_depend[identifier][]" class="layui-input" lay-verify="required" placeholder="模块名.[应用ID].module.[应用分支ID]"></td>
         <td><input type="text" name="module_depend[version][]" class="layui-input" placeholder="主版本号.次版本号.修订版本号"></td>
         <td>
-            <select name="module_depend[][type]">
+            <select name="module_depend[type][]">
                 <option value="<">（ < ）小于</option>
                 <option value="<=">（<=）小于等于</option>
                 <option value=">">（ > ）大于</option>
@@ -303,7 +303,7 @@
         <td><input type="text" name="plugin_depend[identifier][]" class="layui-input" lay-verify="required" placeholder="插件名.[应用ID].plugins.[应用分支ID]"></td>
         <td><input type="text" name="plugin_depend[version][]" class="layui-input" placeholder="格式：主版本号.次版本号.修订版本号"></td>
         <td>
-            <select name="plugin_depend[][type]">
+            <select name="plugin_depend[type][]">
                 <option value="<">（ < ）小于</option>
                 <option value="<=">（<=）小于等于</option>
                 <option value=">">（ > ）大于</option>
@@ -327,6 +327,7 @@
         <td><a href="javascript:;" class="tr-del">删除</a></td>
     </tr>
 </script>
+{include file="block/layui" /}
 <script type="text/javascript">
     var formData = {:json_encode($data_info)};
 

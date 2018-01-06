@@ -68,7 +68,7 @@ if (!function_exists('get_num')) {
 if (!function_exists('is_email')) {
     /**
      * 判断邮箱
-     * @param string $str 要验证的字符串
+     * @param string $str 要验证的邮箱地址
      * @return bool
      */
     function is_email($str) {
@@ -79,16 +79,17 @@ if (!function_exists('is_email')) {
 if (!function_exists('is_mobile')) {
     /**
      * 判断手机号
-     * @param string $str 要验证的字符串
+     * @param string $num 要验证的手机号
      * @return bool
      */
-    function is_mobile($str) {
-        return preg_match("/^1(3|4|5|7|8)\d{9}$/", $str);
+    function is_mobile($num) {
+        return preg_match("/^1(3|4|5|7|8)\d{9}$/", $num);
     }
 }
+
 if (!function_exists('cur_url')) {
     /**
-     * 获取当前完整url
+     * 获取当前访问的完整URL
      * @return string
      */
     function cur_url() {
@@ -122,13 +123,13 @@ if (!function_exists('random')) {
     /**
      * 随机字符串
      * @param int $length 长度
-     * @param int $numeric 类型(0：混合；1：纯数字)
+     * @param int $type 类型(0：混合；1：纯数字)
      * @return string
      */
-    function random($length = 16, $numeric = 1) {
-         $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
-         $seed = $numeric ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
-         if($numeric) {
+    function random($length = 16, $type = 1) {
+         $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $type ? 10 : 35);
+         $seed = $type ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
+         if($type) {
               $hash = '';
          } else {
               $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
@@ -154,17 +155,13 @@ if (!function_exists('order_number')) {
 
 if (!function_exists('hide_str')) {
     /**
-    +----------------------------------------------------------
      * 将一个字符串部分字符用*替代隐藏
-    +----------------------------------------------------------
      * @param string    $string   待转换的字符串
      * @param int       $bengin   起始位置，从0开始计数，当$type=4时，表示左侧保留长度
      * @param int       $len      需要转换成*的字符个数，当$type=4时，表示右侧保留长度
      * @param int       $type     转换类型：0，从左向右隐藏；1，从右向左隐藏；2，从指定字符位置分割前由右向左隐藏；3，从指定字符位置分割后由左向右隐藏；4，保留首末指定字符串中间用***代替
      * @param string    $glue     分割符
-    +----------------------------------------------------------
      * @return string   处理后的字符串
-    +----------------------------------------------------------
      */
     function hide_str($string, $bengin=0, $len = 4, $type = 0, $glue = "@") {
         if (empty($string))
@@ -254,7 +251,7 @@ if (!function_exists('get_client_ip')) {
 
 if (!function_exists('parse_attr')) {
     /**
-     * 解析数组
+     * 配置值解析成数组
      * @param string $value 配置值
      * @return array|string
      */
@@ -279,9 +276,10 @@ if (!function_exists('login')) {
      * 会员登录
      * @param string $account 账号
      * @param string $password 密码
-     * @param string $field 登陆之后缓存的字段
      * @param bool $remember 记住登录 TODO
-     * @return string|array
+     * @param string $field 登陆之后缓存的字段
+     * @param bool $token token验证
+     * @return bool|array
      */
     function login($account = '', $password = '', $remember = false, $field = 'nick', $token = false)
     {
@@ -312,8 +310,8 @@ if (!function_exists('logout')) {
 if (!function_exists('xml2array')) {
     /**
      * XML转数组
-     * @param string $arr
-     * @param boolean $isnormal
+     * @param string $xml xml格式内容
+     * @param bool $isnormal 
      * @return array
      */
     function xml2array(&$xml, $isnormal = FALSE) {
@@ -327,20 +325,19 @@ if (!function_exists('xml2array')) {
 if (!function_exists('array2xml')) {
     /**
      * 数组转XML
-     * @param array $arr
-     * @param boolean $htmlon
-     * @param boolean $isnormal
-     * @param intval $level
+     * @param array $arr 待转换的数组
+     * @param bool $ignore XML解析器忽略
+     * @param intval $level 层级
      * @return type
      */
-    function array2xml($arr, $htmlon = TRUE, $isnormal = FALSE, $level = 1) {
+    function array2xml($arr, $ignore = true, $level = 1) {
         $s = $level == 1 ? "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<root>\r\n" : '';
         $space = str_repeat("\t", $level);
         foreach($arr as $k => $v) {
             if(!is_array($v)) {
-                $s .= $space."<item id=\"$k\">".($htmlon ? '<![CDATA[' : '').$v.($htmlon ? ']]>' : '')."</item>\r\n";
+                $s .= $space."<item id=\"$k\">".($ignore ? '<![CDATA[' : '').$v.($ignore ? ']]>' : '')."</item>\r\n";
             } else {
-                $s .= $space."<item id=\"$k\">\r\n".array2xml($v, $htmlon, $isnormal, $level + 1).$space."</item>\r\n";
+                $s .= $space."<item id=\"$k\">\r\n".array2xml($v, $ignore, $level + 1).$space."</item>\r\n";
             }
         }
         $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);
@@ -350,9 +347,9 @@ if (!function_exists('array2xml')) {
 
 if (!function_exists('form_type')) {
     /**
-     * 获取表单类型(中文)
+     * 获取表单类型(中文描述)
      * @param string $type 类型(英文)
-     * @return array|null
+     * @return array|string
      */
     function form_type($type = '') {
         $arr = [];
@@ -420,10 +417,10 @@ if (!function_exists('json_indent')) {
 
 if (!function_exists('parse_sql')) {
     /**
-     * 分割sql语句
+     * 解析sql语句
      * @param  string $content sql内容
-     * @param  bool $limit  如果为1，则只返回一条sql语句，默认返回所有
-     * @param  array $prefix 替换前缀
+     * @param  int $limit  如果为1，则只返回一条sql语句，默认返回所有
+     * @param  array $prefix 替换表前缀
      * @return array|string 除去注释之后的sql语句数组或一条语句
      */
     function parse_sql($sql = '', $limit = 0, $prefix = []) {
@@ -511,10 +508,10 @@ if (!function_exists('parse_sql')) {
 
 if (!function_exists('editor')) {
     /**
-     * editor 富文本编辑器
-     * @param array $obj 编辑器的容器ID
+     * 富文本编辑器
+     * @param array $obj 编辑器的容器id或class
      * @param string $name [为了方便大家能在系统设置里面灵活选择编辑器，建议不要指定此参数]，目前支持的编辑器[ueditor,umeditor,ckeditor,kindeditor]
-     * @param string $upload [选填]附件上传地址，建议保持默认
+     * @param string $url [选填]附件上传地址，建议保持默认
      * @return html
      */
     function editor($obj = [], $name = '', $url = '') {
@@ -583,15 +580,15 @@ if (!function_exists('editor')) {
 if (!function_exists('str_coding')) {
     /**
      * 字符串加解密
-     * @param  string  $string   原始字符串
-     * @param  string  $operation 加解密类型
+     * @param  string  $string   要加解密的原始字符串
+     * @param  string  $operation 加密：ENCODE，解密：DECODE
      * @param  string  $key      密钥
      * @param  integer $expiry   有效期
      * @return string
      */
     function str_coding($string, $operation = 'DECODE', $key = '', $expiry = 0) {
         $ckey_length = 4;
-        $key = md5($key != '' ? $key : config('hs_auth.key'));
+        $key = md5($key ? $key : config('hs_auth.key'));
         $keya = md5(substr($key, 0, 16));
         $keyb = md5(substr($key, 16, 16));
         $keyc = $ckey_length ? ($operation == 'DECODE' ? substr($string, 0, $ckey_length): substr(md5(microtime()), -$ckey_length)) : '';
@@ -638,6 +635,8 @@ if (!function_exists('str_coding')) {
 if (!function_exists('is_empty')) {
     /**
      * 判断是否为空值
+     * @param array|string $value 要判断的值 
+     * @return bool
      */
     function is_empty($value) {
         if (!isset($value)){
@@ -680,7 +679,7 @@ if (!function_exists('module_info')) {
 
 if (!function_exists('runhook')) {
     /**
-     * 监听钩子
+     * 监听钩子的行为
      * @param string $name 钩子名称
      * @param array $params 参数
      */

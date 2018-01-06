@@ -5,10 +5,7 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
-
-    RewriteCond %{QUERY_STRING} ^(.*)$
-    RewriteRule ^runtime(.*)$ index.php
-
+    
     # 应用目录
     RewriteCond %{QUERY_STRING} ^(.*)$
     RewriteRule ^app/(.*)$ index.php

@@ -23,3 +23,4 @@
     </div>
 </div>
 </form>
+{include file="block/layui" /}

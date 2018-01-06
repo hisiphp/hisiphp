@@ -47,3 +47,4 @@
     {$pages}
 </div>
 </form>
+{include file="block/layui" /}

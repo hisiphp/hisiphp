@@ -8,14 +8,6 @@
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
-    <script src="__ADMIN_JS__/layui/layui.js?v={:config('hisiphp.version')}"></script>
-    <script>
-        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 0;
-        layui.config({
-            base: '__ADMIN_JS__/',
-            version: '{:config("hisiphp.version")}'
-        }).use('global');
-    </script>
 </head>
 <body>
 <div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
@@ -29,14 +21,6 @@
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
-    <script src="__ADMIN_JS__/layui/layui.js?v={:config('hisiphp.version')}"></script>
-    <script>
-        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 60;
-        layui.config({
-            base: '__ADMIN_JS__/',
-            version: '{:config("hisiphp.version")}'
-        }).use('global');
-    </script>
 </head>
 <body>
 {php}

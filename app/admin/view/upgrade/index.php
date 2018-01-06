@@ -50,6 +50,7 @@
         <div class="layui-form-item" id="resultTips"></div>
     </form>
 </script>
+{include file="block/layui" /}
 <script>
 layui.use(['jquery', 'layer'], function() {
     var $=layui.jquery, layer = layui.layer;

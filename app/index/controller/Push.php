@@ -37,8 +37,9 @@ class Push extends Home
         $this->version = input('param.version');
         $this->app_id = input('param.app_id/d');
         $this->app_name = strtolower(input('param.app_name'));
+        $this->app_secret_key = input('param.secret_key');
         $this->app_identifier = strtolower(input('param.app_identifier'));
-        if (empty($this->app_id) || empty($this->sign) || empty($this->token) || empty($this->version) || empty($this->app_identifier) || empty($this->app_name)) {
+        if (empty($this->app_id) || empty($this->sign) || empty($this->token) || empty($this->version) || empty($this->app_identifier) || empty($this->app_name) || empty($this->app_secret_key)) {
             http_response_code(202);
             echo '{"code":0,"msg":"参数传递错误","data":[]}';
             exit;
@@ -101,10 +102,11 @@ class Push extends Home
         if (!is_dir(ROOT_PATH.'app'.DS.$this->app_name)) {
             Dir::create(ROOT_PATH.'app'.DS.$this->app_name, 0777, true);
         }
-        Dir::copyDir($app_path, './app'.DS.$this->app_name);
+        Dir::copyDir($app_path, '.'.ROOT_DIR.'app/'.$this->app_name);
         if (!is_dir(ROOT_PATH.'static'.DS.'app_icon'.DS)) {
             Dir::create(ROOT_PATH.'static'.DS.'app_icon'.DS, 0755, true);
         }
+        file_put_contents(APP_PATH.$this->app_name.DS.'key.pem', $this->app_secret_key);
         // 复制应用图标
         $icon = ROOT_DIR.'static/admin/image/app.png';
         if (is_file($decom_path.DS.'upload'.DS.'app'.DS.$this->app_name.DS.$this->app_name.'.png')) {
@@ -186,6 +188,7 @@ class Push extends Home
         $info = include_once $app_path.'info.php';
         // 复制到插件目录
         Dir::copyDir($app_path, '.'.ROOT_DIR.'plugins/'.$this->app_name);
+        file_put_contents('.'.ROOT_DIR.'plugins/'.$this->app_name.'/key.pem', $this->app_secret_key);
         // 删除临时目录和安装包
         Dir::delDir($decom_path);
         @unlink($file);

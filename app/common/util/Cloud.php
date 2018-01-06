@@ -141,7 +141,7 @@ class Cloud {
     private function run($request = true){
         $params['format'] = 'json';
         $params['timestamp'] = time();
-        $params['domain'] = $_SERVER['SERVER_NAME'].ROOT_DIR;
+        $params['domain'] = get_domain().ROOT_DIR;
         $params['identifier'] = $this->identifier;
         $params = array_merge($params,$this->data);
         $params = array_filter($params);

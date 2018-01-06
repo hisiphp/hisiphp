@@ -44,7 +44,7 @@
             </div>
         </div> -->
         {:token('__token__', 'sha1')}
-        <input type="submit" value="登陆" lay-submit="" lay-filter="formSubmit" class="layui-btn">
+        <input type="submit" value="登陆" lay-submit="" lay-filter="formLogin" class="layui-btn">
     </form>
     <div class="copyright">
         © 2017-2018 <a href="{:config('hisiphp.url')}" target="_blank">{:config('hisiphp.copyright')}</a> All Rights Reserved.
@@ -55,6 +55,34 @@
 layui.config({
   base: '__ADMIN_JS__/'
 }).use('global');
+</script>
+<script type="text/javascript">
+layui.define('form', function(exports) {
+    var $ = layui.jquery, layer = layui.layer, form = layui.form;
+    form.on('submit(formLogin)', function(data) {
+        var _form = $(this).parents('form');
+        layer.msg('数据提交中...',{time:500000});
+        $.ajax({
+            type: "POST",
+            url: _form.attr('action'),
+            data: _form.serialize(),
+            success: function(res) {
+                layer.msg(res.msg, {},function() {
+                    if (res.code == 1) {
+                        if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
+                            location.href = res.url;
+                        } else {
+                            location.reload();
+                        }
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        });
+        return false;
+    });
+});
 </script>
 </body>
 </html>

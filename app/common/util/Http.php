@@ -2,7 +2,6 @@
 namespace app\common\util;
 
 class Http {
-
     /**
      * 用CURL模拟获取网页页面内容
      *
@@ -51,7 +50,7 @@ class Http {
         curl_setopt($ch,CURLOPT_HTTPHEADER,$this_header);
 
         //设置浏览器
-        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($ch, CURLOPT_USERAGENT, isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36');
         curl_setopt($ch, CURLOPT_HEADER, 0);
 
         //使用自动跳转
@@ -107,7 +106,7 @@ class Http {
         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,FALSE);
 
         //设置浏览器
-        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($ch, CURLOPT_USERAGENT, isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36');
         curl_setopt($ch, CURLOPT_HEADER, 0);
 
         //发送一个常规的Post请求

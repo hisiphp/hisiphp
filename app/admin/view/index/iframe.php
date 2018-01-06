@@ -7,15 +7,6 @@
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
-    <script src="__ADMIN_JS__/layui/layui.js?v={:config('hisiphp.version')}"></script>
-    <script>
-        window.localStorage.clear();
-        var ADMIN_PATH = "{$_SERVER['SCRIPT_NAME']}", LAYUI_OFFSET = 60;
-        layui.config({
-            base: '__ADMIN_JS__/',
-            version: '{:config("hisiphp.version")}'
-        }).use('global');
-    </script>
     <style type="text/css">
         .hs-iframe{width:100%;height:100%;}
         .layui-tab{position:absolute;left:0;top:0;height:100%;width:100%;z-index:10;margin:0;border:none;overflow:hidden;}
@@ -113,6 +104,7 @@ $ca = strtolower(request()->controller().'/'.request()->action());
         <span class="fr"> © 2017-2018 <a href="{:config('hisiphp.url')}" target="_blank">{:config('hisiphp.copyright')}</a> All Rights Reserved.</span>
     </div>
 </div>
+{include file="block/layui" /}
 <script type="text/javascript">
     layui.use(['jquery', 'element', 'layer'], function() {
         var $ = layui.jquery, element = layui.element, layer = layui.layer;

@@ -13,6 +13,13 @@ use app\admin\model\AdminConfig as ConfigModel;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminPlugins as PluginsModel;
 use Think\Lang;
+use think\View as ViewTemplate;
+use think\Request;
+use think\Response;
+use think\exception\HttpResponseException;
+use think\Url;
+use think\Config;
+
 /**
  * 初始化基础配置行为
  * 将扩展的全局配置本地化
@@ -27,6 +34,7 @@ class Base
         if (isset($dispatch['module'])) {
             $module = $dispatch['module'][0];
         }
+        
         // 系统版本
         $version = include_once(ROOT_PATH.'version.php');
         config($version);
@@ -50,8 +58,7 @@ class Base
             }
             $mod_info = ModuleModel::where(['name' => $module, 'status' => 2])->find();
             if (!$mod_info) {
-                echo $module.' 模块可能未启用或者未安装！';
-                exit;
+                exit(self::error($module.' 模块可能未启用或者未安装！'));
             }
             // 设置模块的默认主题
             $theme = $mod_info['theme'] ? $mod_info['theme'] : 'default';
@@ -86,6 +93,10 @@ class Base
             '__CSS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/css',
             '__JS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/js',
             '__IMG__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/image',
+            // WAP前台模块静态目录
+            '__WAP_CSS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/css',
+            '__WAP_JS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/js',
+            '__WAP_IMG__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/image',
         ];
         if (defined('PLUGIN_ENTRANCE')) {
             $plugins_name = isset($_GET['_p']) ? $_GET['_p'] : $dispatch['module'][2];
@@ -141,8 +152,7 @@ class Base
                 }
             }
             if (config('base.site_status') != 1) {
-                echo '站点已关闭！';
-                exit;
+                exit(self::error('站点已关闭！'));
             }
             // 设置前台默认语言到cookie
             if (isset($_GET['lang']) && !empty($_GET['lang'])) {
@@ -161,5 +171,29 @@ class Base
             $member_level = $member_level;
         }
         config('hs_system.member_level', $member_level);
+    }
+
+    private function error($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
+    {
+        if (is_null($url)) {
+            $url = Request::instance()->isAjax() ? '' : 'javascript:history.back(-1);';
+        } elseif ('' !== $url && !strpos($url, '://') && 0 !== strpos($url, '/')) {
+            $url = Url::build($url);
+        }
+
+        $result = [
+            'code' => 0,
+            'msg'  => $msg,
+            'data' => $data,
+            'url'  => $url,
+            'wait' => $wait,
+        ];
+
+        $template = Config::get('template');
+        $view = Config::get('view_replace_str');
+
+        return ViewTemplate::instance($template, $view)
+            ->fetch(Config::get('dispatch_error_tmpl'), $result);
+
     }
 }

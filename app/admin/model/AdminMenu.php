@@ -50,7 +50,7 @@ class AdminMenu extends Model
             }
         }
 
-        $data['url'] = trim(strtolower($data['url']), '/');
+        $data['url'] = trim($data['url'], '/');
         // 扩展参数解析为json
         if ($data['param']) {
             $data['param'] = trim(htmlspecialchars_decode($data['param']), '&');

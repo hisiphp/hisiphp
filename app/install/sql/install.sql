@@ -144,10 +144,10 @@ CREATE TABLE `hisiphp_admin_hook` (
 INSERT INTO `hisiphp_admin_hook` (`id`, `system`, `name`, `source`, `intro`, `status`, `ctime`, `mtime`)
 VALUES
   (1,1,'system_admin_index','','后台首页',1,1490885108,1490885108),
-  (2,1,'system_admin_tips','','后台所有页面提示',1,1490713165,1490885137),
-  (3,1,'system_annex_upload','','附件上传钩子，可扩展上传到第三方存储',1,1490884242,1490885121),
-  (4,1,'system_member_login','','会员登陆成功之后的动作',1,1490885108,1490885108);
-
+  (2,1,'system_admin_tips','','后台所有页面提示',1,1490885108,1490885108),
+  (3,1,'system_annex_upload','','附件上传钩子，可扩展上传到第三方存储',1,1490885108,1490885108),
+  (4,1,'system_member_login','','会员登陆成功之后的动作',1,1490885108,1490885108),
+  (5,1,'system_member_register','','会员注册成功后的动作',1,1490885108,1490885108);
 
 # Dump of table hisiphp_admin_hook_plugins
 # ------------------------------------------------------------
@@ -723,7 +723,7 @@ CREATE TABLE `hisiphp_admin_plugins` (
   `version` varchar(16) NOT NULL DEFAULT '' COMMENT '版本号',
   `identifier` varchar(64) NOT NULL DEFAULT '' COMMENT '插件唯一标识符',
   `config` text NOT NULL COMMENT '插件配置',
-  `app_id` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '来源(0本地)',
+  `app_id` varchar(30) NOT NULL DEFAULT '0' COMMENT '应用市场ID(0本地)',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0',
   `mtime` int(10) unsigned NOT NULL DEFAULT '0',
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',

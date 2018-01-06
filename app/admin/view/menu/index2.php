@@ -1,13 +1,12 @@
-{volist name="menu_list" id="v" key="k"}
-<div class="layui-tab-item layui-form menu-dl {if condition="$k eq 1"}layui-show{/if}">
+<div class="layui-form menu-dl">
 <form class="page-list-form">
     <div class="page-toolbar">
         <div class="layui-btn-group fl">
-            <a href="{:url('add?pid='.$v['id'].'&mod='.$v['module'])}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加子菜单</a>
+            <a href="{:url('add?pid='.$pid)}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加子菜单</a>
             <a data-href="{:url('status?table=admin_menu&val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
             <a data-href="{:url('status?table=admin_menu&val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="aicon ai-jinyong"></i>删除</a>
-            <a href="{:url('export?id='.$v['id'])}" class="layui-btn layui-btn-primary"><i class="aicon ai-daochu"></i>导出</a>
+            <a href="{:url('export?id='.$pid)}" class="layui-btn layui-btn-primary"><i class="aicon ai-daochu"></i>导出</a>
         </div>
     </div>
     <dl class="menu-dl1 menu-hd mt10">
@@ -18,7 +17,7 @@
             <span class="hd3">操作</span>
         </dd>
     </dl>
-    {volist name="v['childs']" id="vv" key="kk"}
+    {volist name="menu_list" id="vv" key="kk"}
     <dl class="menu-dl1">
         <dt>
             <input type="checkbox" name="ids[{$kk}]" value="{$vv['id']}" class="checkbox-ids" lay-skin="primary" title="{$vv['title']}"><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>{$vv['title']}</span><i class="layui-icon">&#xe626;</i></div>
@@ -28,9 +27,6 @@
                 <a href="{:url('edit?id='.$vv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
                 <a href="{:url('add?pid='.$vv['id'].'&mod='.$vv['module'])}" title="添加子菜单"><i class="layui-icon">&#xe654;</i></a>
                 <a href="{:url('del?ids='.$vv['id'])}" title="删除"><i class="layui-icon">&#xe640;</i></a>
-                {if condition="$vv['url'] eq 'admin/plugins/run'"}
-                <a href="{:url('export?id='.$vv['id'])}" title="导出菜单"><i class="layui-icon" style="font-weight:bolder;">&#xe601;</i></a>
-                {/if}
             </div>
         </dt>
         <dd>
@@ -51,9 +47,6 @@
                         <a href="{:url('edit?id='.$vvv['id'])}" title="编辑"><i class="layui-icon">&#xe642;</i></a>
                         <a href="{:url('add?pid='.$vvv['id'].'&mod='.$vvv['module'])}" title="添加子菜单"><i class="layui-icon">&#xe654;</i></a>
                         <a href="{:url('del?ids='.$vvv['id'])}" title="删除"><i class="layui-icon">&#xe640;</i></a>
-                        {if condition="$vvv['url'] eq 'admin/plugins/run'"}
-                        <a href="{:url('export?id='.$vvv['id'])}" title="导出菜单"><i class="layui-icon" style="font-weight:bolder;">&#xe601;</i></a>
-                        {/if}
                     </div>
                 </dt>
                 {php}
@@ -84,7 +77,6 @@
     {/volist}
 </form>
 </div>
-{/volist}
 <div class="layui-tab-item layui-form menu-dl">
     <form class="page-list-form">
         <dl class="menu-dl1 menu-hd mt10">
@@ -109,4 +101,3 @@
         {/volist}
     </form>
 </div>
-{include file="block/layui" /}

@@ -25,11 +25,19 @@ class AdminMember extends Model
     // 自动写入时间戳
     protected $autoWriteTimestamp = true;
 
-    // 对密码进行加密
+    // 对密码进行加密【注意：如果不设置密码请不要传入password字段】
     public function setPasswordAttr($value)
     {
-        if (empty($value)) return '';
         return password_hash($value, PASSWORD_DEFAULT);
+    }
+
+    // 过滤昵称里面的表情符号
+    public function setNickAttr($value)
+    {
+        $value = preg_replace_callback('/./u', function (array $match) {
+            return strlen($match[0]) >= 4 ? '' : $match[0];
+        }, $value);
+        return $value;
     }
 
     // 最后登陆ip
@@ -64,18 +72,18 @@ class AdminMember extends Model
 
     /**
      * 注册
-     * @param array $data 参数，可传参数username,password,email,mobile,nick
+     * @param array $data 参数，可传参数account,username,password,email,mobile,nick,avatar
      * @author 橘子俊 <364666827@qq.com>
      * @return stirng|array
      */
     public function register($data = [])
     {
         $map = [];
-        $map['nick'] = '';
-        $map['email'] = '';
-        $map['mobile'] = '';
-        $map['username'] = '';
-        $map['avatar'] = '';
+        $map['nick'] = isset($data['nick']) ? $data['nick'] : '';
+        $map['email'] = isset($data['email']) ? $data['email'] : '';
+        $map['mobile'] = isset($data['mobile']) ? $data['mobile'] : '';
+        $map['username'] = isset($data['username']) ? $data['username'] : '';
+        $map['avatar'] = isset($data['avatar']) ? $data['avatar'] : '';
         $map['level_id'] = 0;
         if (empty($data['account']) && empty($data['email']) && empty($data['mobile']) && empty($data['username'])) {
             $this->error = '用户名、手机、邮箱至少选填一项！';
@@ -125,25 +133,26 @@ class AdminMember extends Model
         }
         $map['id'] = $this->id;
         unset($map['password']);
+        runhook('system_member_register', $map);
         return self::autoLogin($map);
     }
 
     /**
-     * 授权登录注册，除了昵称无其他任何注册信息，只为了提供授权登录时绑定member_id
-     * @param string $nick 昵称
+     * 授权登录注册，只为了提供授权登录时绑定member_id
+     * @param string $data 传入数据
      * @author 橘子俊 <364666827@qq.com>
      * @return stirng|array
      */
-    public function oauthRegister($nick = '')
+    public function oauthRegister($data = [])
     {
         $level = model('AdminMemberLevel')->where('default',1)->find();
         $map = [];
-        $map['nick'] = $nick;
-        $map['password'] = '';
-        $map['email'] = '';
-        $map['mobile'] = '';
-        $map['username'] = '';
-        $map['avatar'] = '';
+        $map['nick'] = isset($data['nick']) ? $data['nick'] : '';
+        $map['password'] = isset($data['password']) ? $data['password'] : '';
+        $map['email'] = isset($data['email']) ? $data['email'] : '';
+        $map['mobile'] = isset($data['mobile']) ? $data['mobile'] : '';
+        $map['username'] = isset($data['username']) ? $data['username'] : '';
+        $map['avatar'] = isset($data['avatar']) ? $data['avatar'] : '';
         $map['last_login_ip'] = get_client_ip();
         $map['last_login_time'] = request()->time();
         if ($level) {
@@ -158,6 +167,7 @@ class AdminMember extends Model
 
         $map['id'] = $res->id;
         unset($map['password']);
+        runhook('system_member_register', $map);
         return self::autoLogin($map);
     }
 
@@ -297,8 +307,8 @@ class AdminMember extends Model
      */
     public static function logout() 
     {
-        session(null);
-        cookie(null);
+        session('login_member', null);
+        session('login_member_sign', null);
         return true;
     }
 

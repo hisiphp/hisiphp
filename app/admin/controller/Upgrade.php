@@ -33,16 +33,31 @@ class Upgrade extends Admin
         $this->app_type = input('param.app_type/s', 'system');
         $this->identifier = input('param.identifier', 0);
         $this->cache_upgrade_list = 'upgrade_version_list'.$this->identifier;
+        $this->app_key = '';
         $map = [];
         $map['identifier'] = $this->identifier;
         $map['status'] = ['neq', 0];
         switch ($this->app_type) {
             case 'module':
-                $this->app_version = ModuleModel::where($map)->value('version');
+                $module = ModuleModel::where($map)->find();
+                $key_file = APP_PATH.$module->name.DS.'key.pem';
+                if (!is_file($key_file)) {
+                    return $this->error('模块文件不完整');
+                }
+                $this->app_key = file_get_contents($key_file);
+                $this->app_version = $module->version;
                 break;
+
             case 'plugins':
-                $this->app_version = PluginsModel::where($map)->value('version');
+                $plugins = PluginsModel::where($map)->find();
+                $key_file = ROOT_PATH.'plugins'.DS.$plugins->name.DS.'key.pem';
+                if (!is_file($key_file)) {
+                    return $this->error('插件文件不完整');
+                }
+                $this->app_key = file_get_contents($key_file);
+                $this->app_version = $plugins->version;
                 break;
+
             case 'theme':
                 $app_name = input('param.app_name');
                 if ($app_name) {
@@ -141,11 +156,11 @@ class Upgrade extends Admin
         foreach ($versions['data'] as $k => $v) {
             if (version_compare($k, $version, '>=')) {
                 if (version_compare($k, $version, '=')) {
-                    $file = $this->cloud->data(['version' => $k, 'app_identifier' => $this->identifier])->down($this->app_type.'/get/upgrade');
+                    $file = $this->cloud->data(['version' => $k, 'app_identifier' => $this->identifier, 'app_key' => $this->app_key])->down($this->app_type.'/get/upgrade');
                 }
                 break;
             } else {
-                $file = $this->cloud->data(['version' => $k, 'app_identifier' => $this->identifier])->down($this->app_type.'/get/upgrade');
+                $file = $this->cloud->data(['version' => $k, 'app_identifier' => $this->identifier, 'app_key' => $this->app_key])->down($this->app_type.'/get/upgrade');
                 if ($file === false) {
                     $this->clearCache($file);
                     return $this->error('前置版本 '.$k.' 升级失败！');
@@ -197,7 +212,7 @@ class Upgrade extends Admin
     }
 
     /**
-     * [静态方法]执行安装
+     * 执行安装
      * @author 橘子俊 <364666827@qq.com>
      * @return bool
      */
@@ -225,7 +240,7 @@ class Upgrade extends Admin
     }
 
     /**
-     * [静态方法]系统升级
+     * 系统升级
      * @author 橘子俊 <364666827@qq.com>
      * @return bool
      */
@@ -308,7 +323,7 @@ class Upgrade extends Admin
     }
 
     /**
-     * [静态方法]模块升级
+     * 模块升级
      * @author 橘子俊 <364666827@qq.com>
      * @return bool
      */
@@ -415,7 +430,7 @@ class Upgrade extends Admin
     }
 
     /**
-     * [静态方法]插件升级
+     * 插件升级
      * @author 橘子俊 <364666827@qq.com>
      * @return bool
      */
@@ -520,7 +535,7 @@ class Upgrade extends Admin
     }
 
     /**
-     * [静态方法]主题升级
+     * 主题升级
      * @author 橘子俊 <364666827@qq.com>
      * @return bool
      */
@@ -624,7 +639,7 @@ class Upgrade extends Admin
         if (isset($cache['data']) && !empty($cache['data'])) {
             return $cache;
         }
-        $result = $this->cloud->data(['version' => $this->app_version, 'app_identifier' => $this->identifier])->api($this->app_type.'/get/versions');
+        $result = $this->cloud->data(['version' => $this->app_version, 'app_identifier' => $this->identifier, 'app_key' => $this->app_key])->api($this->app_type.'/get/versions');
         if ($result['code'] == 1) {
             cache($this->cache_upgrade_list, $result, 3600);  
         }

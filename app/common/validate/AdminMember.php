@@ -24,6 +24,7 @@ class AdminMember extends Validate
         'email|邮箱'     => 'checkEmail:thinkphp|email|unique:admin_member',
         'password|密码'  => 'requireWith|length:6,20',
         'mobile|手机号'   => 'checkMobile:thinkphp|unique:admin_member',
+        'nick|昵称'   => 'unique:admin_member',
     ];
 
     //定义验证提示

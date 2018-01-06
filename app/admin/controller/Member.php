@@ -37,7 +37,7 @@ class Member extends Admin
             }
         }
         
-        $data_list = MemberModel::where($map)->paginate();
+        $data_list = MemberModel::where($map)->paginate(10, false, ['query' => input('get.')]);
         // 分页
         $pages = $data_list->render();
         $this->assign('data_list', $data_list);
@@ -59,6 +59,11 @@ class Member extends Admin
             if($result !== true) {
                 return $this->error($result);
             }
+
+            if (!isset($data['password']) || empty($data['password'])) {
+                return $this->error('请设置登录密码');
+            }
+
             unset($data['id']);
             if (!MemberModel::create($data)) {
                 return $this->error('添加失败！');
@@ -87,6 +92,11 @@ class Member extends Admin
             if($result !== true) {
                 return $this->error($result);
             }
+
+            if (isset($data['password']) && empty($data['password'])) {
+                unset($data['password']);
+            }
+
             if (!MemberModel::update($data)) {
                 return $this->error('修改失败！');
             }
@@ -98,7 +108,7 @@ class Member extends Admin
         $this->assign('level_option', LevelModel::getOption($row['level_id']));
         return $this->fetch('form');
     }
-
+    
     /**
      * 会员列表弹窗
      * @author 橘子俊 <364666827@qq.com>

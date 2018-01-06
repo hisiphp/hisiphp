@@ -416,8 +416,9 @@ class Plugins extends Admin
      */
     public function status()
     {
-        $val   = input('param.val/d');
-        $id    = input('param.id/d');
+        $val    = input('param.val/d');
+        $id     = input('param.id/d');
+        $val    = $val+1;// 因为layui开关效果只支持0和1
 
         $res = PluginsModel::where('id', $id)->find();
 

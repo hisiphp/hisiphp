@@ -310,6 +310,7 @@
         </div>
     </div>
 </form>
+{include file="admin@block/layui" /}
 {/literal}
 <script>
 /* 修改模式下需要将数据放入此变量 */
@@ -370,6 +371,7 @@ layui.use(['upload'], function() {
     </textarea>
 </div>
 
+{include file="block/layui" /}
 <script>
 /* 修改模式下需要将数据放入此变量 */
 var formData = {"id":1,"role_id":1,"nick":"\u8d85\u7ea7\u7ba1\u7406\u5458","email":"chenf4hua12@qq.com","mobile":13888888888,"status":0};

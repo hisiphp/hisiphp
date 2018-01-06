@@ -51,7 +51,7 @@
             <input type="text" class="layui-input field-url" name="url" lay-verify="required" autocomplete="off" placeholder="请严格按照参考格式填写">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            必填，参考格式：模块名/控制器名/方法名，例：admin/index/index
+            必填，参考格式：模块名/控制器名/方法名，例：admin/index/index，<span class="red">请留意大小写</span>
 <!--             <span class="menu-url" style="display:none;">参考格式：模块名，例：admin</span>
             <span class="menu-url" style="display:none;">参考格式：模块名/控制器名，例：admin/index</span>
             <span class="menu-url" style="display:none;">参考格式：模块名/控制器名/方法名，例：admin/index/index</span> -->
@@ -107,6 +107,7 @@
         </div>
     </div>
 </form>
+{include file="block/layui" /}
 <script>
 var formData = {:json_encode($data_info)};
 layui.use(['form'], function() {

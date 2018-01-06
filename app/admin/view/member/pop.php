@@ -61,11 +61,8 @@
         <a class="layui-btn layui-btn-primary" onclick="parent.layer.closeAll();">关闭</a>
     </div>
 </div>
-<script src="__ADMIN_JS__/layui/layui.js"></script>
+{include file="block/layui" /}
 <script>
-layui.config({
-  base: '__ADMIN_JS__/'
-}).use('global');
 layui.use(['jquery'], function(){
     var $ = layui.jquery;
     $('#popConfirm').click(function() {
