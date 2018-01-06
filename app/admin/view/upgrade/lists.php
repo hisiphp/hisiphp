@@ -79,6 +79,9 @@ layui.use(['jquery', 'layer', 'laytpl'], function() {
                             layer.msg(res.msg, {}, function() {
                                 location.href= res.url;
                             });
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('安装失败，请查看系统日志了解错误详情<br>[/runtime/log/{:date("Ym")}/{:date("d")}.log]', {time:10000});
                         }
                     });
                 } else {
