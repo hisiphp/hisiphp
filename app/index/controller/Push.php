@@ -35,7 +35,7 @@ class Push extends Home
         $this->sign = input('param.sign');
         $this->token = input('param.token');
         $this->version = input('param.version');
-        $this->app_id = input('param.app_id/d');
+        $this->app_id = input('param.app_id');
         $this->app_name = strtolower(input('param.app_name'));
         $this->app_secret_key = input('param.secret_key');
         $this->app_identifier = strtolower(input('param.app_identifier'));

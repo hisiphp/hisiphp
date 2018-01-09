@@ -51,5 +51,9 @@ class Init
                 config('url_controller_layer', 'home');
             }
         }
+        // 后台强制关闭路由
+        if (defined('ENTRANCE') && ENTRANCE == 'admin') {
+            config('url_route_on', false);
+        }
     }
 }
