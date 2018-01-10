@@ -270,13 +270,13 @@ class Upgrade extends Admin
         }
         // 备份需要升级的旧版本
         $up_info = include_once $decom_path.DS.'upgrade.php';
-        //备份文件
         $back_path = $this->update_back_path.config('hisiphp.version');
         if (!is_dir($back_path)) {
             Dir::create($back_path, 0777, true);
         }
         $layout = '';
         array_push($up_info['update'], '/version.php');
+        //备份旧文件
         foreach ($up_info['update'] as $k => $v) {
             $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
@@ -285,20 +285,22 @@ class Upgrade extends Admin
             if (basename($v) == 'layout.php') {
                 $layout = APP_PATH.'admin'.DS.'view'.DS.'layout.php';
             }
-            if (is_file('./'.$v)) {
-                @copy('./'.$v, $_dir.basename($v));
+            if (is_file('.'.ROOT_DIR.$v)) {
+                @copy('.'.ROOT_DIR.$v, $_dir.basename($v));
             }
         }
-        // 更新升级文件
-        Dir::copyDir($decom_path.DS.'upload', '.');
+
         // 根据升级补丁删除文件
         if (isset($up_info['delete'])) {
             foreach ($up_info['delete'] as $k => $v) {
-                if (is_file('./'.$v)) {
-                    @unlink('./'.$v);
+                if (is_file('.'.ROOT_DIR.$v)) {
+                    @unlink('.'.ROOT_DIR.$v);
                 }
             }
         }
+
+        // 更新升级文件
+        Dir::copyDir($decom_path.DS.'upload', '.');
 
         // 同步更新扩展模块下的layout.php TODO
         // 导入SQL
@@ -360,17 +362,29 @@ class Upgrade extends Admin
         }
         $up_info = include_once $decom_path.DS.'upgrade.php';
         //备份需要升级的旧版本
-        foreach ($up_info['update'] as $k => $v) {
-            if (substr($v, 0, strlen('/app/'.$module->name)) != '/app/'.$module->name || strpos($v, '..') !== false) {
-                $this->error = '升级补丁文件异常';
-                return false;
+        if (isset($up_info['update'])) {
+            foreach ($up_info['update'] as $k => $v) {
+                $_dir = $back_path.dirname($v).DS;
+                if (!is_dir($_dir)) {
+                    Dir::create($_dir, 0777, true);
+                }
+                if (is_file('.'.ROOT_DIR.$v)) {
+                    @copy('.'.ROOT_DIR.$v, $_dir.basename($v));
+                }
             }
-            $_dir = $back_path.dirname($v).DS;
-            if (!is_dir($_dir)) {
-                Dir::create($_dir, 0777, true);
-            }
-            if (is_file('./'.$v)) {
-                @copy('./'.$v, $_dir.basename($v));
+        }
+        // 根据升级补丁删除文件
+        if (isset($up_info['delete'])) {
+            foreach ($up_info['delete'] as $k => $v) {
+                // 锁定删除文件范围
+                if ( (substr($v, 0, strlen('/app/'.$module->name)) == '/app/'.$module->name ||
+                    substr($v, 0, strlen('/theme/'.$module->name)) == '/theme/'.$module->name ||
+                    substr($v, 0, strlen('/static/'.$module->name)) == '/static/'.$module->name) && strpos($v, '..') === false) {
+                    $v = trim($v, '/');
+                    if (is_file('.'.ROOT_DIR.$v)) {
+                        @unlink('.'.ROOT_DIR.$v);
+                    }
+                }
             }
         }
         // 复制app目录
@@ -384,18 +398,6 @@ class Upgrade extends Admin
         // 复制theme目录
         if (is_dir($decom_path.DS.'upload'.DS.'theme')) {
             Dir::copyDir($decom_path.DS.'upload'.DS.'theme'.DS.$module->name, '.'.ROOT_DIR.'theme'.DS.$module->name);
-        }
-        // 根据升级补丁删除文件
-        if (isset($up_info['delete'])) {
-            foreach ($up_info['delete'] as $k => $v) {
-                if (is_file('./'.$v)) {
-                    if (substr($v, 0, strlen('/app/'.$model->name)) != '/app/'.$model->name) {
-                        $this->error = '升级补丁文件异常';
-                        return false;
-                    }
-                    @unlink('./'.$v);
-                }
-            }
         }
         // 读取模块info
         if (!is_file(APP_PATH.$module->name.DS.'info.php')) {
@@ -467,19 +469,29 @@ class Upgrade extends Admin
         }
         $up_info = include_once $decom_path.DS.'upgrade.php';
         //备份需要升级的旧版本
+        $plugins_path = '.'.ROOT_DIR.'plugins/'.$plugins->name.'/';
         foreach ($up_info['update'] as $k => $v) {
-            if (substr($v, 0, strlen('/plugins/'.$plugins->name)) != '/plugins/'.$plugins->name || strpos($v, '..') !== false) {
-                $this->error = '升级补丁文件异常';
-                return false;
-            }
+            $v = trim($v, '/');
             $_dir = $back_path.dirname($v).DS;
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777, true);
             }
-            if (is_file('./'.$v)) {
-                @copy('./'.$v, $_dir.basename($v));
+            if (is_file($plugins_path.$v)) {
+                @copy($plugins_path.$v, $_dir.basename($v));
             }
         }
+        // 根据升级补丁删除文件
+        if (isset($up_info['delete'])) {
+            foreach ($up_info['delete'] as $k => $v) {
+                if (strpos($v, '..') === false) {
+                    $v = trim($v, '/');
+                    if (is_file($plugins_path.$v)) {
+                        @unlink($plugins_path.$v);
+                    }
+                }
+            }
+        }
+
         if (!is_dir($decom_path.DS.'upload'.DS.$plugins->name)) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
@@ -490,18 +502,7 @@ class Upgrade extends Admin
         }
         // 复制插件目录
         Dir::copyDir($decom_path.DS.'upload'.DS.$plugins->name, '.'.ROOT_DIR.'plugins'.DS.$plugins->name);
-        // 根据升级补丁删除文件
-        if (isset($up_info['delete'])) {
-            foreach ($up_info['delete'] as $k => $v) {
-                if (substr($v, 0, 8) != '/plugins') {
-                    $this->error = '升级补丁文件异常';
-                    return false;
-                }
-                if (is_file('./'.$v)) {
-                    @unlink('./'.$v);
-                }
-            }
-        }
+
         // 读取插件info
         if (!is_file('.'.ROOT_DIR.'plugins'.DS.$plugins->name.DS.'info.php')) {
             $this->error = $plugins->name.'插件配置文件[info.php]丢失！';
