@@ -174,7 +174,7 @@ class AdminUser extends Model
                 cookie('hisi_iframe', null);
             }
             // 缓存角色权限
-            cache('role_auth_'.$user->role_id, $user['auth'] ? json_decode($user['auth']) : json_decode($role['auth']));
+            session('role_auth_'.$user->role_id, $user['auth'] ? json_decode($user['auth']) : json_decode($role['auth']));
             // 缓存登录信息
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));

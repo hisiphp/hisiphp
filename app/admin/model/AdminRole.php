@@ -139,9 +139,8 @@ class AdminRole extends Model
         if ($login['uid'] == '1' || $login['role_id'] == '1') {
             return true;
         }
-
         // 获取当前角色的权限明细
-        $role_auth = cache('role_auth_'.$login['role_id']);
+        $role_auth = (array)session('role_auth_'.$login['role_id']);
         if (!$role_auth) {
             $map = [];
             $map['id'] = $login['role_id'];
@@ -152,7 +151,7 @@ class AdminRole extends Model
             $role_auth = json_decode($auth, true);
             // 非开发模式，缓存数据
             if (config('develop.app_debug') == 0) {
-                cache('role_auth_'.$login['role_id'], $role_auth);
+                session('role_auth_'.$login['role_id'], $role_auth);
             }
         }
         if (!$role_auth) return false;
