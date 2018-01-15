@@ -85,7 +85,7 @@ class AdminMember extends Model
         $map['username'] = isset($data['username']) ? $data['username'] : '';
         $map['avatar'] = isset($data['avatar']) ? $data['avatar'] : '';
         $map['level_id'] = 0;
-        if (empty($data['account']) && empty($data['email']) && empty($data['mobile']) && empty($data['username'])) {
+        if (empty($data['email']) && empty($data['mobile']) && empty($data['username'])) {
             $this->error = '用户名、手机、邮箱至少选填一项！';
             return false;
 
@@ -94,17 +94,19 @@ class AdminMember extends Model
             $this->error = '密码为必填项！';
             return false;
         }
+        
         // 匹配账号类型
-        if (is_email($data['account'])) {// 邮箱
-            $map['email'] = $data['account'];
-        } elseif (is_mobile($data['account'])) {// 手机号
-            $map['mobile'] = $data['account'];
-        } elseif (is_username($data['account'])) {// 用户名
-            $map['username'] = $data['account'];
+        if (is_username($data['username'])) {// 用户名
+            $map['username'] = $data['username'];
+        } elseif (is_email($data['username'])) {// 邮箱
+            $map['email'] = $data['username'];
+        } elseif (is_mobile($data['username'])) {// 手机号
+            $map['mobile'] = $data['username'];
         } else {
             $this->error = '注册账号异常！';
             return false;
         }
+
         // 匹配注册方式
         if (isset($data['email']) && !empty($data['email'])) {
             $map['email'] = $data['email'];

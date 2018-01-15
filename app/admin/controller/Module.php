@@ -77,6 +77,10 @@ class Module extends Admin
             $files = Dir::getList(APP_PATH);
             $sys_dir = config('hs_system.modules');
             array_push($sys_dir, 'extra');
+            if (!is_dir(ROOT_PATH.'static'.DS.'app_icon')) {
+                Dir::create(ROOT_PATH.'static'.DS.'app_icon', 0777, true);
+            }
+            
             foreach ($files as $k => $f) {
                 // 排除系统模块和已存在数据库的模块
                 if (array_search($f, $sys_dir) !== false || array_key_exists($f, $all_module) || !is_dir(APP_PATH.$f)) {
@@ -91,7 +95,8 @@ class Module extends Admin
                     $sql['title'] = $info['title'];
                     $sql['intro'] = $info['intro'];
                     $sql['author'] = $info['author'];
-                    $sql['icon'] = ROOT_DIR.substr($info['icon'], 1);
+                    copy(APP_PATH.$f.DS.$f.'.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$f.'.png');
+                    $sql['icon'] = ROOT_DIR.'static/app_icon/'.$f.'.png';
                     $sql['version'] = $info['version'];
                     $sql['url'] = $info['author_url'];
                     $sql['config'] = '';

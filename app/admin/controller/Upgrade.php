@@ -16,6 +16,7 @@ use app\common\util\Cloud;
 use app\common\util\Dir;
 use app\common\util\PclZip;
 use think\Db;
+set_time_limit(0);
 /**
  * 在线升级控制器
  * @package app\admin\controller
@@ -40,21 +41,13 @@ class Upgrade extends Admin
         switch ($this->app_type) {
             case 'module':
                 $module = ModuleModel::where($map)->find();
-                $key_file = APP_PATH.$module->name.DS.'key.pem';
-                if (!is_file($key_file)) {
-                    return $this->error('模块文件不完整');
-                }
-                $this->app_key = file_get_contents($key_file);
+                $this->app_key = $module->app_keys;
                 $this->app_version = $module->version;
                 break;
 
             case 'plugins':
                 $plugins = PluginsModel::where($map)->find();
-                $key_file = ROOT_PATH.'plugins'.DS.$plugins->name.DS.'key.pem';
-                if (!is_file($key_file)) {
-                    return $this->error('插件文件不完整');
-                }
-                $this->app_key = file_get_contents($key_file);
+                $this->app_key = $module->app_keys;
                 $this->app_version = $plugins->version;
                 break;
 
