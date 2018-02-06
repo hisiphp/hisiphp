@@ -254,12 +254,15 @@ class Module extends Admin
             
             // 将配置更新到数据库
             if ($config) {
-                // 重组旧配置，以方便后面找值
-                $old_config = json_decode($module_db['config'], 1);
                 $old_config_arr = [];
-                foreach ($old_config as $k => $v) {
-                    $old_config_arr[$v['name']] = $v;
+                if ($module_db['config']) {
+                    // 重组旧配置，以方便后面找值
+                    $old_config = json_decode($module_db['config'], 1);
+                    foreach ($old_config as $k => $v) {
+                        $old_config_arr[$v['name']] = $v;
+                    }
                 }
+                
                 // 将旧配置的值赋值到新配置
                 foreach ($config as $k => &$v) {
                     if (isset($old_config_arr[$v['name']])) {

@@ -692,6 +692,7 @@ CREATE TABLE `hisiphp_admin_module` (
   `default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '默认模块(只能有一个)',
   `config` text NOT NULL COMMENT '配置',
   `app_id` varchar(30) NOT NULL DEFAULT '0' COMMENT '应用市场ID(0本地)',
+  `app_keys` varchar(200) DEFAULT '' COMMENT '应用秘钥',
   `theme` varchar(50) NOT NULL DEFAULT 'default' COMMENT '主题模板',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `mtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -700,11 +701,11 @@ CREATE TABLE `hisiphp_admin_module` (
   UNIQUE KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='[系统] 模块';
 
-INSERT INTO `hisiphp_admin_module` (`id`, `system`, `name`, `identifier`, `title`, `intro`, `author`, `icon`, `version`, `url`, `sort`, `status`, `default`, `config`, `app_id`, `theme`, `ctime`, `mtime`)
+INSERT INTO `hisiphp_admin_module` (`id`, `system`, `name`, `identifier`, `title`, `intro`, `author`, `icon`, `version`, `url`, `sort`, `status`, `default`, `config`, `app_id`, `app_keys`, `theme`, `ctime`, `mtime`)
 VALUES
-  (1,1,'admin','admin.hisiphp.module','系统管理模块','系统核心模块，用于后台各项管理功能模块及功能拓展','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','default',1489998096,1489998096),
-  (2,1,'index','index.hisiphp.module','系统默认模块','仅供前端插件访问和应用市场推送安装，禁止在此模块下面开发任何东西。','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','default',1489998096,1489998096),
-  (3,1,'install','install.hisiphp.module','系统安装模块','系统安装模块，勿动。','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','default',1489998096,1489998096);
+  (1,1,'admin','admin.hisiphp.module','系统管理模块','系统核心模块，用于后台各项管理功能模块及功能拓展','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','','default',1489998096,1489998096),
+  (2,1,'index','index.hisiphp.module','系统默认模块','仅供前端插件访问和应用市场推送安装，禁止在此模块下面开发任何东西。','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','','default',1489998096,1489998096),
+  (3,1,'install','install.hisiphp.module','系统安装模块','系统安装模块，勿动。','HisiPHP官方出品','','1.0.0','http://www.hisiphp.com',0,2,0,'','0','','default',1489998096,1489998096);
 
 # Dump of table hisiphp_admin_plugins
 # ------------------------------------------------------------
@@ -724,6 +725,7 @@ CREATE TABLE `hisiphp_admin_plugins` (
   `identifier` varchar(64) NOT NULL DEFAULT '' COMMENT '插件唯一标识符',
   `config` text NOT NULL COMMENT '插件配置',
   `app_id` varchar(30) NOT NULL DEFAULT '0' COMMENT '应用市场ID(0本地)',
+  `app_keys` varchar(200) DEFAULT '' COMMENT '应用秘钥',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0',
   `mtime` int(10) unsigned NOT NULL DEFAULT '0',
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
@@ -731,9 +733,9 @@ CREATE TABLE `hisiphp_admin_plugins` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='[系统] 插件表';
 
-INSERT INTO `hisiphp_admin_plugins` (`system`, `name`, `title`, `icon`, `intro`, `author`, `url`, `version`, `identifier`, `config`, `app_id`, `ctime`, `mtime`, `sort`, `status`)
+INSERT INTO `hisiphp_admin_plugins` (`system`, `name`, `title`, `icon`, `intro`, `author`, `url`, `version`, `identifier`, `config`, `app_id`, `app_keys`, `ctime`, `mtime`, `sort`, `status`)
 VALUES
-  (0, 'hisiphp', '系统基础信息', '/plugins/hisiphp/hisiphp.png', '后台首页展示系统基础信息和开发团队信息', 'HisiPHP', 'http://www.hisiphp.com', '1.0.0', 'hisiphp.hisiphp.plugins', '', 0, 1509379331, 1509379331, 0, 2);
+  (0, 'hisiphp', '系统基础信息', '/plugins/hisiphp/hisiphp.png', '后台首页展示系统基础信息和开发团队信息', 'HisiPHP', 'http://www.hisiphp.com', '1.0.0', 'hisiphp.hisiphp.plugins', '', 0,'', 1509379331, 1509379331, 0, 2);
 
 
 # Dump of table hisiphp_admin_role
