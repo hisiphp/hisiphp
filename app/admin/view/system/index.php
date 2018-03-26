@@ -67,7 +67,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{$v['title']}</label>
                 <div class="layui-input-inline">
-                    {volist name="v['options']" id="vv"}<input type="checkbox" name="id[{$v['id']}][]" value="{$key}" title="{$vv}" lay-skin="primary" {if condition="in_array($key, $v['value'])"}checked{/if}>
+                    {volist name="v['options']" id="vv"}
+                        <input type="checkbox" name="{$v['name']}[]" value="{$key}" title="{$vv}" lay-skin="primary" {if condition="is_array($v['value']) && in_array($key, $v['value'])"}checked{/if}>
                     {/volist}
                 </div>
                 <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式：<code>config('{if condition="isset($v['module'])"}module_{/if}{:input('param.group', 'base')}.{$v['name']}')</code></div>

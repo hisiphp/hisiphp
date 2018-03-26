@@ -149,6 +149,9 @@ class Plugins extends Admin
                 if (isset($v['options']) && $v['options']) {
                     $v['options'] = array_filter(parse_attr($v['options']));
                 }
+                if ($v['type'] == 'checkbox') {
+                    $v['value'] = explode(',', $v['value']);
+                }
             }
             $row['config'] = $config;
         } else {
