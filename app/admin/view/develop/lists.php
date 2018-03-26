@@ -69,10 +69,10 @@ value="100" data-value="" data-href="">
                     <td>
                         <div class="layui-btn-group">
                             <div class="layui-btn-group">
-                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-small">文字</a>
-                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe654;</i></a>
-                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe642;</i></a>
-                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-small j-tr-del"><i class="layui-icon">&#xe640;</i></a>
+                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-sm">文字</a>
+                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe654;</i></a>
+                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
+                            <a data-href="" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
                             </div>
                         </div>
                     </td>
@@ -172,9 +172,9 @@ value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=te
                 <td>
                     <div class="layui-btn-group">
                         <div class="layui-btn-group">
-                        <a data-href="" class="layui-btn layui-btn-primary layui-btn-small">文字</a>
-                        <a data-href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('del?table=表名(无表前缀)&id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del"><i class="layui-icon">&#xe640;</i></a>
+                        <a data-href="" class="layui-btn layui-btn-primary layui-btn-sm">文字</a>
+                        <a data-href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
+                        <a data-href="{:url('del?table=表名(无表前缀)&id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
                         </div>
                     </div>
                 </td>

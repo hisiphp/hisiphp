@@ -140,7 +140,7 @@ class Base
                 if (request()->isMobile() === true && config('base.wap_site_status') && file_exists('.'.ROOT_DIR.'theme'.DS.$module.DS.$theme.DS.'wap'.DS)) {
                     // 如果有移动端域名，强制跳转
                     $wap_domain = preg_replace(['/http:\/\/$/', '/https:\/\/$/'], ['', ''], config('base.wap_domain'));
-                    if ($wap_domain && input('server.server_name') != $wap_domain) {
+                    if ($wap_domain && input('server.http_host') != $wap_domain) {
                         if (input('server.https') && input('server.https') == 'on') {
                             header('Location: https://'.$wap_domain);
                         }

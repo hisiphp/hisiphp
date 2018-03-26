@@ -24,7 +24,7 @@ class Init
         if(defined('BIND_MODULE') && BIND_MODULE == 'install') return;
         $_path = $request->path();
         $default_module = false;
-        if ($_path != '/' && !defined('BIND_MODULE')) {
+        if ($_path != '/' && strtolower($_path) != 'index' && !defined('BIND_MODULE')) {
             $_path = explode('/', $_path);
             if (isset($_path[0]) && !empty($_path[0])) {
                 if (is_dir('./app/'.$_path[0]) || $_path[0] == 'plugins') {

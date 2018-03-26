@@ -15,6 +15,7 @@
                 {$module_option}
             </select>
         </div>
+        <div class="layui-form-mid layui-word-aux">插件请选择[admin]系统管理模块</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">所属菜单</label>
@@ -51,10 +52,7 @@
             <input type="text" class="layui-input field-url" name="url" lay-verify="required" autocomplete="off" placeholder="请严格按照参考格式填写">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            必填，参考格式：模块名/控制器名/方法名，例：admin/index/index，<span class="red">请留意大小写</span>
-<!--             <span class="menu-url" style="display:none;">参考格式：模块名，例：admin</span>
-            <span class="menu-url" style="display:none;">参考格式：模块名/控制器名，例：admin/index</span>
-            <span class="menu-url" style="display:none;">参考格式：模块名/控制器名/方法名，例：admin/index/index</span> -->
+            必填，模块格式：模块名/控制器名/方法名，插件直接设置：admin/plugins/run，<span class="red">请留意大小写</span>
         </div>
     </div>
     <div class="layui-form-item">
@@ -63,7 +61,7 @@
             <input type="text" class="layui-input field-param" name="param" lay-verify="" autocomplete="off" placeholder="请严格按照参考格式填写">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            选填，参考格式：a=123&b=345
+            选填，参考格式：a=123&b=345，插件格式：_p=插件名称&_c=插件控制器&_a=插件方法
         </div>
     </div>
     <div class="layui-form-item">

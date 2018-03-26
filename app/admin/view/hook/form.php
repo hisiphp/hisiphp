@@ -15,16 +15,32 @@
     </div>
     {if condition="$hook_plugins"}
     <fieldset class="layui-elem-field layui-field-title">
-      <legend>关联插件排序</legend>
+      <legend>关联插件设置</legend>
     </fieldset>
     <div class="layui-form-item">
-        <div class="layui-input-inline w400 pl50">
-            <ul class="hook-plugins-sort">
-                <li><span>插件</span><span>排序</span></li>
-                {volist name="hook_plugins" id="vo"}
-                <li><span>{$vo['plugins']}</span><input type="text" class="layui-input j-ajax-input fl" style="width:50px;height:25px;" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=admin_hook_plugins&ids='.$vo['id'])}"></li>
-                {/volist}
-            </ul>
+        <div class="layui-input-inline pl50" style="width:500px;">
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>插件名</th>
+                        <th>排序</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="hook_plugins" id="vo"}
+                    <tr>
+                        <td>{$vo['plugins']}</td>
+                        <td>
+                            <input type="text" class="layui-input j-ajax-input fl" style="width:50px;height:25px;" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=admin_hook_plugins&ids='.$vo['id'])}">
+                        </td>
+                        <td>
+                            <input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked=""{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="启用|停用" data-href="{:url('hookPluginsStatus?ids='.$vo['id'])}">
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
         </div>
     </div>
     {/if}

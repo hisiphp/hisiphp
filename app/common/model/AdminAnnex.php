@@ -66,7 +66,7 @@ class AdminAnnex extends Model
         $file = request()->file($input);
         $data = [];
         if (empty($file)) {
-            return self::result('未找到上传的文件(原因：表单名可能错误，默认表单名“upload”)！', $from);
+            return self::result('未找到上传的文件(文件大小可能超过php.ini默认2M限制)！', $from);
         }
         if ($file->getMime() == 'text/x-php' || $file->getMime() == 'text/html') {
             return self::result('禁止上传php,html文件！', $from);

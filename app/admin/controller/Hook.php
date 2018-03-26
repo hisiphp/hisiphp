@@ -65,19 +65,19 @@ class Hook extends Admin
      */
     public function edit($id = 0)
     {
+        $row = HookModel::where('id', $id)->field('id,name,intro,system')->find()->toArray();
         if ($this->request->isPost()) {
+            if ($row['system'] == 1) {
+                return $this->error('禁止编辑系统钩子！');
+            }
             $mod = new HookModel();
             if (!$mod->storage()) {
                 return $this->error($mod->getError());
             }
             return $this->success('保存成功。');
         }
-        $row = HookModel::where('id', $id)->field('id,name,intro,system')->find()->toArray();
-        if ($row['system'] == 1) {
-            return $this->error('禁止编辑系统钩子！');
-        }
         // 关联的插件
-        $hook_plugins = HookPluginsModel::where('hook', $row['name'])->order('sort')->column('id,plugins,sort');
+        $hook_plugins = HookPluginsModel::where('hook', $row['name'])->order('sort')->column('id,plugins,sort,status');
         $this->assign('data_info', $row);
         $this->assign('hook_plugins', $hook_plugins);
         return $this->fetch('form');
@@ -128,6 +128,24 @@ class Hook extends Admin
             return $this->error('禁止操作系统钩子！');
         }
         $res = HookModel::where('id', $id)->setField('status', $val);;
+        if ($res === false) {
+            return $this->error('操作失败！');
+        }
+        return $this->success('操作成功！');
+    }
+
+    /**
+     * 钩子插件状态
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function hookPluginsStatus()
+    {
+        $id     = input('param.ids/d');
+        $val    = input('param.val/d');
+        $map = [];
+        $map['id'] = $id;
+        $res = HookPluginsModel::where('id', $id)->setField('status', $val);;
         if ($res === false) {
             return $this->error('操作失败！');
         }

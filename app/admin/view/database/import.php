@@ -20,8 +20,8 @@
                 <td>{:date('Y-m-d H:i:s', $vo['time'])}</td>
                 <td> 
                     <div class="layui-btn-group">
-                        <a data-href="{:url('import?id='.strtotime($key))}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">恢复</a>
-                        <a data-href="{:url('del?id='.strtotime($key))}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del">删除</a>
+                        <a data-href="{:url('import?id='.strtotime($key))}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">恢复</a>
+                        <a data-href="{:url('del?id='.strtotime($key))}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del">删除</a>
                     </div>
                 </td>
             </tr>

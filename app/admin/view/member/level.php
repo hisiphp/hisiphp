@@ -2,8 +2,8 @@
 <div class="page-toolbar">
     <div class="layui-btn-group fl">
         <a href="{:url('addLevel')}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加</a>
-        <a data-href="{:url('status?val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
-        <a data-href="{:url('status?val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
+        <a data-href="{:url('status?table=admin_member_level&val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
+        <a data-href="{:url('status?table=admin_member_level&val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
         <a data-href="{:url('delLevel')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="aicon ai-jinyong"></i>删除</a>
     </div>
 </div>
@@ -41,8 +41,8 @@
                 <td>
                     <div class="layui-btn-group">
                         <div class="layui-btn-group">
-                        <a href="{:url('editLevel?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('delLevel?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del"><i class="layui-icon">&#xe640;</i></a>
+                        <a href="{:url('editLevel?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
+                        <a data-href="{:url('delLevel?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
                         </div>
                     </div>
                 </td>

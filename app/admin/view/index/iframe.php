@@ -32,6 +32,9 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                 {/if} 
                 <a href="javascript:;">{$vo['title']}</a></li>
             {/volist}
+            <li class="layui-nav-item">
+                <a href="http://bbs.hisiphp.com" target="_blank">免费下载源码</a>
+            </li>
         </ul>
         <ul class="layui-nav fr nobg head-info" lay-filter="">
             <li class="layui-nav-item">
@@ -73,11 +76,11 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                         {if condition="$vv['title'] eq '快捷菜单'"}
                             <dd><a class="admin-nav-item" data-id="0" href="{:url('admin/index/welcome')}"><i class="aicon ai-shouye"></i> 后台首页</a></dd>
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{:url($vvv['url'].'?'.$vvv['param'])}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
+                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
                             {/volist}
                         {else /}
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'].'?'.$vvv['param'])}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a></dd>
+                            <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a></dd>
                             {/volist}
                         {/if}
                     </dl>

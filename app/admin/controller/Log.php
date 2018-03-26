@@ -28,7 +28,7 @@ class Log extends Admin
         if ($uid) {
             $map['uid'] = $uid;
         }
-        $data_list = LogModel::where($map)->paginate();
+        $data_list = LogModel::with('user')->where($map)->paginate();
         // 分页
         $pages = $data_list->render();
         $this->assign('data_list', $data_list);

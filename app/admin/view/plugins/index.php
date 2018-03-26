@@ -40,29 +40,29 @@
                         <div class="layui-btn-group">
                             {switch name="vo['status']"}
                                 {case value="0"}
-                                    <a data-href="{:url('install?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">安装</a>
+                                    <a data-href="{:url('install?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">安装</a>
                                     {if condition="$vo['app_id'] eq 0"}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
+                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">打包</a> -->
                                     {/if}
-                                    <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del">删除</a>
+                                    <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del">删除</a>
                                 {/case}
                                 {case value="1"}
-                                    <a href="{:url('setting?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">配置</a>
+                                    <a href="{:url('setting?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">配置</a>
                                     {if condition="$vo['app_id'] gt 0"}
-                                    <a href="{:url('upgrade/lists?app_type=plugins&app_id='.$vo['app_id'])}" class="layui-btn layui-btn-primary layui-btn-small">更新</a>
+                                    <a href="{:url('upgrade/lists?app_type=plugins&app_id='.$vo['app_id'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
                                     {else /}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
+                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">打包</a> -->
                                     {/if}
-                                    <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">卸载</a>
+                                    <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">卸载</a>
                                 {/case}
                                 {case value="2"}
-                                    <a href="{:url('setting?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small">配置</a>
+                                    <a href="{:url('setting?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">配置</a>
                                     {if condition="$vo['app_id'] gt 0"}
-                                    <a href="{:url('upgrade/lists?app_type=plugins&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-small">更新</a>
+                                    <a href="{:url('upgrade/lists?app_type=plugins&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
                                     {else /}
-                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">打包</a> -->
+                                    <!-- <a data-href="{:url('package?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">打包</a> -->
                                     {/if}
-                                    <a title="卸载后将无法使用此插件，您确定要卸载吗？" data-href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">卸载</a>
+                                    <a title="卸载后将无法使用此插件，您确定要卸载吗？" data-href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">卸载</a>
                                 {/case}
                                 {default /}
                             {/switch}

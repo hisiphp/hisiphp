@@ -113,7 +113,7 @@ static</textarea>
                 </tr> -->
                 <tr>
                     <td colspan="8" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small" id="addConfig">添加配置</a>
+                        <a class="layui-btn layui-btn-sm" id="addConfig">添加配置</a>
                         <span class="layui-word-aux">提示：当配置类型为单选按钮、多选框、下拉框、开关的时候，配置选项为必填，参考格式：选项值:选项名，多个选项请换行。</span>
                     </td>
                 </tr>

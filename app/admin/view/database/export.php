@@ -32,8 +32,8 @@
                 <td>{$vo['Comment']}</td>
                 <td> 
                     <div class="layui-btn-group">
-                        <a data-href="{:url('optimize?ids='.$vo['Name'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">优化</a>
-                        <a data-href="{:url('repair?ids='.$vo['Name'])}" class="layui-btn layui-btn-primary layui-btn-small j-ajax">修复</a>
+                        <a data-href="{:url('optimize?ids='.$vo['Name'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">优化</a>
+                        <a data-href="{:url('repair?ids='.$vo['Name'])}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">修复</a>
                     </div>
                 </td>
             </tr>

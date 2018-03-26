@@ -26,7 +26,7 @@
             {volist name="data_list" id="vo"}
             <tr>
                 <td><input type="checkbox" name="ids[]" class="layui-checkbox checkbox-ids" value="{$vo['id']}" lay-skin="primary"></td>
-                <td><a href="{:url('?uid='.$vo['uid'])}">{$vo['username']['nick']}</a></td>
+                <td><a href="{:url('?uid='.$vo['uid'])}">{$vo['user']['nick']}</a></td>
                 <td>{$vo['title']}</td>
                 <td><a href="{:url($vo['url'])}">{$vo['url']}</a></td>
                 <td>{$vo['remark']}</td>

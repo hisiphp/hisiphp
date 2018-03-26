@@ -34,8 +34,8 @@
                     {if condition="$v['id'] neq 1"}
                     <div class="layui-btn-group">
                         <div class="layui-btn-group">
-                        <a href="{:url('editRole?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('delRole?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-small j-tr-del"><i class="layui-icon">&#xe640;</i></a>
+                        <a href="{:url('editRole?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
+                        <a data-href="{:url('delRole?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
                         </div>
                     </div>
                     {/if}

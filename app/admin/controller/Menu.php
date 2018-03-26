@@ -24,6 +24,27 @@ class Menu extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
+    // public function index($pid = 0)
+    // {
+    //     $modules = MenuModel::where('pid', 0)->field('id,title')->order('sort asc')->select();
+    //     $tab_data = [];
+    //     foreach ($modules as $key => $value) {
+    //         $tab_data['menu'][$key]['title'] = $value['title'];
+    //         $tab_data['menu'][$key]['url'] = '?pid='.$value['id'];
+    //     }
+    //     if ($pid == 0) {
+    //         $pid = $modules[0]['id'];
+    //     }
+    //     $menu_list = MenuModel::getAllChild($pid, 0);
+    //     // print_r($menu_list);
+    //     $tab_data['current'] = url('?pid='.$pid);
+
+    //     $this->assign('menu_list', $menu_list);
+    //     $this->assign('pid', $pid);
+    //     $this->assign('tab_data', $tab_data);
+    //     $this->assign('tab_type', 1);
+    //     return $this->fetch();
+    // }
     public function index()
     {
         $menu_list = MenuModel::getAllChild(0, 0);
@@ -150,7 +171,7 @@ class Menu extends Admin
         $id = input('param.id/d');
         $map = [];
         $map['id'] = $id;
-        $menu = MenuModel::where($map)->field('pid,title,icon,module,url,param,target,sort')->find()->toArray();
+        $menu = MenuModel::where($map)->field('pid,title,icon,module,url,param,target,debug,system,nav,sort')->find()->toArray();
         if (!$menu) {
             return $this->error('模块不存在！');
         }
@@ -163,7 +184,7 @@ class Menu extends Admin
         unset($menu['pid'], $menu['id']);
         $menus = [];
         $menus[0] = $menu;
-        $menus[0]['childs'] = MenuModel::getAllChild($id, 0, 'id,pid,title,icon,module,url,param,target,sort');
+        $menus[0]['childs'] = MenuModel::getAllChild($id, 0, 'id,pid,title,icon,module,url,param,target,debug,system,nav,sort');
         $menus = self::menuReor($menus);
         $menus = json_decode(json_encode($menus, 1), 1);
         // 美化数组格式
@@ -173,6 +194,7 @@ class Menu extends Admin
         $menus = str_replace(['array (', ')'], ['[', ']'], $menus);
         $menus = preg_replace("/(\s*?\r?\n\s*?)+/", "\n", $menus);
         $str = json_indent(json_encode($menus, 1));
+        
         $str = "<?php\nreturn ".$menus.";\n";
         header('Content-Type: text/html; charset=utf-8');
         header('Content-Disposition: attachment; filename="menu.php"');

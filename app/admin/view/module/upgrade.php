@@ -44,7 +44,7 @@
                     </div>
                 </td>
                 <td>
-                    <a href="javascript:;" data-version="{{ item.version }}" class="layui-btn layui-btn-small j-ajax-upgrade">更新至此版本</a>
+                    <a href="javascript:;" data-version="{{ item.version }}" class="layui-btn layui-btn-sm j-ajax-upgrade">更新至此版本</a>
                 </td>
             </tr>
             {{#  }); }}

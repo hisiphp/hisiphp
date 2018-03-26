@@ -102,7 +102,7 @@
                 {/volist}
                 <tr>
                     <td colspan="8" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small j-add-tr" data-tpl="config">添加配置</a>
+                        <a class="layui-btn layui-btn-sm j-add-tr" data-tpl="config">添加配置</a>
                         <span class="layui-word-aux">提示：当配置类型为单选按钮、多选框、下拉框、开关的时候，配置选项为必填，参考格式：选项值:选项名，多个选项请换行。</span>
                     </td>
                 </tr>
@@ -143,7 +143,7 @@
                 {/volist}
                 <tr>
                     <td colspan="5" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small j-add-tr" data-tpl="module">添加模块依赖</a>
+                        <a class="layui-btn layui-btn-sm j-add-tr" data-tpl="module">添加模块依赖</a>
                         <span class="layui-word-aux">如果您的模块有依赖其他模块，必须添加此清单</span>
                     </td>
                 </tr>
@@ -184,7 +184,7 @@
                 {/volist}
                 <tr>
                     <td colspan="5" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small j-add-tr" data-tpl="plugin">添加插件依赖</a>
+                        <a class="layui-btn layui-btn-sm j-add-tr" data-tpl="plugin">添加插件依赖</a>
                         <span class="layui-word-aux">如果您的模块有依赖其他插件，必须添加此清单</span>
                     </td>
                 </tr>
@@ -218,7 +218,7 @@
                 {/volist}
                 <tr>
                     <td colspan="2" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small j-add-tr" data-tpl="table">添加记录</a>
+                        <a class="layui-btn layui-btn-sm j-add-tr" data-tpl="table">添加记录</a>
                         <span class="layui-word-aux">有数据库表时必需添加此清单,<b class="red">不包含表前缀</b></span>
                     </td>
                 </tr>
@@ -247,7 +247,7 @@
                 {/volist}
                 <tr>
                     <td colspan="5" style="background-color:#f8f8f8">
-                        <a class="layui-btn layui-btn-small j-add-tr" data-tpl="hook">添加钩子</a>
+                        <a class="layui-btn layui-btn-sm j-add-tr" data-tpl="hook">添加钩子</a>
                         <span class="layui-word-aux">必须重装模块后新添加的钩子才生效</span>
                     </td>
                 </tr>
