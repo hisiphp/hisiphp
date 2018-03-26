@@ -146,7 +146,7 @@ class Plugins extends Admin
         if ($row['config']) {
             $config = json_decode($row['config'], 1);
             foreach ($config as &$v) {
-                if ($v['options']) {
+                if (isset($v['options']) && $v['options']) {
                     $v['options'] = array_filter(parse_attr($v['options']));
                 }
             }
