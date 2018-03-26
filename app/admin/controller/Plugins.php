@@ -144,7 +144,11 @@ class Plugins extends Admin
     {
         $row = PluginsModel::where('id', $id)->field('id,name,config,title')->find()->toArray();
         if ($row['config']) {
-            $row['config'] = json_decode($row['config'], 1);
+            $config = json_decode($row['config'], 1);
+            foreach ($config as &$v) {
+                $v['options'] = array_filter(parse_attr($v['options']));
+            }
+            $row['config'] = $config;
         } else {
             return $this->error('此插件无需配置！');
         }
@@ -159,7 +163,6 @@ class Plugins extends Admin
             PluginsModel::getConfig('', true);
             return $this->success('配置保存成功。');
         }
-        
         $this->assign('data_info', $row);
         return $this->fetch();
     }
