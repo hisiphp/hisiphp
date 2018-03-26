@@ -70,9 +70,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline">
-                        {php}$value = json_decode($v['value']);{/php}
                         {volist name="v['options']" id="vv"}
-                            <input type="checkbox" name="{$v['name']}[]" value="{$key}" title="{$vv}" lay-skin="primary" {if condition="in_array($key, $value)"}checked{/if}>
+                            <input type="checkbox" name="{$v['name']}[]" value="{$key}" title="{$vv}" lay-skin="primary" {if condition="in_array($key, $v['value'])"}checked{/if}>
                         {/volist}
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}</div>

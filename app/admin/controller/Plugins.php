@@ -156,8 +156,9 @@ class Plugins extends Admin
         }
 
         if ($this->request->isPost()) {
+            $postData = input('post.');
             foreach ($row['config'] as &$conf) {
-                $conf['value'] = input('post.'.$conf['name']);
+                $conf['value'] = $postData[$conf['name']];
             }
             if (PluginsModel::where('id', $id)->setField('config', json_encode($row['config'], 1)) === false) {
                 return $this->error('配置保存失败！');
