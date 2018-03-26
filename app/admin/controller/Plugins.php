@@ -145,12 +145,15 @@ class Plugins extends Admin
         $row = PluginsModel::where('id', $id)->field('id,name,config,title')->find()->toArray();
         if ($row['config']) {
             $config = json_decode($row['config'], 1);
+
             foreach ($config as &$v) {
                 if (isset($v['options']) && $v['options']) {
                     $v['options'] = array_filter(parse_attr($v['options']));
                 }
-                if ($v['type'] == 'checkbox') {
-                    $v['value'] = explode(',', $v['value']);
+                if ($v['type'] == 'checkbox' && isset($v['value']) && $v['value']) {
+                    if (!is_array($v['value'])) {
+                        $v['value'] = explode(',', $v['value']);
+                    }
                 }
             }
             $row['config'] = $config;
@@ -161,7 +164,7 @@ class Plugins extends Admin
         if ($this->request->isPost()) {
             $postData = input('post.');
             foreach ($row['config'] as &$conf) {
-                $conf['value'] = $postData[$conf['name']];
+                $conf['value'] = isset($postData[$conf['name']]) ? $postData[$conf['name']] : '';
             }
             if (PluginsModel::where('id', $id)->setField('config', json_encode($row['config'], 1)) === false) {
                 return $this->error('配置保存失败！');
