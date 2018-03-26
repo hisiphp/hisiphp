@@ -48,6 +48,6 @@ class AdminUser extends Validate
         //更新个人信息
         'info'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'mobile'],
         //登录
-        'login'  =>  ['username' => 'require|token', 'password'],
+        'login'  =>  ['username' => 'require|token', 'password' => 'length:6,20'],
     ];
 }
