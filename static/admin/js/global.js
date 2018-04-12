@@ -6,7 +6,7 @@ layui.define(['element', 'form'], function(exports) {
         layer.open({
             title: false,
             type: 1,
-            content: '<div class="lock-screen"><input type="password" id="unlockedPwd" class="layui-input" placeholder="请输入登录密码解锁..." autocomplete="off"><button id="unlocked" class="layui-btn">解锁</button><div id="unlockTips"></div></div>',
+            content: '<div class="lock-screen"><input type="password" id="unlockedPwd" class="layui-input" placeholder="请输入登录密码解锁..." autocomplete="on"><button id="unlocked" class="layui-btn">解锁</button></div>',
             closeBtn: 0,
             shade: 0.95,
             offset: '350px'
@@ -22,10 +22,7 @@ layui.define(['element', 'form'], function(exports) {
                     window.sessionStorage.setItem("lockscreen", false);
                     layer.closeAll();
                 } else {
-                    $('#unlockTips').html(res.msg);
-                    setTimeout(function(){
-                        $('#unlockTips').html('');
-                    }, 3000);
+                    $('#unlockedPwd').attr('placeholder', res.msg).val('');
                 }
             });
         });

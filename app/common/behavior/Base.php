@@ -107,7 +107,7 @@ class Base
             ]);
         }
         
-        config('view_replace_str', $view_replace_str);
+        config('view_replace_str', array_merge(config('view_replace_str'), $view_replace_str));
         // 如果定义了入口为admin，则修改默认的访问控制器层
         if(defined('ENTRANCE') && ENTRANCE == 'admin') {
             if ($module == '') {

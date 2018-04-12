@@ -69,14 +69,15 @@ class AdminMember extends Model
         }
         return 0;
     }
-
+    
     /**
      * 注册
      * @param array $data 参数，可传参数account,username,password,email,mobile,nick,avatar
+     * @param bool $login 注册成功后自动登录
      * @author 橘子俊 <364666827@qq.com>
      * @return stirng|array
      */
-    public function register($data = [])
+    public function register($data = [], $login = true)
     {
         $map = [];
         $map['nick'] = isset($data['nick']) ? $data['nick'] : '';
@@ -136,7 +137,10 @@ class AdminMember extends Model
         $map['id'] = $this->id;
         unset($map['password']);
         runhook('system_member_register', $map);
-        return self::autoLogin($map);
+        if ($login) {
+            return self::autoLogin($map);
+        }
+        return true;
     }
 
     /**
