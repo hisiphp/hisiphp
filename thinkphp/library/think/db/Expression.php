@@ -6,38 +6,43 @@
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://zjzit.cn>
+// | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-namespace think\db\exception;
+namespace think\db;
 
-use think\exception\DbException;
-
-class DataNotFoundException extends DbException
+class Expression
 {
-    protected $table;
+    /**
+     * 查询表达式
+     *
+     * @var string
+     */
+    protected $value;
 
     /**
-     * DbException constructor.
-     * @param string $message
-     * @param string $table
-     * @param array $config
+     * 创建一个查询表达式
+     *
+     * @param  string  $value
+     * @return void
      */
-    public function __construct($message, $table = '', array $config = [])
+    public function __construct($value)
     {
-        $this->message = $message;
-        $this->table   = $table;
-
-        $this->setData('Database Config', $config);
+        $this->value = $value;
     }
 
     /**
-     * 获取数据表名
-     * @access public
+     * 获取表达式
+     *
      * @return string
      */
-    public function getTable()
+    public function getValue()
     {
-        return $this->table;
+        return $this->value;
+    }
+
+    public function __toString()
+    {
+        return (string) $this->value;
     }
 }
