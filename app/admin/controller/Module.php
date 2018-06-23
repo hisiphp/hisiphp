@@ -497,7 +497,7 @@ class Module extends Admin
         // 将图标移动到模块目录下面
         copy($image_path.$module['name'] . '.png', APP_PATH.$module['name'].'.png');
         copy($image_path.$module['name'] . '.png', ROOT_PATH.'static'.DS.'app_icon'.DS.$module['name'].'.png');
-        return $this->success('/static/app_icon/'.$module['name'].'.png?v='.time());
+        return $this->success(ROOT_DIR.'static/app_icon/'.$module['name'].'.png?v='.time());
     }
 
     /**

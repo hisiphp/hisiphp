@@ -35,10 +35,15 @@ if (!function_exists('get_domain')) {
      */
     function get_domain($http = true) {
         if ($http) {
-            if (input('server.https') && input('server.https') == 'on') {
-                return 'https://'.input('server.http_host');
+            $port = '';
+            if (input('server.server_port') != 80) {
+                $port = ':'.input('server.server_port');
             }
-            return 'http://'.input('server.http_host');
+
+            if (input('server.https') && input('server.https') == 'on') {
+                return 'https://'.input('server.http_host').$port;
+            }
+            return 'http://'.input('server.http_host').$port;
         }
         return input('server.http_host');
     }
@@ -719,15 +724,15 @@ if (!function_exists('plugins_action_exist')) {
     }
 }
 
-if (!function_exists('plugins_action')) {
+if (!function_exists('plugins_run')) {
     /**
-     * 执行插件操作
+     * 运行插件操作
      * @param string $path  执行操作路径：插件名/控制器/[操作]
      * @param mixed $params 参数
      * @param string $group 控制器分组[admin,home]
      * @return mixed
      */
-    function plugins_action($path = '', $params = [], $group = 'admin')
+    function plugins_run($path = '', $params = [], $group = 'admin')
     {
         if (strpos($path, '/')) {
             list($name, $controller, $action) = explode('/', $path);
@@ -739,6 +744,7 @@ if (!function_exists('plugins_action')) {
         if (!is_array($params)) {
             $params = (array)$params;
         }
+        define('IS_PLUGINS', true);
         $class = "plugins\\{$name}\\{$group}\\{$controller}";
         $obj = new $class;
         return call_user_func_array([$obj, $action], [$params]);
@@ -775,14 +781,20 @@ if (!function_exists('plugins_url')) {
      */
     function plugins_url($url = '', $param = [], $group = '', $urlmode = 2)
     {
-        if (empty($url)) {
+        $params = [];
+        $params['_p'] = input('get._p');
+        $params['_c'] = input('get._c', 'Index');
+        $params['_a'] = input('get._a', 'index');
+        if ($url) {
+            $url = explode('/', $url);
+            $params['_p'] = isset($url[0]) ? $url[0] : '';
+            $params['_c'] =  isset($url[1]) ? ucfirst($url[1]) : 'Index';
+            $params['_a'] = isset($url[2]) ? $url[2] : 'index';
+        }
+        if (!$params['_p']) {
             return '#链接错误';
         }
-        $params = [];
-        $url = explode('/', $url);
-        $params['_a'] = isset($url[2]) ? $url[2] : 'index';
-        $params['_c'] =  isset($url[1]) ? ucfirst($url[1]) : 'Index';
-        $params['_p'] = $url[0];
+
         $params = array_merge($params, $param);
         if (empty($group)) {
             if (defined('ENTRANCE')) {
@@ -793,8 +805,7 @@ if (!function_exists('plugins_url')) {
                 }
                 return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
             }
-        }
-        if ($group == 'admin') {
+        } elseif ($group == 'admin') {
             return url('admin/plugins/run', $params);
         } else {
             if ($urlmode == 2) {

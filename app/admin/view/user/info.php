@@ -19,6 +19,12 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-inline">
+            <input type="password" class="layui-input" name="password_confirm" lay-verify="password" autocomplete="off" placeholder="******">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">联系邮箱</label>
         <div class="layui-input-inline">
             <input type="text" class="layui-input field-email" name="email" lay-verify="" autocomplete="off" placeholder="请输入邮箱地址">

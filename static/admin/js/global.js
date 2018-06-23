@@ -46,7 +46,7 @@ layui.define(['element', 'form'], function(exports) {
     if (typeof(LAYUI_OFFSET) == 'undefined') {
         layer.config({offset:'60px'});  
     } else {
-        layer.config({offset:LAYUI_OFFSET+'px'});  
+        layer.config({offset:LAYUI_OFFSET});  
     }
     /* 打开/关闭左侧导航 */
     $('#foldSwitch').click(function(){
@@ -135,7 +135,7 @@ layui.define(['element', 'form'], function(exports) {
     });
 
     /*iframe弹窗*/
-    $('.j-iframe-pop').click(function(){
+    $(document).on('click', '.j-iframe-pop', function(){
         var that = $(this), 
             _url = that.attr('href'), 
             _title = that.attr('title'), 
@@ -203,7 +203,7 @@ layui.define(['element', 'form'], function(exports) {
     });
 
     /* TR数据行删除 */
-    $('.j-tr-del').click(function() {
+    $(document).on('click', '.j-tr-del',function() {
         var that = $(this),
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){

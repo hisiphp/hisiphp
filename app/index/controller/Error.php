@@ -46,7 +46,7 @@ class Error extends Home
             if (!plugins_action_exist($plugin.'/'.$controller.'/'.$action, 'home')) {
                 return $this->error("插件方法不存在[".$plugin.'/'.$controller.'/'.$action."]！");
             }
-            return plugins_action($plugin.'/'.$controller.'/'.$action, $params, 'home');
+            return plugins_run($plugin.'/'.$controller.'/'.$action, $params, 'home');
         }
         return $this->error('这是系统默认模块，您可以在后台指定其他模块为默认访问首页！', '', '', 100);
     }

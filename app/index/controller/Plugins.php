@@ -52,6 +52,6 @@ class Plugins extends Home
         if (!plugins_action_exist($plugin.'/'.$controller.'/'.$action, 'home')) {
             return $this->error("插件方法不存在[".$plugin.'/'.$controller.'/'.$action."]！");
         }
-        return plugins_action($plugin.'/'.$controller.'/'.$action, $params, 'home');
+        return plugins_run($plugin.'/'.$controller.'/'.$action, $params, 'home');
     }
 }

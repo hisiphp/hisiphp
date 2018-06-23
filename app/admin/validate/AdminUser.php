@@ -44,7 +44,7 @@ class AdminUser extends Validate
     //定义验证场景
     protected $scene = [
         //更新
-        'update'  =>  ['username', 'email', 'password' => 'length:6,20', 'mobile', 'role_id'],
+        'update'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'mobile', 'role_id'],
         //更新个人信息
         'info'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'mobile'],
         //登录
