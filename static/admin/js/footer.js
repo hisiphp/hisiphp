@@ -13,8 +13,13 @@ layui.use(['jquery'], function() {
                     input.prop('checked', true);
                     break;
                 case 'checkbox':
-                    for(var j in formData[i]) {
-                        input = $('.field-'+i+'[value="'+formData[i][j]+'"]');
+                    if (typeof(formData[i]) == 'object') {
+                        for(var j in formData[i]) {
+                            input = $('.field-'+i+'[value="'+formData[i][j]+'"]');
+                            input.prop('checked', true);
+                        }
+                    } else {
+                        input = $('.field-'+i+'[value="'+formData[i]+'"]');
                         input.prop('checked', true);
                     }
                     break;
