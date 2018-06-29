@@ -1,7 +1,7 @@
 HisiPHP
 ===============
 
-HisiPHP 基于ThinkPHP5+layui开发的一套开源PHP快速开发框架，默认集成了权限管理、模块管理、插件管理、钩子管理、数据库管理等常用功能，以方便开发者快速构建自己的应用，我们在发布第一个版本就为您集成了一键升级框架的功能，扩展的模块、插件、模板均可独立在线升级。为了让您开发的应用获得更多的使用者，HisiPHP在发布之初就上线了PHP应用市场([http://store.hisiphp.com](http://store.hisiphp.com?source=oschina))，我们诚邀您的加入。
+HisiPHP 基于ThinkPHP5+layui开发的一套开源PHP快速开发框架，默认集成了权限管理、模块管理、插件管理、钩子管理、数据库管理等常用功能，以方便开发者快速构建自己的应用，我们在发布第一个版本就为您集成了一键升级框架的功能，扩展的模块、插件、模板均可独立在线升级。为了让您开发的应用获得更多的使用者，HisiPHP在发布之初就上线了PHP应用市场([http://store.hisiphp.com](http://store.hisiphp.com?source=github))，我们诚邀您的加入。
 
 ## 目录结构
 ```
@@ -43,20 +43,20 @@ www  WEB部署目录（或者子目录）
 [HisiPHP 完全开发手册]https://www.kancloud.cn/hisi/hisiphp
 
 ## 应用商店
-[store.hisiphp.com](http://store.hisiphp.com?source=oschina)
+[store.hisiphp.com](http://store.hisiphp.com?source=github)
 
 ## 演示地址
-[demo.hisiphp.com](http://demo.hisiphp.com/admin.php?from=oschina)
+[demo.hisiphp.com](http://demo.hisiphp.com/admin.php?from=github)
 
 
 ## 模块推荐 
-[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](http://store.hisiphp.com/detail/1000000.html?from=oschina)
+[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](http://store.hisiphp.com/detail/1000000.html?from=github)
 
 
 ## 插件推荐 
-[第三方授权登录（QQ登录、微信登录、新浪微博登录）](http://store.hisiphp.com/detail/1000002.html?from=oschina)
+[第三方授权登录（QQ登录、微信登录、新浪微博登录）](http://store.hisiphp.com/detail/1000002.html?from=github)
 
-[短信服务（阿里云通信、腾讯云短信、聚合数据短信API）](http://store.hisiphp.com/detail/1000008.html?from=oschina)
+[短信服务（阿里云通信、腾讯云短信、聚合数据短信API）](http://store.hisiphp.com/detail/1000008.html?from=github)
 
 
 ## QQ交流群
