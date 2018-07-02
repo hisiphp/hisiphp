@@ -775,6 +775,7 @@ CREATE TABLE `hisiphp_admin_user` (
   `email` varchar(50) NOT NULL COMMENT '邮箱',
   `auth` text NOT NULL COMMENT '权限',
   `iframe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0默认，1框架',
+  `theme` varchar(30) NOT NULL DEFAULT 'default' COMMENT '主题',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `last_login_ip` varchar(128) NOT NULL COMMENT '最后登陆IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登陆时间',

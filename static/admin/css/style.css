@@ -50,6 +50,8 @@ body{background-color:#fff;}
 #switchNav .fold-mark i.aicon{margin-right:20px;}
 #switchNav a{cursor:pointer;}
 #switchNav i.typcn,#switchNav i.fa{font-size:16px!important;}
+#switchNav.layui-side i.aicon{margin-right:5px;}
+#switchNav.layui-side img{border-radius:5px;margin:-2px 5px 0 0;}
 .bread-crumbs{display:block;background-color:#f9f9f9;padding:10px 0 0 10px;height:30px;overflow:hidden;}
 .bread-crumbs li{float:left;margin:0 5px;color:#666;height:30px;line-height:30px}
 .bread-crumbs li a{color:#666;}
@@ -63,8 +65,8 @@ body{background-color:#fff;}
 .fullscreen.page-body,
 .fullscreen .layui-tab{margin:0;}
 /* 页面工具栏 */
-.page-toolbar{display:block;overflow:hidden;}
-.page-filter{height:40px;overflow:hidden;}
+.page-toolbar{display:block;height:40px;}
+.page-filter{height:40px;}
 .page-filter .layui-form-pane .layui-form-label{width:auto;}
 .page-filter .layui-form-pane .layui-form-item .layui-input-inline{margin-right:0;}
 .page-tips{margin-bottom:10px;}

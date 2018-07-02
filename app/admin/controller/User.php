@@ -85,7 +85,7 @@ class User extends Admin
         } else {
             cookie('hisi_iframe', null);
         }
-        return $this->success('布局切换成功，跳转中...', url('index/index'));
+        return $this->success('布局切换成功，跳转中...', url('admin/index/index'));
     }
 
     /**
@@ -160,8 +160,9 @@ class User extends Admin
             }
 
             if ($data['password'] == '') {
-                unset($data['password'], $data['password_confirm']);
+                unset($data['password']);
             }
+            unset($data['password_confirm']);
 
             if (!UserModel::update($data)) {
                 return $this->error('修改失败');
@@ -204,14 +205,16 @@ class User extends Admin
             // 防止伪造
             unset($data['role_id'], $data['status']);
 
-            if ($data['password'] == '') {
-                unset($data['password']);
-            }
             // 验证
             $result = $this->validate($data, 'AdminUser.info');
             if($result !== true) {
                 return $this->error($result);
             }
+
+            if ($data['password'] == '') {
+                unset($data['password']);
+            }
+            unset($data['password_confirm']);
 
             if (!UserModel::update($data)) {
                 return $this->error('修改失败');

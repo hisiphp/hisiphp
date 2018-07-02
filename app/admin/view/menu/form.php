@@ -8,16 +8,6 @@
       </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">所属模块</label>
-        <div class="layui-input-inline">
-            <select name="module" class="field-module" type="select">
-                <option value="">请选择...</option>
-                {$module_option}
-            </select>
-        </div>
-        <div class="layui-form-mid layui-word-aux">插件请选择[admin]系统管理模块</div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">所属菜单</label>
         <div class="layui-input-inline">
             <select name="pid" class="field-pid" type="select" lay-filter="pid">
@@ -45,6 +35,9 @@
         </div>
         <i class="{if condition="isset($data_info['icon'])"}{$data_info['icon']}{/if}" id="form-icon-preview"></i>
         <a href="{:url('publics/icon?input=input-icon&show=form-icon-preview')}" title="选择图标" class="layui-btn layui-btn-primary j-iframe-pop fl">选择图标</a>
+        <div class="layui-form-mid layui-word-aux">
+            可直接填写图标URL
+        </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单链接</label>
@@ -89,17 +82,10 @@
         </div>
         <div class="layui-form-mid layui-word-aux">此设置只对前一二三级菜单有效</div>
     </div>
-<!--     <div class="layui-form-item">
-        <label class="layui-form-label">开发可见</label>
-        <div class="layui-input-inline">
-            <input type="radio" class="field-debug" name="debug" value="1" title="是">
-            <input type="radio" class="field-debug" name="debug" value="0" title="否" checked>
-        </div>
-    </div> -->
     <div class="layui-form-item">
         <div class="layui-input-block">
             <input type="hidden" class="field-id" name="id">
-            <!-- <input type="hidden" class="ass-level" name="level"> -->
+            <input type="hidden" name="module" value="{:input('param.mod', 'admin')}">
             <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">提交</button>
             <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
@@ -110,24 +96,6 @@
 var formData = {:json_encode($data_info)};
 layui.use(['form'], function() {
     var $ = layui.jquery, form = layui.form;
-    // form.on('select(pid)', function(data) {
-    //     var level = $('.field-pid option:selected').attr('level');
-    //     // 根据所属菜单层级对菜单链接做出相应提示
-    //     switch(parseInt(level)) {
-    //         case 0:
-    //             $('.menu-url').hide().eq(0).show();
-    //             $('.ass-level').val(1);
-    //             break;
-    //         case 1:
-    //             $('.menu-url').hide().eq(1).show();
-    //             $('.ass-level').val(2);
-    //             break;
-    //         default:
-    //             $('.menu-url').hide().eq(2).show();
-    //             $('.ass-level').val(3);
-    //             break;
-    //     }
-    // });
     if (formData) {
         $('.ass-level').val(parseInt($('.field-pid option:selected').attr('level'))+1);
     }

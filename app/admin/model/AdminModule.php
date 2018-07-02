@@ -221,7 +221,7 @@ class AdminModule extends Model
         rmdir($path.'controller');
         // 生成后台默认控制器
         if (is_dir($path.'admin')) {
-            $admin_contro = "<?php\nnamespace app\\".$data["name"]."\\admin;\nuse app\admin\controller\Admin;\n\nclass Index extends Admin\n{\n    public function index()\n    {\n        return ".'$this->afetch()'.";\n    }\n}";
+            $admin_contro = "<?php\nnamespace app\\".$data["name"]."\\admin;\nuse app\admin\controller\Admin;\n\nclass Index extends Admin\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
             // 删除框架生成的html文件
             @unlink($path . 'view'.DS.'index'.DS.'index.html');
             file_put_contents($path . 'admin'.DS.'Index.php', $admin_contro);

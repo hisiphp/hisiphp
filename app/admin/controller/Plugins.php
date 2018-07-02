@@ -143,23 +143,28 @@ class Plugins extends Admin
     public function setting($id = 0)
     {
         $row = PluginsModel::where('id', $id)->field('id,name,config,title')->find()->toArray();
-        if ($row['config']) {
-            $config = json_decode($row['config'], 1);
-
-            foreach ($config as &$v) {
-                if (isset($v['options']) && $v['options']) {
-                    $v['options'] = array_filter(parse_attr($v['options']));
-                }
-                if ($v['type'] == 'checkbox' && isset($v['value']) && $v['value']) {
-                    if (!is_array($v['value'])) {
-                        $v['value'] = explode(',', $v['value']);
-                    }
-                }
-            }
-            $row['config'] = $config;
-        } else {
+        $pluginsInfo = plugins_info($row['name']);
+        if (!$row['config'] && !$pluginsInfo['config']) {
             return $this->error('此插件无需配置！');
         }
+
+        if (!$row['config'] && $pluginsInfo['config']) {
+            $config = $pluginsInfo['config'];
+        } else {
+            $config = json_decode($row['config'], 1);
+        }
+        
+        foreach ($config as &$v) {
+            if (isset($v['options']) && $v['options']) {
+                $v['options'] = array_filter(parse_attr($v['options']));
+            }
+            if ($v['type'] == 'checkbox' && isset($v['value']) && $v['value']) {
+                if (!is_array($v['value'])) {
+                    $v['value'] = explode(',', $v['value']);
+                }
+            }
+        }
+        $row['config'] = $config;
 
         if ($this->request->isPost()) {
             $postData = input('post.');
@@ -491,6 +496,6 @@ class Plugins extends Admin
         if (!plugins_action_exist($plugin.'/'.$controller.'/'.$action)) {
             return $this->error("找不到插件方法：{$plugin}/{$controller}/{$action}");
         }
-        return plugins_action($plugin.'/'.$controller.'/'.$action, $params);
+        return plugins_run($plugin.'/'.$controller.'/'.$action, $params);
     }
 }

@@ -12,6 +12,7 @@ namespace app\common\controller;
 
 use think\View;
 use think\Exception;
+
 /**
  * 插件类
  * @package app\common\controller
@@ -19,7 +20,7 @@ use think\Exception;
 abstract class Plugins
 {
     /**
-     * @var null 视图实例对象
+     * @var 视图实例对象
      */
     protected $view = null;
 
@@ -29,19 +30,14 @@ abstract class Plugins
     protected $error = '';
 
     /**
-     * @var string 插件路径
-     */
-    public $plugins_path = '';
-
-    /**
-     * @var string 插件信息
-     */
-    public $plugins_info = '';
-
-    /**
      * @var string 插件名
      */
-    public $plugns_name = '';
+    public $pluginsName = '';
+
+    /**
+     * @var string 插件路径
+     */
+    public $pluginsPath = '';
 
     /**
      * 插件构造方法
@@ -50,18 +46,55 @@ abstract class Plugins
     {
         // 获取插件名
         $class = get_class($this);
-        $this->plugns_name = substr($class, strrpos($class, '\\') + 1);
-
+        $this->pluginsName = substr($class, strrpos($class, '\\') + 1);
+        $this->pluginsPath = ROOT_PATH.'plugins/'.$this->pluginsName.'/';
         $this->view = new View();
-        $this->plugins_path = ROOT_PATH.'plugins/'.$this->plugns_name.'/';
-
-        if (is_file($this->plugins_path.'info.php')) {
-            $this->plugins_info = include $this->plugins_path.'info.php';
-        }
     }
 
     /**
-     * 模板变量赋值
+     * 获取插件基础信息
+     * @param string $key 主键
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    final protected function getInfo($key = '')
+    {
+        $info = model('admin/AdminPlugins')->where('name', $this->pluginsName)->find();
+        if (!$info) {
+            return '';
+        }
+
+        if ($key && isset($info[$key])) {
+            return $info[$key];
+        }
+
+        return $info;
+    }
+
+    /**
+     * 获取插件配置
+     * @param string $key 主键
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    final protected function getConfig($key = '')
+    {
+        $config = model('admin/AdminPlugins')->where('name', $this->pluginsName)->value('config');
+        if (!$config) {
+            return '';
+        } else {
+            $config = json_decode($config, 1);
+        }
+
+        if ($key && isset($config[$key])) {
+            return $config[$key];
+        }
+
+        return $config;
+    }
+
+    /**
+     * 插件模板变量赋值
      * @param string $name 模板变量
      * @param string $value 变量的值
      * @author 橘子俊 <364666827@qq.com>
@@ -74,7 +107,7 @@ abstract class Plugins
     }
 
     /**
-     * 显示方法,仅限钩子方法使用
+     * 模板渲染[仅限钩子方法调用]
      * @param string $template 模板名
      * @param array $vars 模板输出变量
      * @param array $replace 替换内容
@@ -82,17 +115,16 @@ abstract class Plugins
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    final protected function fetch($template = '', $vars = [], $replace = [], $config = [])
+    final protected function fetch($template = '', $vars = [], $replace = [], $config = [], $renderContent = false)
     {
-        if ($template != '') {
-            if (!is_file($template)) {
-                $template = $this->plugins_path. 'view/widget/'. $template . '.' . config('template.view_suffix');
-                if (!is_file($template)) {
-                    throw new Exception('模板不存在：'.$template);
-                }
-            }
-            echo $this->view->fetch($template, $vars, $replace, $config);
+        if ($template) {
+            $template = $this->pluginsPath. 'view/widget/'. $template . '.' . config('template.view_suffix');
+        } else {
+            throw new Exception('钩子模板不允许为空');
         }
+
+        $this->view->engine->layout(false);
+        echo $this->view->fetch($template, $vars, $replace, $config, $renderContent);
     }
 
     /**
@@ -106,14 +138,14 @@ abstract class Plugins
     }
 
     /**
-     * 必须实现安装方法
+     * 插件安装方法
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
     abstract public function install();
 
     /**
-     * 必须实现卸载方法
+     * 插件卸载方法
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */

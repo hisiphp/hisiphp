@@ -158,7 +158,7 @@ class AdminAnnex extends Model
                 if (empty($thumb_type)) {
                     $thumb_type = config('upload.thumb_type');
                 }
-                if (!empty($thumb) && strpos($thumb, ',')) {// 传参优先
+                if (!empty($thumb) && strpos($thumb, 'x')) {// 传参优先
                     $image = \think\Image::open('.'.$data['file']);
                     // 支持多种尺寸的缩略图
                     $thumbs = explode(';', $thumb);

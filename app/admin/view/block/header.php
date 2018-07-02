@@ -6,10 +6,12 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme_diy.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
 </head>
-<body>
+<body class="{:cookie('hisi_admin_theme')}">
 <div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
 {else /}
 <!DOCTYPE html>
@@ -19,10 +21,12 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <link rel="stylesheet" href="__ADMIN_JS__/layui/css/layui.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme_diy.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
 </head>
-<body>
+<body class="{:cookie('hisi_admin_theme')}">
 {php}
 $ca = strtolower(request()->controller().'/'.request()->action());
 {/php}
@@ -80,11 +84,11 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                         {if condition="$vv['title'] eq '快捷菜单'"}
                             <dd><a class="admin-nav-item" href="{:url('admin/index/index')}"><i class="aicon ai-shouye"></i> 后台首页</a></dd>
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
+                            <dd><a class="admin-nav-item" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
                             {/volist}
                         {else /}
                             {volist name="vv['childs']" id="vvv"}
-                            <dd><a class="admin-nav-item" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}"><i class="{$vvv['icon']}"></i> {$vvv['title']}</a></dd>
+                            <dd><a class="admin-nav-item" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a></dd>
                             {/volist}
                         {/if}
                     </dl>

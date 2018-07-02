@@ -117,7 +117,7 @@ class Menu extends Admin
      */
     private function menuOption($id = '', $str = '')
     {
-        $menus = MenuModel::getMainMenu();
+        $menus = MenuModel::getAllChild();
         foreach ($menus as $v) {
             if ($id == $v['id']) {
                 $str .= '<option level="1" value="'.$v['id'].'" selected>['.$v['module'].']'.$v['title'].'</option>';

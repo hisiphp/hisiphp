@@ -173,8 +173,10 @@ class AdminUser extends Model
             } else {
                 cookie('hisi_iframe', null);
             }
+            // 主题设置
+            cookie('hisi_admin_theme', isset($user->theme) ? $user->theme : 'default');
             // 缓存角色权限
-            session('role_auth_'.$user->role_id, $user['auth'] ? json_decode($user['auth'], true) : json_decode($role['auth'], true));
+            session('role_auth_'.$user->role_id, $user->auth ? json_decode($user->auth, true) : json_decode($role['auth'], true));
             // 缓存登录信息
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));

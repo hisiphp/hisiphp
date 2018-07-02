@@ -8,54 +8,67 @@
 // +----------------------------------------------------------------------
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
+
 namespace app\common\controller;
 use think\View;
 use think\Controller;
+
 /**
- * 项目公共控制器
+ * 框架公共控制器
  * @package app\common\controller
  */
 class Common extends Controller
 {
-    protected function _initialize()
-    {
-        
-    }
+    protected function _initialize() {}
 
     /**
-     * 渲染后台模板
-     * 模块区分前后台时需用此方法
-     * @param string $template 模板路径
-     * @author 橘子俊 <364666827@qq.com>
+     * 解析和获取模板内容 用于输出
+     * @param string    $template 模板文件名或者内容
+     * @param array     $vars     模板输出变量
+     * @param array     $replace 替换内容
+     * @param array     $config     模板参数
+     * @param bool      $renderContent     是否渲染内容
      * @return string
+     * @throws Exception
+     * @author 橘子俊 <364666827@qq.com>
      */
-    protected function afetch($template = '') {
-        if ($template) {
-            return parent::fetch($template);
+    final protected function fetch($template = '', $vars = [], $replace = [], $config = [], $renderContent = false)
+    {
+        if (defined('IS_PLUGINS')) {
+            return self::pluginsFetch($template , $vars , $replace , $config , $renderContent);
         }
-        $dispatch = request()->dispatch();
-        if (!$dispatch['module'][2]) {
-            $dispatch['module'][2] = 'index';
-        }
-        return parent::fetch($dispatch['module'][1].DS.$dispatch['module'][2]);
+        return parent::fetch($template , $vars , $replace , $config , $renderContent);
     }
-
+    
     /**
      * 渲染插件模板
-     * @param string $template 模板名称
+     * @param string    $template 模板文件名或者内容
+     * @param array     $vars     模板输出变量
+     * @param array     $replace 替换内容
+     * @param array     $config     模板参数
+     * @param bool      $renderContent     是否渲染内容
+     * @return string
+     * @throws Exception
      * @author 橘子俊 <364666827@qq.com>
-     * @return mixed
      */
-    final protected function pfetch($template = '', $vars = [], $replace = [], $config = [])
+    final protected function pluginsFetch($template = '', $vars = [], $replace = [], $config = [], $renderContent = false)
     {
         $plugin = $_GET['_p'];
         $controller = $_GET['_c'];
         $action = $_GET['_a'];
-        $template = $template ? $template : $controller.'/'.$action;
+        if (!$template) {
+            $template = $controller.'/'.$action;
+        } elseif (strpos($template, '/') == false) {
+            $template = $controller.'/'.$template;
+        }
+        
         if(defined('ENTRANCE') && ENTRANCE == 'admin') {
             $template = 'admin/'.$template;
+        } else {
+            $template = 'home/'.$template;
         }
+
         $template_path = strtolower("plugins/{$plugin}/view/{$template}.".config('template.view_suffix'));
-        return parent::fetch($template_path, $vars, $replace, $config);
+        return parent::fetch($template_path, $vars, $replace, $config, $renderContent);
     }
 }
