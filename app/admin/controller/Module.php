@@ -11,6 +11,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\AdminModule as ModuleModel;
+use app\admin\model\AdminConfig as ConfigModel;
 use app\admin\model\AdminMenu as MenuModel;
 use app\common\util\Dir;
 use app\common\util\PclZip;
@@ -422,6 +423,7 @@ class Module extends Admin
             $sqlmap['status'] = 2;
             ModuleModel::where('id', $id)->update($sqlmap);
             ModuleModel::moduleRoute(true);
+            ConfigModel::getConfig('', true);
             return $this->success('模块已安装成功', url('index?status=2'));
         }
         // 模块依赖检查
