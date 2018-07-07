@@ -51,6 +51,7 @@ www  WEB部署目录（或者子目录）
 
 ## 模块推荐 
 [在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](http://store.hisiphp.com/detail/1000000.html?from=github)
+[响应式轻博客](http://store.hisiphp.com/detail/1000009.html?from=github)
 
 
 ## 插件推荐 
