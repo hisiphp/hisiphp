@@ -1,5 +1,8 @@
-layui.define(['element', 'form'], function(exports) {
-    var $ = layui.jquery,element = layui.element, layer = layui.layer, form = layui.form;
+layui.define(['element', 'form', 'table'], function(exports) {
+    var $ = layui.jquery,element = layui.element, 
+        layer = layui.layer, 
+        form = layui.form, 
+        table = layui.table;
     var lockscreen = function() {
         document.oncontextmenu=new Function("event.returnValue=false;");
         document.onselectstart=new Function("event.returnValue=false;");
@@ -44,10 +47,11 @@ layui.define(['element', 'form'], function(exports) {
         $('#switchNav a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
     }
     if (typeof(LAYUI_OFFSET) == 'undefined') {
-        layer.config({offset:'60px'});  
+        layer.config({offset:'60px'});
     } else {
         layer.config({offset:LAYUI_OFFSET});  
     }
+
     /* 打开/关闭左侧导航 */
     $('#foldSwitch').click(function(){
         var that = $(this);
@@ -91,7 +95,7 @@ layui.define(['element', 'form'], function(exports) {
         return false;
     });
 
-    /* 全屏控制 */
+    /* 全屏切换 */
     $('#fullscreen-btn').click(function(){
         var that = $(this);
         if (!that.hasClass('ai-quanping')) {
@@ -107,7 +111,7 @@ layui.define(['element', 'form'], function(exports) {
         }
     });
 
-    /* 全选 */
+    /* 静态表格全选 */
     form.on('checkbox(allChoose)', function(data) {
         var child = $(data.elem).parents('table').find('tbody input.checkbox-ids');
         child.each(function(index, item) {
@@ -116,7 +120,10 @@ layui.define(['element', 'form'], function(exports) {
         form.render('checkbox');
     });
 
-    /* 删除快捷菜单 */
+    /**
+     * 删除快捷菜单
+     * @attr data-href 请求地址
+     */
     $('.j-del-menu').click(function(){
         var that = $(this);
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){
@@ -134,7 +141,13 @@ layui.define(['element', 'form'], function(exports) {
 
     });
 
-    /*iframe弹窗*/
+    /**
+     * iframe弹窗
+     * @attr href 请求地址
+     * @attr title 弹窗标题
+     * @attr width 弹窗宽度
+     * @attr height 弹窗高度
+     */
     $(document).on('click', '.j-iframe-pop', function(){
         var that = $(this), 
             _url = that.attr('href'), 
@@ -149,7 +162,10 @@ layui.define(['element', 'form'], function(exports) {
         return false;
     });
 
-    /* 监听状态设置开关 */
+    /**
+     * 通用状态设置开关
+     * @attr data-href 请求地址
+     */
     form.on('switch(switchStatus)', function(data) {
         var that = $(this), status = 0;
         if (!that.attr('data-href')) {
@@ -168,7 +184,11 @@ layui.define(['element', 'form'], function(exports) {
         });
     });
 
-    /* 监听表单提交 */
+    /**
+     * 监听表单提交
+     * @attr action 请求地址
+     * @attr data-form 表单DOM
+     */
     form.on('submit(formSubmit)', function(data) {
         var _form = '';
         if ($(this).attr('data-form')) {
@@ -202,8 +222,12 @@ layui.define(['element', 'form'], function(exports) {
         return false;
     });
 
-    /* TR数据行删除 */
-    $(document).on('click', '.j-tr-del',function() {
+    /**
+     * 通用TR数据行删除
+     * @attr href或data-href 请求地址
+     * @attr refresh 操作完成后是否自动刷新
+     */
+    $(document).on('click', '.j-tr-del', function() {
         var that = $(this),
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){
@@ -223,7 +247,12 @@ layui.define(['element', 'form'], function(exports) {
         return false;
     });
 
-    /* ajax请求操作 */
+    /**
+     * ajax请求操作
+     * @attr href或data-href 请求地址
+     * @attr refresh 操作完成后是否自动刷新
+     * @class confirm confirm提示内容
+     */
     $(document).on('click', '.j-ajax', function() {
         var that = $(this), 
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href'),
@@ -267,7 +296,10 @@ layui.define(['element', 'form'], function(exports) {
         return false;
     });
 
-    /* 数据列表input编辑自动选中ids */
+    /**
+     * 数据列表input编辑自动选中ids
+     * @attr data-value 修改前的值
+     */
     $('.j-auto-checked').blur(function(){
         var that = $(this);
         if(that.attr('data-value') != that.val()) {
@@ -278,7 +310,11 @@ layui.define(['element', 'form'], function(exports) {
         form.render('checkbox');
     });
 
-    /* 用ajax方式更新input*/
+    /**
+     * input编辑更新
+     * @attr data-value 修改前的值
+     * @attr data-href 提交地址
+     */
     $('.j-ajax-input').focusout(function(){
         var that = $(this), _val = that.val();
         if (_val == '') return false;
@@ -295,7 +331,9 @@ layui.define(['element', 'form'], function(exports) {
         });
     });
 
-    /* 小提示 */
+    /**
+     * 小提示
+     */
     $('.tooltip').hover(function() {
         var that = $(this);
         that.find('i').show();
@@ -304,24 +342,47 @@ layui.define(['element', 'form'], function(exports) {
         that.find('i').hide();
     });
 
-    /* 列表按钮组 */
+    /**
+     * 列表页批量操作按钮组
+     * @attr href 操作地址
+     * @attr data-table table容器ID
+     * @class confirm 类似系统confirm
+     * @attr tips confirm提示内容
+     */
     $('.j-page-btns').click(function(){
         var that = $(this),
+            query = '',
             code = function(that) {
                 var href = that.attr('href') ? that.attr('href') : that.attr('data-href');
+                var tableObj = that.attr('data-table') ? that.attr('data-table') : '';
                 if (!href) {
                     layer.msg('请设置data-href参数');
                     return false;
                 }
-                if ($('.checkbox-ids:checked').length <= 0) {
-                    layer.msg('请选择要操作的数据');
-                    return false;
-                }
-                if (that.parents('form')[0]) {
-                    var query = that.parents('form').serialize();
+                if (tableObj == '') {
+                    if ($('.checkbox-ids:checked').length <= 0) {
+                        layer.msg('请选择要操作的数据');
+                        return false;
+                    }
+                    if (that.parents('form')[0]) {
+                        query = that.parents('form').serialize();
+                    } else {
+                        query = $('#pageListForm').serialize();
+                    }
                 } else {
-                    var query = $('#pageListForm').serialize();
+                    var checkStatus = table.checkStatus(tableObj);
+                    if (checkStatus.data.length <= 0) {
+                        layer.msg('请选择要操作的数据');
+                        return false;
+                    }
+                    for(var i in checkStatus.data) {
+                        if (i > 0) {
+                            query += '&';
+                        }
+                        query += 'id%5B%5D='+checkStatus.data[i].id;
+                    }
                 }
+
                 layer.msg('数据提交中...',{time:500000});
                 $.post(href, query, function(res) {
                     layer.msg(res.msg, {}, function(){
@@ -340,6 +401,26 @@ layui.define(['element', 'form'], function(exports) {
         } else {
            code(that); 
         }
+        return false;
+    });
+
+    /**
+     * layui非静态table搜索渲染
+     * @attr data-table table容器ID
+     */
+    $('#hisiSearch').submit(function() {
+        var that = $(this), 
+            arr = that.serializeArray(), 
+            where = new Array(),
+            dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
+        for(var i in arr) {
+            where[arr[i].name] = arr[i].value;
+        }
+
+        table.reload(dataTable, {
+          url: that.attr('action'),
+          where: where
+        });
         return false;
     });
     exports('global', {});
