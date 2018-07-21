@@ -99,18 +99,18 @@ class Database extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function export($ids = '', $start = 0)
+    public function export($id = '', $start = 0)
     {
 
         if ($this->request->isPost()) {
-            if (empty($ids)) {
+            if (empty($id)) {
                 return $this->error('请选择您要备份的数据表！');
             }
 
-            if (!is_array($ids)) {
-                $tables[] = $ids;
+            if (!is_array($id)) {
+                $tables[] = $id;
             } else {
-                $tables = $ids;
+                $tables = $id;
             }
 
             //读取备份配置
@@ -213,16 +213,16 @@ class Database extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function optimize($ids = '')
+    public function optimize($id = '')
     {
-        if (empty($ids)) {
+        if (empty($id)) {
             return $this->error('请选择您要优化的数据表！');
         }
 
-        if (!is_array($ids)) {
-            $table[] = $ids;
+        if (!is_array($id)) {
+            $table[] = $id;
         } else {
-            $table = $ids;
+            $table = $id;
         }
 
         $tables = implode('`,`', $table);
@@ -238,16 +238,16 @@ class Database extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function repair($ids = '')
+    public function repair($id = '')
     {
-        if (empty($ids)) {
+        if (empty($id)) {
             return $this->error('请选择您要修复的数据表！');
         }
 
-        if (!is_array($ids)) {
-            $table[] = $ids;
+        if (!is_array($id)) {
+            $table[] = $id;
         } else {
-            $table = $ids;
+            $table = $id;
         }
 
         $tables = implode('`,`', $table);

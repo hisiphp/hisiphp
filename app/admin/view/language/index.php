@@ -1,46 +1,38 @@
 <div class="page-toolbar">
     <div class="layui-btn-group fl">
-        <a href="{:url('add')}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加</a>
-        <a data-href="{:url('status?table=admin_language&val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
-        <a data-href="{:url('status?table=admin_language&val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
+        <a href="{:url('add')}" class="layui-btn layui-btn-primary layui-icon layui-icon-add-circle-fine">&nbsp;添加</a>
+        <a data-href="{:url('status?table=admin_language&val=1')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-play" data-table="dataTable">&nbsp;启用</a>
+        <a data-href="{:url('status?table=admin_language&val=0')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-pause" data-table="dataTable">&nbsp;禁用</a>
     </div>
 </div>
-<form id="pageListForm">
-<div class="layui-form">
-    <table class="layui-table mt10" lay-even="" lay-skin="row">
-        <colgroup>
-            <col width="50">
-        </colgroup>
-        <thead>
-            <tr>
-                <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th>语言</th>
-                <th>代码</th>
-                <th>图标</th>
-                <th>排序</th>
-                <th>状态</th>
-                <th>操作</th>
-            </tr> 
-        </thead>
-        <tbody>
-            {volist name="data_list" id="vo"}
-            <tr>
-                <td><input type="checkbox" name="ids[]" class="layui-checkbox checkbox-ids" value="{$vo['id']}" lay-skin="primary"></td>
-                <td>{$vo['name']}</td>
-                <td>{$vo['code']}</td>
-                <td></td>
-                <td><input type="text" class="layui-input j-ajax-input input-sort" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=admin_language&ids='.$vo['id'])}"></td>
-                <td><input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked=""{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_language&ids='.$vo['id'])}"></td>
-                <td>
-                    <div class="layui-btn-group">
-                        <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
-                    </div>
-                </td>
-            </tr>
-            {/volist}
-        </tbody>
-    </table>
-</div>
-</form>
+<table id="dataTable"></table>
 {include file="block/layui" /}
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" name="status" value="{{ d.status }}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" {{ d.status == 1 ? 'checked' : '' }} data-href="{:url('status')}?table=admin_language&id={{ d.id }}">
+</script>
+
+<script type="text/html" title="操作按钮模板" id="buttonTpl">
+    <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal">修改</a>
+    <a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'name', title: '语言'}
+                ,{field: 'code', title: '代码'}
+                ,{field: 'icon', title: '图标'}
+                ,{field: 'sort', title: '排序'}
+                ,{field: 'status', title: '状态', templet: '#statusTpl'}
+                ,{title: '操作', templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

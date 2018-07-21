@@ -154,11 +154,15 @@ class Member extends Admin
      */
     public function level()
     {
-        $data_list = LevelModel::field('id,name,intro,discount,min_exper,max_exper,ctime,default,status')->paginate();
-        // 分页
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
+        if ($this->request->isAjax()) {
+            $data = [];
+            $data['data'] = LevelModel::select();
+            $data['count'] = 0;
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
+        }
+
         return $this->fetch();
     }
 
@@ -239,9 +243,9 @@ class Member extends Admin
     {
         LevelModel::update(['default' => 0], ['id' => ['neq', $id]]);
         if (LevelModel::where('id', $id)->setField('default', 1) === false) {
-            return $this->error('设置失败！');
+            return $this->error('设置失败');
         }
 
-        return $this->success('设置成功。');
+        return $this->success('设置成功');
     }
 }

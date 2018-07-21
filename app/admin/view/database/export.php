@@ -24,7 +24,7 @@
         <tbody>
             {volist name="data_list" id="vo"}
             <tr>
-                <td><input type="checkbox" name="ids[]" class="layui-checkbox checkbox-ids" value="{$vo['Name']}" lay-skin="primary"></td>
+                <td><input type="checkbox" name="id[]" class="layui-checkbox checkbox-ids" value="{$vo['Name']}" lay-skin="primary"></td>
                 <td>{$vo['Name']}</td>
                 <td>{$vo['Rows']}</td>
                 <td>{$vo['Data_length']/1024} kb</td>

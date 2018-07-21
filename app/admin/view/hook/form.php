@@ -35,7 +35,7 @@
                             <input type="text" class="layui-input j-ajax-input fl" style="width:50px;height:25px;" onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vo['sort']}" data-value="{$vo['sort']}" data-href="{:url('sort?table=admin_hook_plugins&ids='.$vo['id'])}">
                         </td>
                         <td>
-                            <input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked=""{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="启用|停用" data-href="{:url('hookPluginsStatus?ids='.$vo['id'])}">
+                            <input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked=""{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="启用|停用" data-href="{:url('hookPluginsStatus?id='.$vo['id'])}">
                         </td>
                     </tr>
                     {/volist}
@@ -47,7 +47,7 @@
     <div class="layui-form-item">
         <div class="layui-input-block">
             <input type="hidden" class="field-id" name="id">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">提交</button>
+            <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
             <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
     </div>

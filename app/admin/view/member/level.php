@@ -1,56 +1,45 @@
-<form class="page-list-form">
 <div class="page-toolbar">
     <div class="layui-btn-group fl">
-        <a href="{:url('addLevel')}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>添加</a>
-        <a data-href="{:url('status?table=admin_member_level&val=1')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-qiyong"></i>启用</a>
-        <a data-href="{:url('status?table=admin_member_level&val=0')}" class="layui-btn layui-btn-primary j-page-btns"><i class="aicon ai-jinyong1"></i>禁用</a>
-        <a data-href="{:url('delLevel')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="aicon ai-jinyong"></i>删除</a>
+        <a href="{:url('addLevel')}" class="layui-btn layui-btn-primary layui-icon layui-icon-add-circle-fine">&nbsp;添加</a>
+        <a data-href="{:url('status?table=admin_member_level&val=1')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-play" data-table="dataTable">&nbsp;启用</a>
+        <a data-href="{:url('status?table=admin_member_level&val=0')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-pause" data-table="dataTable">&nbsp;禁用</a>
+        <a data-href="{:url('delLevel')}" class="layui-btn layui-btn-primary j-page-btns confirm layui-icon layui-icon-close red">&nbsp;删除</a>
     </div>
 </div>
-<div class="layui-form">
-    <table class="layui-table mt10" lay-even="" lay-skin="row">
-        <colgroup>
-            <col width="50">
-        </colgroup>
-        <thead>
-            <tr>
-                <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
-                <th>等级名称</th>
-                <th>等级简介</th>
-                <th>折扣%</th>
-                <th>最小经验值</th>
-                <th>最大经验值</th>
-                <th>创建时间</th>
-                <th>状态</th>
-                <th>默认</th>
-                <th>操作</th>
-            </tr> 
-        </thead>
-        <tbody>
-            {volist name="data_list" id="v"}
-            <tr>
-                <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
-                <td>{$v['name']}</td>
-                <td>{$v['intro']}</td>
-                <td>{$v['discount']}</td>
-                <td>{$v['min_exper']}</td>
-                <td>{$v['max_exper']}</td>
-                <td>{$v['ctime']}</td>
-                <td><input type="checkbox" name="status" {if condition="$v['status'] eq 1"}checked=""{/if} value="{$v['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_member_level&ids='.$v['id'])}"></td>
-                <td><input type="checkbox" name="default" {if condition="$v['default'] eq 1"}checked=""{/if} value="{$v['default']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('setDefault?id='.$v['id'])}"></td>
-                <td>
-                    <div class="layui-btn-group">
-                        <div class="layui-btn-group">
-                        <a href="{:url('editLevel?id='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('delLevel?ids='.$v['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {/volist}
-        </tbody>
-    </table>
-    {$pages}
-</div>
-</form>
+<table id="dataTable"></table>
 {include file="block/layui" /}
+<script type="text/html" title="状态模板" id="statusTpl">
+    <input type="checkbox" name="status" value="{{ d.status }}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" {{ d.status == 1 ? 'checked' : '' }} data-href="{:url('status')}?table=admin_member_level&id={{ d.id }}">
+</script>
+
+<script type="text/html" title="默认设置模板" id="defaultTpl">
+    <input type="checkbox" name="default" value="{{ d.default }}" lay-skin="switch" lay-filter="switchStatus" lay-text="是|否" {{ d.default == 1 ? 'checked' : '' }} data-href="{:url('setDefault')}?id={{ d.id }}">
+</script>
+
+<script type="text/html" title="操作按钮模板" id="buttonTpl">
+    <a href="{:url('editLevel')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal">修改</a>
+    <a href="{:url('delLevel')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'name', title: '等级名称'}
+                ,{field: 'intro', title: '等级简介'}
+                ,{field: 'discount', title: '折扣%'}
+                ,{field: 'min_exper', title: '最小经验值'}
+                ,{field: 'max_exper', title: '最大经验值'}
+                ,{field: 'status', title: '状态', width: 90, templet: '#statusTpl'}
+                ,{field: 'default', title: '默认', width: 80, templet: '#defaultTpl'}
+                ,{title: '操作', templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

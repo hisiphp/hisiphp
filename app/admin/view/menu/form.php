@@ -86,7 +86,7 @@
         <div class="layui-input-block">
             <input type="hidden" class="field-id" name="id">
             <input type="hidden" name="module" value="{:input('param.mod', 'admin')}">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">提交</button>
+            <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
             <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
     </div>

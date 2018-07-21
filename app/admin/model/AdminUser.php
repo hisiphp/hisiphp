@@ -46,6 +46,19 @@ class AdminUser extends Model
         return get_client_ip();
     }
 
+    // 最后登录时间
+    public function getLastLoginTimeAttr($value)
+    {
+        if (!$value) return '';
+        return date('Y-m-d H:i', $value);
+    }
+
+    // 权限
+    public function role()
+    {
+        return $this->hasOne('AdminRole', 'id', 'role_id');
+    }
+
     /**
      * 删除用户
      * @param string $id 用户ID
@@ -168,13 +181,10 @@ class AdminUser extends Model
             $login['role_id'] = $user->role_id;
             $login['role_name'] = $role['name'];
             $login['nick'] = $user->nick;
-            if ($user->iframe == 1) {
-                cookie('hisi_iframe', 'yes');
-            } else {
-                cookie('hisi_iframe', null);
-            }
+            cookie('hisi_iframe', $user->iframe);
             // 主题设置
-            cookie('hisi_admin_theme', isset($user->theme) ? $user->theme : 'default');
+            self::setTheme(isset($user->theme) ? $user->theme : 0);
+            self::getThemes(true);
             // 缓存角色权限
             session('role_auth_'.$user->role_id, $user->auth ? json_decode($user->auth, true) : json_decode($role['auth'], true));
             // 缓存登录信息
@@ -184,6 +194,48 @@ class AdminUser extends Model
         }
         return false;
     }
+
+    /**
+     * 获取主题列表
+     * @author 橘子俊 <364666827@qq.com>
+     * @return bool
+     */
+    public static function getThemes($cache = false)
+    {
+        $themeFile = '.'.config('view_replace_str.__ADMIN_CSS__').'/theme.css';
+        $themes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        if (is_file($themeFile)) {
+            $content = file_get_contents($themeFile);
+            preg_match_all("/\/\*{6}(.+?)\*{6}\//", $content, $diyTheme);
+            if (isset($diyTheme[1]) && count($diyTheme[1]) > 0) {
+                foreach ($diyTheme[1] as $v) {
+                    if (preg_match("/^[A-Za-z0-9\-\_]+$/", trim($v))) {
+                        array_push($themes, trim($v));
+                    }
+                }
+                $themes = array_unique($themes);
+            }
+        }
+        if ($cache) {
+            session('hisi_admin_themes', $themes);
+        }
+        return $themes;
+    }
+
+    /**
+     * 设置主题
+     * @author 橘子俊 <364666827@qq.com>
+     * @return bool
+     */
+    public static function setTheme($name = 'default', $update = false)
+    {
+        cookie('hisi_admin_theme', $name);
+        $result = true;
+        if ($update && defined('ADMIN_ID')) {
+            $result = self::where('id', ADMIN_ID)->setField('theme', $name);
+        }
+        return $result;
+    } 
 
     /**
      * 判断是否登录

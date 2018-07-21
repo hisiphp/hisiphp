@@ -120,6 +120,38 @@ layui.define(['element', 'form', 'table'], function(exports) {
         form.render('checkbox');
     });
 
+    /* 后台主题设置 */
+    $('#admin-theme-setting').on('click', function() {
+        var that = $(this);
+        layer.open({
+            type: 5,
+            title: '主题方案',
+            shade: 0.3,
+            area: ['295px', '90%'],
+            offset: 'rb',
+            maxmin: true,
+            shadeClose: true,
+            closeBtn: false,
+            anim: 2,
+            content: $('#hisi-theme-tpl').html(),
+            success: function(layero, index) {
+                $('.hisi-themes li').on('click', function() {
+                    var theme = $(this).attr('data-theme');
+                    $.get(that.attr('href'), {theme : theme}, function(res) {
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                        } else {
+                            $('body').prop('class', 'hisi-theme-'+theme);
+                            $('.hisi-themes li').removeClass('active');
+                            $('#hisi-theme-item-'+theme).addClass('active');
+                        }
+                    }, 'json');
+                });
+            }
+        }); 
+        return false;
+    });
+
     /**
      * 删除快捷菜单
      * @attr data-href 请求地址
@@ -354,32 +386,29 @@ layui.define(['element', 'form', 'table'], function(exports) {
             query = '',
             code = function(that) {
                 var href = that.attr('href') ? that.attr('href') : that.attr('data-href');
-                var tableObj = that.attr('data-table') ? that.attr('data-table') : '';
+                var tableObj = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
                 if (!href) {
                     layer.msg('请设置data-href参数');
                     return false;
                 }
-                if (tableObj == '') {
-                    if ($('.checkbox-ids:checked').length <= 0) {
-                        layer.msg('请选择要操作的数据');
-                        return false;
-                    }
-                    if (that.parents('form')[0]) {
-                        query = that.parents('form').serialize();
-                    } else {
-                        query = $('#pageListForm').serialize();
-                    }
-                } else {
+
+                if ($('.checkbox-ids:checked').length <= 0) {
                     var checkStatus = table.checkStatus(tableObj);
                     if (checkStatus.data.length <= 0) {
                         layer.msg('请选择要操作的数据');
                         return false;
                     }
-                    for(var i in checkStatus.data) {
+                    for (var i in checkStatus.data) {
                         if (i > 0) {
                             query += '&';
                         }
-                        query += 'id%5B%5D='+checkStatus.data[i].id;
+                        query += 'id[]='+checkStatus.data[i].id;
+                    }
+                } else {
+                    if (that.parents('form')[0]) {
+                        query = that.parents('form').serialize();
+                    } else {
+                        query = $('#pageListForm').serialize();
                     }
                 }
 
@@ -407,8 +436,9 @@ layui.define(['element', 'form', 'table'], function(exports) {
     /**
      * layui非静态table搜索渲染
      * @attr data-table table容器ID
+     * @attr action 搜索请求地址
      */
-    $('#hisiSearch').submit(function() {
+    $('#hisiSearch,#hisi-table-search').submit(function() {
         var that = $(this), 
             arr = that.serializeArray(), 
             where = new Array(),
@@ -420,6 +450,20 @@ layui.define(['element', 'form', 'table'], function(exports) {
         table.reload(dataTable, {
           url: that.attr('action'),
           where: where
+        });
+        return false;
+    });
+
+    /**
+     * layui非静态table过滤渲染
+     * @attr data-table table容器ID
+     * @attr href 过滤请求地址
+     */
+    $(document).on('click', '.hisi-table-a-filter', function(){
+        var that = $(this), dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
+        table.reload(dataTable, {
+          url: that.attr('href'),
+          page: 1
         });
         return false;
     });

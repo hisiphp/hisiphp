@@ -356,7 +356,7 @@ class Dir {
             return false;
         }
         if (is_dir($destination) == false) {
-            mkdir($destination, 0755);
+            mkdir($destination, 0755, true);
         }
         $handle = opendir($source);
         while (false !== ($file = readdir($handle))) {
@@ -370,7 +370,4 @@ class Dir {
         }
         closedir($handle);
     }
-
 }
-
-?>

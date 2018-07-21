@@ -24,8 +24,15 @@ class Language extends Admin
      */
     public function index()
     {
-        $data_list = LanguageModel::order('sort asc')->column('id,code,name,icon,sort,status');
-        $this->assign('data_list', $data_list);
+        if ($this->request->isAjax()) {
+            $data = [];
+            $data['data'] = LanguageModel::order('sort asc')->select();
+            $data['count'] = 0;
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
+        }
+
         return $this->fetch();
     }
 

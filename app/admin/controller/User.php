@@ -49,20 +49,28 @@ class User extends Admin
      */
     public function index($q = '')
     {
-        $sqlmap = [];
-        if ($q) {
-            $sqlmap['username'] = ['like', '%'.$q.'%'];
+        if ($this->request->isAjax()) {
+            $where = $data = [];
+            $page = input('param.page/d', 1);
+            $limit = input('param.limit/d', 15);
+            $keyword = input('param.keyword');
+            if ($keyword) {
+                $where['username'] = ['like', "%{$keyword}%"];
+            }
+            $where['id'] = ['neq', 1];
+            $data['data'] = UserModel::with('role')->where($where)->page($page)->limit($limit)->select();
+            $data['count'] = UserModel::where($where)->count('id');
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
         }
-        $data_list = UserModel::where($sqlmap)->paginate();
+
         // 分页
-        $pages = $data_list->render();
         $tab_data = $this->tab_data;
         $tab_data['current'] = url('');
-        $this->assign('role_list', RoleModel::getAll());
-        $this->assign('data_list', $data_list);
+
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
-        $this->assign('pages', $pages);
         return $this->fetch();
     }
 
@@ -73,19 +81,31 @@ class User extends Admin
      */
     public function iframe()
     {
-        $val = input('param.val', 0);
-        if ($val != 0 && $val != 1) {
-            return $this->error('参数传递错误');
+        $val = UserModel::where('id', ADMIN_ID)->value('iframe');
+        if ($val == 1) {
+            $val = 0;
+        } else {
+            $val = 1;
         }
-        if (UserModel::where('id', ADMIN_ID)->setField('iframe', $val) === false) {
+        if (!UserModel::where('id', ADMIN_ID)->setField('iframe', $val)) {
             return $this->error('切换失败');
         }
-        if ($val == 1) {
-            cookie('hisi_iframe', 'yes');
-        } else {
-            cookie('hisi_iframe', null);
+        cookie('hisi_iframe', $val);
+        return $this->success('请稍等，页面切换中...', url('admin/index/index'));
+    }
+
+    /**
+     * 主题设置
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function setTheme()
+    {
+        $theme = input('param.theme', 'default');
+        if (UserModel::setTheme($theme, true) === false) {
+            return $this->error('设置失败');
         }
-        return $this->success('布局切换成功，跳转中...', url('admin/index/index'));
+        return $this->success('设置成功');
     }
 
     /**
@@ -235,12 +255,12 @@ class User extends Admin
      */
     public function delUser()
     {
-        $ids   = input('param.ids/a');
+        $id = input('param.id/a');
         $model = new UserModel();
-        if ($model->del($ids)) {
-            return $this->success('删除成功');
+        if (!$model->del($id)) {
+            return $this->error($model->getError());
         }
-        return $this->error($model->getError());
+        return $this->success('操作成功');
     }
 
     // +----------------------------------------------------------------------
@@ -254,15 +274,22 @@ class User extends Admin
      */
     public function role()
     {
+        if ($this->request->isAjax()) {
+            $data = [];
+            $page = input('param.page/d', 1);
+            $limit = input('param.limit/d', 15);
+
+            $data['data'] = RoleModel::where('id', '<>', 1)->select();
+            $data['count'] = RoleModel::where('id', '<>', 1)->count('id');
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
+        }
+
         $tab_data = $this->tab_data;
         $tab_data['current'] = url('');
-        $data_list = RoleModel::field('id,name,intro,ctime,status')->paginate();
-        // 分页
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
-        $this->assign('pages', $pages);
         return $this->fetch();
     }
 
@@ -350,11 +377,11 @@ class User extends Admin
      */
     public function delRole()
     {
-        $ids   = input('param.ids/a');
+        $id   = input('param.id/a');
         $model = new RoleModel();
-        if ($model->del($ids)) {
-            return $this->success('删除成功');
+        if (!$model->del($id)) {
+            return $this->error($model->getError());
         }
-        return $this->error($model->getError());
+        return $this->success('删除成功');
     }
 }

@@ -47,7 +47,7 @@ class Upgrade extends Admin
 
             case 'plugins':
                 $plugins = PluginsModel::where($map)->find();
-                $this->app_key = $module->app_keys;
+                $this->app_key = $plugins->app_keys;
                 $this->app_version = $plugins->version;
                 break;
 

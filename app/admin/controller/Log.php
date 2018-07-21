@@ -23,16 +23,20 @@ class Log extends Admin
      */
     public function index()
     {
-        $uid = input('param.uid/d');
-        $map = [];
-        if ($uid) {
-            $map['uid'] = $uid;
+        if ($this->request->isAjax()) {
+            $where = $data = [];
+            $page = input('param.page/d', 1);
+            $limit = input('param.limit/d', 15);
+            $uid = input('param.uid/d');
+            if ($uid) {
+                $where['uid'] = $uid;
+            }
+            $data['data'] = LogModel::with('user')->where($where)->page($page)->limit($limit)->select();
+            $data['count'] = LogModel::where($where)->count('id');
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
         }
-        $data_list = LogModel::with('user')->where($map)->paginate();
-        // 分页
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
         return $this->fetch();
     }
     /**

@@ -25,18 +25,22 @@ class Hook extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function index($q = '')
+    public function index()
     {
-        $map = [];
-        if ($q) {
-            $map['name'] = ['like', '%'.$q.'%'];
+        if ($this->request->isAjax()) {
+            $where = $data = [];
+            $page = input('param.page/d', 1);
+            $limit = input('param.limit/d', 15);
+            $keyword = input('param.keyword');
+            if ($keyword) {
+                $where['name'] = ['like', "%{$keyword}%"];
+            }
+            $data['data'] = HookModel::where($where)->page($page)->limit($limit)->select();
+            $data['count'] = HookModel::where($where)->count('id');
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
         }
-        
-        $data_list = HookModel::where($map)->paginate();
-        // 分页
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
         return $this->fetch();
     }
 
@@ -90,25 +94,16 @@ class Hook extends Admin
      */
     public function del()
     {
-        $ids   = input('param.ids/a');
-        $map = [];
-        $map['id'] = ['in', $ids];
-        $rows = HookModel::where($map)->field('id,system')->select();
-        $ids = [];
-        foreach ($rows as $v) {
-            // 排除系统钩子
-            if ($v['system'] == 1) {
-                return $this->error('禁止删除系统钩子！');
+        $id   = input('param.id/a');
+        $where = [];
+        $where['id'] = ['in', $id];
+        $rows = HookModel::where($where)->column('id,system');
+        foreach ($rows as $k => $v) {
+            if ($v != 1) {
+                HookModel::where('id', $k)->delete();
             }
         }
-
-        $map = [];
-        $map['id'] = ['in', $ids];
-        $res = HookModel::where($map)->delete();
-        if ($res === false) {
-            return $this->error('操作失败！');
-        }
-        return $this->success('操作成功！');
+        return $this->success('操作成功');
     }
 
     /**
@@ -118,20 +113,17 @@ class Hook extends Admin
      */
     public function status()
     {
-        $id     = input('param.ids/d');
-        $val    = input('param.val/d');
-        $map = [];
-        $map['id'] = $id;
-        $system = HookModel::where('id', $id)->value('system');
-        // 排除系统钩子
-        if ($system == 1) {
-            return $this->error('禁止操作系统钩子！');
+        $id = input('param.id/a');
+        $val = input('param.val/d');
+        $where = [];
+        $where['id'] = ['in', $id];
+        $rows = HookModel::where($where)->column('id,system');
+        foreach ($rows as $k => $v) {
+            if ($v != 1) {
+                HookModel::where('id', $k)->setField('status', $val);
+            }
         }
-        $res = HookModel::where('id', $id)->setField('status', $val);;
-        if ($res === false) {
-            return $this->error('操作失败！');
-        }
-        return $this->success('操作成功！');
+        return $this->success('操作成功');
     }
 
     /**
@@ -141,14 +133,11 @@ class Hook extends Admin
      */
     public function hookPluginsStatus()
     {
-        $id     = input('param.ids/d');
-        $val    = input('param.val/d');
-        $map = [];
-        $map['id'] = $id;
-        $res = HookPluginsModel::where('id', $id)->setField('status', $val);;
-        if ($res === false) {
-            return $this->error('操作失败！');
+        $id = input('param.id');
+        $val = input('param.val/d');
+        if (HookPluginsModel::where('id', $id)->setField('status', $val) === false) {
+            return $this->error('操作失败');
         }
-        return $this->success('操作成功！');
+        return $this->success('操作成功');
     }
 }

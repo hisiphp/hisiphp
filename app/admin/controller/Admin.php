@@ -44,7 +44,7 @@ class Admin extends Common
 
         // 检查权限
         if (!RoleModel::checkAuth($c_menu['id'])) {
-            $url = '';
+            $url = input('server.http_referer');
             // 如果没有后台首页的登录权限，直接退出，避免出现死循环跳转
             if ($c_menu['url'] == 'admin/index/index') {
                 $url = ROOT_DIR.config('sys.admin_path');
@@ -58,12 +58,12 @@ class Admin extends Common
         $log['uid'] = ADMIN_ID;
         $log['title'] = $c_menu['title'];
         $log['url'] = $c_menu['url'];
-        $log['param'] = json_encode(input('param.'));
         $log['remark'] = '浏览数据';
         if ($this->request->isPost()) {
             $log['remark'] = '保存数据';
         }
         $log_result = LogModel::where($log)->find();
+        $log['param'] = json_encode(input('param.'));
         $log['ip'] = $this->request->ip();
         if (!$log_result) {
             LogModel::create($log);
@@ -125,6 +125,7 @@ class Admin extends Common
         $ids   = input('param.ids/a') ? input('param.ids/a') : input('param.id/a');
         $table = input('param.table');
         $field = input('param.field', 'status');
+
         if (empty($ids)) {
             return $this->error('参数传递错误[1]！');
         }

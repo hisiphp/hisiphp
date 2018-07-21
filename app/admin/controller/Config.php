@@ -19,6 +19,20 @@ class Config extends Admin
 {
     public function index($group = 'base')
     {
+        if ($this->request->isAjax()) {
+            $where = $data = [];
+            $page = input('param.page/d', 1);
+            $limit = input('param.limit/d', 15);
+            if ($group) {
+                $where['group'] = $group;
+            }
+            $data['data'] = ConfigModel::where($where)->page($page)->limit($limit)->order('sort,id')->select();
+            $data['count'] = ConfigModel::where($where)->count('id');
+            $data['code'] = 0;
+            $data['msg'] = '';
+            return json($data);
+        }
+
         $tab_data = [];
         foreach (config('sys.config_group') as $key => $value) {
             $arr = [];
@@ -28,12 +42,6 @@ class Config extends Admin
         }
         $tab_data['current'] = url('?group='.$group);
 
-        $map = [];
-        $map['group'] = $group;
-        $data_list = ConfigModel::where($map)->order('sort,id')->paginate();
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
         return $this->fetch();
