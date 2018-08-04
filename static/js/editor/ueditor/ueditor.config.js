@@ -64,6 +64,7 @@
 			dl:     ['class', 'style'],
 			dt:     ['class', 'style'],
 			em:     ['class', 'style'],
+            embed:  ['style', 'class', 'id', 'type', 'pluginspage', 'src', 'width', 'height', 'wmode', 'play', 'loop', 'menu', 'allowscriptaccess', 'allowfullscreen', 'align', 'autoplay', 'controls', 'preload'],
 			font:   ['color', 'size', 'face'],
 			footer: [],
 			h1:     ['class', 'style'],
