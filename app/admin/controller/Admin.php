@@ -97,6 +97,7 @@ class Admin extends Common
             $this->assign('pages', '');
             // 编辑页默认数据输出变量
             $this->assign('data_info', '');
+            $this->assign('form_data', '');
             $this->assign('admin_user', $login);
             $this->assign('languages', model('AdminLanguage')->lists());
         }

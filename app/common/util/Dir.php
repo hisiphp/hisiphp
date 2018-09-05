@@ -370,4 +370,5 @@ class Dir {
         }
         closedir($handle);
     }
+
 }

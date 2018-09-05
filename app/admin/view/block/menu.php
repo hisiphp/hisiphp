@@ -47,13 +47,13 @@
                 <a href="javascript:;"><i class="{$vv['icon']}"></i>{$vv['title']}<span class="layui-nav-more"></span></a>
                 <dl class="layui-nav-child">
                     {if condition="$vv['title'] eq '快捷菜单'"}
-                        <dd><a class="admin-nav-item" href="{:url('admin/index/index')}"><i class="aicon ai-shouye"></i> 后台首页</a></dd>
+                        <dd><a class="admin-nav-item" data-id="0" href="{:input('cookie.hisi_iframe') ? url('admin/index/welcome') : url('admin/index/index')}"><i class="aicon ai-shouye"></i> 后台首页</a></dd>
                         {volist name="vv['childs']" id="vvv"}
-                        <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
+                        <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'], $vvv['param'])}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a><i data-href="{:url('menu/del?ids='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i></dd>
                         {/volist}
                     {else /}
                         {volist name="vv['childs']" id="vvv"}
-                        <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}__ROOT_DIR__{:config('sys.admin_path').'/'.$vvv['url']}{if condition="$vvv['param']"}?{$vvv['param']}{/if}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a></dd>
+                        <dd><a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'], $vvv['param'])}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a></dd>
                         {/volist}
                     {/if}
                 </dl>

@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
-namespace app\install\controller;
+namespace app\install\home;
 use app\common\controller\Common;
 use app\admin\model\AdminUser as UserModel;
 use think\Db;
@@ -17,6 +17,13 @@ class Error extends Common
 {
     public function index($step = 0)
     {
+        if (is_file(APP_PATH.'install/install.lock')) {// 兼容版本号 < 1.0.8
+            return $this->error('如需重新安装，请手动删除/app/install/install.lock文件');
+        }
+        if (is_file(APP_PATH.'install.lock')) {
+            return $this->error('如需重新安装，请手动删除/app/install.lock文件');
+        }
+
         switch ($step) {
             case 2:
                 session('install_error', false);
@@ -192,7 +199,7 @@ class Error extends Common
         if (!$res) {
             return $this->error($user->getError() ? $user->getError() : '管理员账号设置失败！');
         }
-        file_put_contents(APP_PATH.'install/install.lock', date('Y-m-d H:i:s'));
+        file_put_contents(APP_PATH.'install.lock', "如需重新安装，请手动删除此文件\n安装时间：".date('Y-m-d H:i:s'));
         //站点密匙
         $auth = password_hash(request()->time(), PASSWORD_DEFAULT);
         $hs_auth = <<<INFO

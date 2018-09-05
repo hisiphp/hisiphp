@@ -16,7 +16,7 @@
  * @package app\index\controller
  */
 
-namespace app\index\controller;
+namespace app\index\home;
 
 use app\admin\model\AdminPlugins as PluginsModel;
 
@@ -48,6 +48,6 @@ class Error extends Home
             }
             return plugins_run($plugin.'/'.$controller.'/'.$action, $params, 'home');
         }
-        return $this->error('这是系统默认模块，您可以在后台指定其他模块为默认访问首页！', '', '', 100);
+        return $this->error('这是系统默认模块，您可以在后台指定其他模块为默认访问首页！，<a href="https://www.kancloud.cn/hisi/hisiphp/387483" target="_blank">点此查看开发手册</a>', '', '', 100);
     }
 }

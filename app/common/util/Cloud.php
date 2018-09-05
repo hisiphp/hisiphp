@@ -30,7 +30,7 @@ class Cloud {
     public $type = 'post';
 
     //服务器地址
-    const api_url = 'http://cloud.hisiphp.com/thinkphp5/';
+    const api_url = 'https://cloud.hisiphp.com/thinkphp5/';
     
     /**
      * 架构函数
@@ -108,6 +108,8 @@ class Cloud {
         $ch = curl_init();
         $fp = fopen($this->path.$file, 'wb');
         curl_setopt($ch, CURLOPT_URL, $request['url']);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_TIMEOUT, 3600);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

@@ -69,7 +69,7 @@ return [
     // 操作方法后缀
     'action_suffix'          => '',
     // 自动搜索控制器
-    'controller_auto_search' => false,
+    'controller_auto_search' => true,
 
     // +----------------------------------------------------------------------
     // | URL设置
@@ -102,7 +102,7 @@ return [
     // 是否自动转换URL中的控制器和操作名
     'url_convert'            => true,
     // 默认的访问控制器层
-    'url_controller_layer'   => 'controller',
+    'url_controller_layer'   => 'home',
     // 表单请求类型伪装变量
     'var_method'             => '_method',
     // 表单ajax伪装变量

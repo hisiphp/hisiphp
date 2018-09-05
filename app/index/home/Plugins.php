@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
-namespace app\index\controller;
+namespace app\index\home;
 
 use app\admin\model\AdminPlugins as PluginsModel;
 

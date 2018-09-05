@@ -57,7 +57,7 @@ layui.define(['element', 'form', 'table'], function(exports) {
         var that = $(this);
         if (!that.hasClass('close')) {
             that.addClass('close');
-            $('#switchNav').animate({width:'52px'}, 100).addClass('close').hover(function() {
+            $('#switchNav').animate({width:'43px'}, 100).addClass('close').hover(function() {
                 if (that.hasClass('close')) {
                     $(this).animate({width:'200px'}, 300);
                     $('#switchNav .fold-mark').removeClass('fold-mark');
@@ -65,11 +65,11 @@ layui.define(['element', 'form', 'table'], function(exports) {
                 }
             },function() {
                 if (that.hasClass('close')) {
-                    $(this).animate({width:'52px'}, 300);
+                    $(this).animate({width:'43px'}, 300);
                     $('#switchNav .layui-nav-item').addClass('fold-mark').removeClass('layui-nav-itemed');
                 }
             });
-            $('#switchBody,.footer').animate({left:'52px'}, 100);
+            $('#switchBody,.footer').animate({left:'43px'}, 100);
             $('#switchNav .layui-nav-item').addClass('fold-mark').removeClass('layui-nav-itemed');
         } else {
             $('a[href="'+window.localStorage.getItem("adminNavTag")+'"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
@@ -189,6 +189,11 @@ layui.define(['element', 'form', 'table'], function(exports) {
         if (!_url) {
             layer.msg('请设置href参数');
             return false;
+        }
+        if (_url.indexOf('?') >= 0) {
+            _url += '&hisi_iframe=yes';
+        } else {
+            _url += '?hisi_iframe=yes';
         }
         layer.open({type:2, title:_title, content:_url, area: [_width+'px', _height+'px']});
         return false;
@@ -347,7 +352,7 @@ layui.define(['element', 'form', 'table'], function(exports) {
      * @attr data-value 修改前的值
      * @attr data-href 提交地址
      */
-    $('.j-ajax-input').focusout(function(){
+    $(document).on('focusout', '.j-ajax-input',function(){
         var that = $(this), _val = that.val();
         if (_val == '') return false;
         if (that.attr('data-value') == _val) return false;

@@ -106,7 +106,6 @@ class Base
                 '__PLUGINS_IMG__' => ROOT_DIR.'plugins/'.$plugins_name.'/static/image',
             ]);
         }
-        
         config('view_replace_str', array_merge(config('view_replace_str'), $view_replace_str));
         // 如果定义了入口为admin，则修改默认的访问控制器层
         if(defined('ENTRANCE') && ENTRANCE == 'admin') {
@@ -114,7 +113,7 @@ class Base
                 header('Location: '.url('admin/publics/index'));
                 exit;
             }
-            if ($module != 'admin' && $module != 'common' && $module != 'index' && $module != 'extra') {
+            if ($module != 'admin' && $module != 'index' && $module != 'extra') {
                 config('url_controller_layer', 'admin');
                 // 后台模板路径保持系统默认
                 config('template.view_path', '');
@@ -135,7 +134,6 @@ class Base
                 $module = config('default_module');
             }
             if ($module != 'index') {
-                config('url_controller_layer', 'home');
                 // 定义前台模板路径[分手机和PC]
                 if (request()->isMobile() === true && config('base.wap_site_status') && file_exists('.'.ROOT_DIR.'theme'.DS.$module.DS.$theme.DS.'wap'.DS)) {
                     // 如果有移动端域名，强制跳转

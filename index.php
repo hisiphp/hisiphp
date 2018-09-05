@@ -15,7 +15,7 @@ if(version_compare(PHP_VERSION,'5.5.0','<'))  die('PHP版本过低，最少需�
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/app/');
 // 检查是否安装
-if(!is_file(APP_PATH.'install/install.lock')) {
+if(!is_file(APP_PATH.'install/install.lock') && !is_file(APP_PATH.'install.lock')) {
     if (!is_writable(__DIR__ . '/runtime')) {
         echo '请开启[runtime]文件夹的读写权限';
         exit;

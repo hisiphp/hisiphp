@@ -145,9 +145,23 @@ abstract class Plugins
     abstract public function install();
 
     /**
+     * 安装后的业务处理
+     * @author 橘子俊 <364666827@qq.com>
+     * @return bool
+     */
+    abstract public function installAfter();
+
+    /**
      * 插件卸载方法
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
     abstract public function uninstall();
+
+    /**
+     * 卸载后的业务处理
+     * @author 橘子俊 <364666827@qq.com>
+     * @return bool
+     */
+    abstract public function uninstallAfter();
 }

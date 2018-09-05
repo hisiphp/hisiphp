@@ -21,7 +21,7 @@ class Init
         define('IN_SYSTEM', true);
         $request = Request::instance();
         // 安装操作直接return
-        if(defined('BIND_MODULE') && BIND_MODULE == 'install') return;
+        if(defined('BIND_MODULE')) return;
         $_path = $request->path();
         $default_module = false;
         if ($_path != '/' && strtolower($_path) != 'index' && !defined('BIND_MODULE')) {
@@ -36,9 +36,6 @@ class Init
                 }
             }
         }
-        
-        // 设置路由
-        config('route_config_file', ModuleModel::moduleRoute());
         if (!defined('PLUGIN_ENTRANCE') && !defined('CLOUD_ENTRANCE') && $default_module === false && !defined('BIND_MODULE')) {
             // 设置前台默认模块
             $map = [];
@@ -48,12 +45,15 @@ class Init
             $def_mod = ModuleModel::where($map)->value('name');
             if ($def_mod && !defined('ENTRANCE')) {
                 define('BIND_MODULE', $def_mod);
-                config('url_controller_layer', 'home');
             }
         }
         // 后台强制关闭路由
         if (defined('ENTRANCE') && ENTRANCE == 'admin') {
             config('url_route_on', false);
+            config('url_controller_layer', 'controller');
+        } else {
+            // 设置路由
+            config('route_config_file', ModuleModel::moduleRoute());
         }
     }
 }

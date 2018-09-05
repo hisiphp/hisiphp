@@ -15,7 +15,7 @@
 // +----------------------------------------------------------------------
  * @package app\index\controller
  */
-namespace app\index\controller;
+namespace app\index\home;
 use app\common\controller\Common;
 class Home extends Common
 {

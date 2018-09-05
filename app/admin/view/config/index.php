@@ -13,7 +13,7 @@
 </script>
 
 <script type="text/html" title="排序模板" id="sortTpl">
-    <input type="text" class="layui-input j-ajax-input input-sort" onkeyup="value=value.replace(/[^\d]/g,'')" value="{{ d.sort }}" data-value="{{ d.id }}" data-href="{:url('sort')}?table=admin_config&id={{ d.id }}">
+    <input type="text" class="layui-input j-ajax-input input-sort" onkeyup="value=value.replace(/[^\d]/g,'')" value="{{ d.sort }}" data-value="{{ d.sort }}" data-href="{:url('sort')}?table=admin_config&id={{ d.id }}">
 </script>
 
 <script type="text/html" title="操作按钮模板" id="buttonTpl">

@@ -20,11 +20,11 @@ class AdminMember extends Validate
 {
     //定义验证规则
     protected $rule = [
-        'username|用户名' => 'checkUsername:thinkphp|unique:admin_member',
-        'email|邮箱'     => 'checkEmail:thinkphp|email|unique:admin_member',
-        'password|密码'  => 'requireWith|length:6,20',
-        'mobile|手机号'   => 'checkMobile:thinkphp|unique:admin_member',
-        'nick|昵称'   => 'unique:admin_member',
+        'username|用户名' => 'requireWith:username|checkUsername:thinkphp|unique:admin_member', 
+        'email|邮箱' => 'requireWith:email|email|checkEmail:thinkphp|unique:admin_member', 
+        'mobile|手机号' => 'requireWith:mobile|checkMobile:thinkphp|unique:admin_member', 
+        'password|密码' => 'require|length:6,20',
+        'nick|昵称'   => 'requireWith:nick|unique:admin_member',
     ];
 
     //定义验证提示
@@ -38,18 +38,18 @@ class AdminMember extends Validate
     protected $scene = [
         //无token验证登录
         'login'  =>  [
-            'username' => 'requireWith:username|checkUsername:thinkphp', 
-            'email' => 'requireWith:email|email|checkEmail:thinkphp', 
-            'mobile' => 'requireWith:mobile|checkMobile:thinkphp', 
-            'password' => 'require|length:6,20',
+            'username|用户名' => 'requireWith:username|checkUsername:thinkphp',
+            'email|邮箱' => 'requireWith:email|email|checkEmail:thinkphp', 
+            'mobile|手机号' => 'requireWith:mobile|checkMobile:thinkphp', 
+            'password|密码' => 'require|length:6,20',
         ],
         // token验证登陆
         'login_token'  =>  [
-            'username' => 'requireWith:username|checkUsername:thinkphp', 
-            'email' => 'requireWith:email|email|checkEmail:thinkphp', 
-            'mobile' => 'requireWith:mobile|checkMobile:thinkphp', 
-            'password' => 'require|length:6,20|token',
-        ],
+            'username|用户名' => 'requireWith:username|checkUsername:thinkphp',
+            'email|邮箱' => 'requireWith:email|email|checkEmail:thinkphp', 
+            'mobile|手机号' => 'requireWith:mobile|checkMobile:thinkphp', 
+            'password|密码' => 'require|length:6,20|token',
+        ]
     ];
     
     /**

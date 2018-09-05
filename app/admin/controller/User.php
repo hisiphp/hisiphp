@@ -101,7 +101,7 @@ class User extends Admin
      */
     public function setTheme()
     {
-        $theme = input('param.theme', 'default');
+        $theme = input('param.theme', 0);
         if (UserModel::setTheme($theme, true) === false) {
             return $this->error('设置失败');
         }

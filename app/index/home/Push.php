@@ -12,7 +12,7 @@
  * 应用市场推送
  * @package app\index\controller
  */
-namespace app\index\controller;
+namespace app\index\home;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminPlugins as PluginsModel;
 use app\common\util\Cloud as CloudApi;

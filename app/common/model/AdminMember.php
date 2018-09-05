@@ -80,56 +80,48 @@ class AdminMember extends Model
     public function register($data = [], $login = true)
     {
         $map = [];
+        $map['email'] = '';
+        $map['mobile'] = '';
+        $map['username'] = '';
         $map['nick'] = isset($data['nick']) ? $data['nick'] : '';
-        $map['email'] = isset($data['email']) ? $data['email'] : '';
-        $map['mobile'] = isset($data['mobile']) ? $data['mobile'] : '';
-        $map['username'] = isset($data['username']) ? $data['username'] : '';
         $map['avatar'] = isset($data['avatar']) ? $data['avatar'] : '';
         $map['level_id'] = 0;
-        if (empty($data['email']) && empty($data['mobile']) && empty($data['username'])) {
-            $this->error = '用户名、手机、邮箱至少选填一项！';
-            return false;
-
-        }
         if (!isset($data['password']) || empty($data['password'])) {
             $this->error = '密码为必填项！';
             return false;
         }
-        
-        // 匹配账号类型
-        if (is_username($data['username'])) {// 用户名
-            $map['username'] = $data['username'];
-        } elseif (is_email($data['username'])) {// 邮箱
-            $map['email'] = $data['username'];
-        } elseif (is_mobile($data['username'])) {// 手机号
-            $map['mobile'] = $data['username'];
-        } else {
-            $this->error = '注册账号异常！';
-            return false;
+    
+        if (isset($data['account'])) {
+            if (is_email($data['account'])) {// 邮箱
+                $map['email'] = $data['account'];
+            } elseif (is_mobile($data['account'])) {// 手机号
+                $map['mobile'] = $data['account'];
+            } elseif (is_username($data['account'])) {// 用户名
+                $map['username'] = $data['account'];
+            } else {
+                $this->error = '注册账号异常！';
+                return false;
+            }
         }
 
-        // 匹配注册方式
-        if (isset($data['email']) && !empty($data['email'])) {
+        if (isset($data['email']) && is_email($data['email'])) {
             $map['email'] = $data['email'];
         }
-        if (isset($data['mobile']) && !empty($data['mobile'])) {
+        if (isset($data['mobile']) && is_mobile($data['mobile'])) {
             $map['mobile'] = $data['mobile'];
         }
-        if (isset($data['username']) && !empty($data['username'])) {
+        if (isset($data['username']) && is_username($data['username'])) {
             $map['username'] = $data['username'];
         }
-
         $map['password'] = $data['password'];
-        if (isset($data['nick']) && !empty($data['nick'])) {
-            $map['nick'] = $data['nick'];
-        }
 
         $level = model('AdminMemberLevel')->where('default',1)->find();
         if ($level) {
             $map['level_id'] = $level['id'];
             $map['expire_time'] = $level['expire'] > 0 ? strtotime('+ '.$level['expire'].' days') : 0;
         }
-        $res = $this->validate('AdminMember')->isUpdate(false)->save($map);
+
+        $res = $this->validate('AdminMember')->isUpdate(false)->save(array_filter($map));
         if (!$res) {
             $this->error = $this->getError() ? $this->getError() : '注册失败！';
             return false;
@@ -154,16 +146,24 @@ class AdminMember extends Model
         $level = model('AdminMemberLevel')->where('default',1)->find();
         $map = [];
         $map['nick'] = isset($data['nick']) ? $data['nick'] : '';
-        $map['password'] = isset($data['password']) ? $data['password'] : '';
-        $map['email'] = isset($data['email']) ? $data['email'] : '';
-        $map['mobile'] = isset($data['mobile']) ? $data['mobile'] : '';
-        $map['username'] = isset($data['username']) ? $data['username'] : '';
+        $map['email'] = '';
+        $map['mobile'] = '';
+        $map['username'] = '';
         $map['avatar'] = isset($data['avatar']) ? $data['avatar'] : '';
         $map['last_login_ip'] = get_client_ip();
         $map['last_login_time'] = request()->time();
         if ($level) {
             $map['level_id'] = $level['id'];
             $map['expire_time'] = $level['expire'] > 0 ? strtotime('+ '.$level['expire'].' days') : 0;
+        }
+        if (isset($data['email']) && is_email($data['email'])) {
+            $map['email'] = $data['email'];
+        }
+        if (isset($data['mobile']) && is_mobile($data['mobile'])) {
+            $map['mobile'] = $data['mobile'];
+        }
+        if (isset($data['username']) && is_username($data['username'])) {
+            $map['username'] = $data['username'];
         }
         $res = $this->create($map);
         if (!$res) {
@@ -172,7 +172,7 @@ class AdminMember extends Model
         }
 
         $map['id'] = $res->id;
-        unset($map['password']);
+        
         runhook('system_member_register', $map);
         return self::autoLogin($map);
     }
