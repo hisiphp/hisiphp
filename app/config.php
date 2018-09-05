@@ -139,6 +139,8 @@ return [
         'taglib_end'   => '}',
         // 模板缓存
         'tpl_cache'    => true,
+        // 标签库扩展
+        'taglib_pre_load' => 'app\\common\\taglib\\Hisi',
     ],
 
     // 视图输出字符串内容替换
