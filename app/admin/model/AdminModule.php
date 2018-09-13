@@ -225,7 +225,7 @@ class AdminModule extends Model
         rmdir($path.'controller');
         // 生成后台默认控制器
         if (is_dir($path.'admin')) {
-            $admin_contro = "<?php\nnamespace app\\".$data["name"]."\\admin;\nuse app\admin\admin\Admin;\n\nclass Index extends Admin\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
+            $admin_contro = "<?php\nnamespace app\\".$data["name"]."\\admin;\nuse app\admin\controller\Admin;\n\nclass Index extends Admin\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
             // 删除框架生成的html文件
             @unlink($path . 'view'.DS.'index'.DS.'index.html');
             file_put_contents($path . 'admin'.DS.'Index.php', $admin_contro);
@@ -234,7 +234,7 @@ class AdminModule extends Model
 
         // 生成前台默认控制器
         if (is_dir($path.'home')) {
-            $home_contro = "<?php\nnamespace app\\".$data["name"]."\\home;\nuse app\common\admin\Common;\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
+            $home_contro = "<?php\nnamespace app\\".$data["name"]."\\home;\nuse app\common\controller\Common;\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
             file_put_contents($path . 'home'.DS.'Index.php', $home_contro);
             file_put_contents(ROOT_PATH.'theme'.DS.$data['name'].DS.'default'.DS.'index'.DS.'index.php', '<?php defined("IN_SYSTEM") or die("Access Denied");/* 防止模板被盗 */?>');
         }
