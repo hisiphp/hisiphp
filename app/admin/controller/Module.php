@@ -370,6 +370,12 @@ class Module extends Admin
                     }
                 }
             }
+
+            // 导入路由
+            if ( file_exists($mod_path.'route.php') ) {
+                copy($mod_path.'route.php', APP_PATH.$mod['name'].'Route.php');
+            }
+            
             // 导入菜单
             if ( file_exists($mod_path.'menu.php') ) {
                 $menus = include_once $mod_path.'menu.php';
@@ -685,6 +691,10 @@ class Module extends Admin
                         }
                     }
                 }
+            }
+            // 删除路由
+            if ( file_exists(APP_PATH.$mod['name'].'Route.php') ) {
+                unlink(APP_PATH.$mod['name'].'Route.php');
             }
             // 删除当前模块菜单
             MenuModel::where('module', $mod['name'])->delete();
