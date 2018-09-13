@@ -78,6 +78,10 @@ class AdminModule extends Model
             $result = self::where($map)->column('name');
             if (!$result) {
                 $result = ['route'];
+            } else {
+                foreach ($result as &$v) {
+                    $v = $v.'Route';
+                }
             }
             array_push($result, 'route');
             cache('module_route', $result);
