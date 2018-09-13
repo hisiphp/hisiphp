@@ -116,6 +116,125 @@ class Admin extends Common
     }
 
     /**
+     * 通用添加
+     * @param string $model 模型，格式：[模块名]/模型名 或 [模块名]_模型名
+     * @param string $scene 自动验证场景，默认为不验证
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function add()
+    {
+        if ($this->request->isPost()) {
+            $modelName = $this->request->param('hisi_model');
+            $table = $this->request->param('hisi_table');
+            $scene = $this->request->param('hisi_scene', false);
+            $postData = $this->request->post();
+            if (isset($postData['hisi_model'])) {
+                unset($postData['hisi_model']);
+            }
+            if (isset($postData['hisi_table'])) {
+                unset($postData['hisi_table']);
+            }
+            if (isset($postData['hisi_scene'])) {
+                unset($postData['hisi_scene']);
+            }
+            if ($modelName) {
+                if (strpos($modelName, '/') === false ) {
+                    $modelName = $this->request->module().'/'.$modelName;
+                }
+                $model = model($modelName);
+                if ($scene) {
+                    $validate = validate($modelName);
+                    if (!$validate->scene($scene)->check($postData)) {
+                        return $this->error($validate->getError());
+                    }
+                }
+                if (!$model->validate(false)->save($postData)) {
+                    return $this->error($model->getError());
+                }
+            } else if ($table) {
+                if (!Db::name($table)->insert($postData)) {
+                    return $this->error('保存失败');
+                }
+            } else {
+                return $this->error('缺少参数（hisi_model、hisi_table至少传一个）');
+            }
+
+            return $this->success('保存成功', '');
+        }
+
+        $template = $this->request->param('template', 'form');
+        return $this->fetch($template);
+    }
+
+    /**
+     * 通用修改
+     * @param string $model 模型，格式：[模块名]/模型名 或 [模块名]_模型名
+     * @param string $scene 自动验证场景，默认为不验证
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function edit()
+    {
+        $modelName = $this->request->param('hisi_model');
+        $table = $this->request->param('hisi_table');
+        if ($modelName) {
+            if (strpos($modelName, '/') === false ) {
+                $modelName = $this->request->module().'/'.$modelName;
+            }
+            $model = model($modelName);
+            $pk = $model->getPk();
+            $id = $this->request->param($pk);
+            if ($this->request->isPost()) {
+                $postData = $this->request->post();
+                $scene = $this->request->param('hisi_scene', false);
+                if (isset($postData['hisi_model'])) {
+                    unset($postData['hisi_model']);
+                }
+                if (isset($postData['hisi_scene'])) {
+                    unset($postData['hisi_scene']);
+                }
+                if ($scene) {
+                    $validate = validate($modelName);
+                    if (!$validate->scene($scene)->check($postData)) {
+                        return $this->error($validate->getError());
+                    }
+                }
+                if (!$model->validate(false)->save($postData, [$pk => $id])) {
+                    return $this->error($model->getError());
+                }
+                return $this->success('保存成功', '');
+            }
+            $formData = $model->get($id);
+        } else if ($table) {
+            $db = Db::name($table);
+            $pk = $db->getPk();
+            $id = $this->request->param($pk);
+            if ($this->request->isPost()) {
+                $postData = $this->request->post();
+                if (isset($postData['hisi_table'])) {
+                    unset($postData['hisi_table']);
+                }
+                if (isset($postData['hisi_scene'])) {
+                    unset($postData['hisi_scene']);
+                }
+                if (!$db->where($pk, $id)->update($postData)) {
+                    return $this->error('保存失败');
+                }
+                return $this->success('保存成功', '');
+            }
+
+            $formData = $db->where($pk, $id)->find();
+        } else {
+            return $this->error('缺少参数（hisi_model、hisi_table至少传一个）');
+        }
+
+        $this->assign('form_data', $formData);
+        $template = $this->request->param('template', 'form');
+        return $this->fetch($template);
+    }
+
+    /**
      * 通用状态设置
      * 禁用、启用都是调用这个内部方法
      * @author 橘子俊 <364666827@qq.com>
