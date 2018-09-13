@@ -23,7 +23,7 @@ class Hisi extends Taglib
     protected $tags = [
         // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
         'loop' => [
-            'attr' => 'model,table,data,with,where,group,cache,order,id,key,sql,shop,field,limit,page,mod,empty',
+            'attr' => 'model,table,data,with,where,group,cache,order,id,key,sql,field,limit,page,mod,empty',
             'close' => 1,
             'level' => 5,
         ],
@@ -44,7 +44,6 @@ class Hisi extends Taglib
         $where      = isset($tag['where'])  ? $tag['where']         : '';
         $page       = isset($tag['page'])   ? $tag['page']          : false;
         $sql        = isset($tag['sql'])    ? $tag['sql']           : '';
-        $shop       = isset($tag['shop'])   ? $tag['shop']          : false;
         $field      = isset($tag['field'])  ? $tag['field']         : '';
         $cache      = isset($tag['cache'])  ? $tag['cache']         : false;
         $id         = isset($tag['id'])     ? $tag['id']            : 'r';
@@ -73,9 +72,6 @@ class Hisi extends Taglib
             if ($with && $model) {
                 $parseStr .= '$hisiDb->with("'.$with.'");';
             }
-            if ($shop) {
-                $parseStr .= '$hisiDb->where("shop_id", '.$shop.');';
-            }
             if ($field) {
                 $parseStr .= '$hisiDb->field("'.$field.'");';
             }
@@ -86,7 +82,7 @@ class Hisi extends Taglib
                 $parseStr .= '$hisiDb->limit('.$limit.');';
             }
             if ($cache) {
-                $parseStr .= '$hisiDb-->cache('.$cache.');';
+                $parseStr .= '$hisiDb->cache('.$cache.');';
             }
 
             $parseStr .= '$hisiData =$hisiDb->select();';
