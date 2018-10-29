@@ -159,9 +159,9 @@ class Cloud {
             return $result;
         }
         if($this->type == 'get'){
-            $result = http::getRequest($this->api, $params);
+            $result = Http::get($this->api, $params);
         }elseif ($this->type == 'post') {
-            $result = http::postRequest($this->api, $params);
+            $result = Http::post($this->api, $params);
         }
         return self::_response($result);
     }

@@ -24,24 +24,30 @@ class Member extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public function index($q = '')
+    public function index()
     {
-        $map = [];
-        if ($q) {
-            if (preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $q)) {// 邮箱
-                $map['email'] = $q;
-            } elseif (preg_match("/^1\d{10}$/", $q)) {// 手机号
-                $map['mobile'] = $q;
-            } else {// 用户名、昵称
-                $map['username'] = ['like', '%'.$q.'%'];
+        if ($this->request->isAjax()) {
+            $map = [];
+            $keyword = $this->request->param('keyword');
+            $page = $this->request->param('page/d', 1);
+            $limit = $this->request->param('limit/d', 20);
+            if ($keyword) {
+                if (is_email($keyword)) {// 邮箱
+                    $map['email'] = $keyword;
+                } elseif (is_mobile($keyword)) {// 手机号
+                    $map['mobile'] = $keyword;
+                } elseif (is_numeric($keyword)) {// ID
+                    $map['id'] = $keyword;
+                } else {// 用户名、昵称
+                    $map['username'] = ['like', '%'.$keyword.'%'];
+                }
             }
+            $data['data'] = MemberModel::with('hasLevel')->where($map)->page($page)->limit($limit)->select();
+            $data['count'] = MemberModel::where($map)->count('id');
+            $data['code'] = 0;
+            return json($data);
         }
-        
-        $data_list = MemberModel::where($map)->paginate(10, false, ['query' => input('get.')]);
-        // 分页
-        $pages = $data_list->render();
-        $this->assign('data_list', $data_list);
-        $this->assign('pages', $pages);
+
         return $this->fetch();
     }
 
@@ -55,7 +61,7 @@ class Member extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
             // 验证
-            $result = $this->validate($data, 'AdminMember');
+            $result = $this->validate($data, 'AdminMember.admin_create');
             if($result !== true) {
                 return $this->error($result);
             }
@@ -88,7 +94,7 @@ class Member extends Admin
                 unset($data['mobile']);
             }
             // 验证
-            $result = $this->validate($data, 'AdminMember.update');
+            $result = $this->validate($data, 'AdminMember.admin_update');
             if($result !== true) {
                 return $this->error($result);
             }

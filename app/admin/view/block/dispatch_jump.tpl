@@ -22,38 +22,61 @@
 </style>
 </head>
 <body>
-    <div class="dispatch-head">
-        <h1>操作提示</h1>
-    </div>
-    <div style="text-align:center;">
-        <div class="dispatch-box">
-            <div class="dispatch-message">
-                <?php switch ($code) {?>
-                    <?php case 1:?>
-                        <div class="success"><i class="aicon ai-success">&nbsp;</i><span><?php echo($msg);?></span></div>
-                    <?php break;?>
-                    <?php case 0:?>
-                        <div class="error"><i class="aicon ai-error">&nbsp;</i><span><?php echo($msg);?></span></div>
-                    <?php break;?>
-                <?php } ?>
-            </div>
-            <div class="dispatch-jump">
-                页面将在 <b id="wait"><?php echo($wait);?></b> 秒后自动<a id="href" href="<?php echo($url);?>">跳转</a>
+    <?php
+        if ((input('param.hisi_iframe') || cookie('hisi_iframe')) && defined('ENTRANCE')) {
+    ?>
+        <div style="text-align:center;">
+            <div class="dispatch-box" style="margin:100px auto 0">
+                <div class="dispatch-message">
+                    <?php switch ($code) {?>
+                        <?php case 1:?>
+                            <div class="success"><i class="aicon ai-success">&nbsp;</i><span><?php echo($msg);?></span></div>
+                        <?php break;?>
+                        <?php case 0:?>
+                            <div class="error"><i class="aicon ai-error">&nbsp;</i><span><?php echo($msg);?></span></div>
+                        <?php break;?>
+                    <?php } ?>
+                </div>
             </div>
         </div>
-    </div>
-    <script type="text/javascript">
-        (function(){
-            var wait = document.getElementById('wait'),
-                href = document.getElementById('href').href;
-            var interval = setInterval(function(){
-                var time = --wait.innerHTML;
-                if(time <= 0) {
-                    location.href = href;
-                    clearInterval(interval);
-                };
-            }, 1000);
-        })();
-    </script>
+    <?php
+        } else {
+    ?>
+        <div class="dispatch-head">
+            <h1>操作提示</h1>
+        </div>
+        <div style="text-align:center;">
+            <div class="dispatch-box">
+                <div class="dispatch-message">
+                    <?php switch ($code) {?>
+                        <?php case 1:?>
+                            <div class="success"><i class="aicon ai-success">&nbsp;</i><span><?php echo($msg);?></span></div>
+                        <?php break;?>
+                        <?php case 0:?>
+                            <div class="error"><i class="aicon ai-error">&nbsp;</i><span><?php echo($msg);?></span></div>
+                        <?php break;?>
+                    <?php } ?>
+                </div>
+                <div class="dispatch-jump">
+                    页面将在 <b id="wait"><?php echo($wait);?></b> 秒后自动<a id="href" href="<?php echo($url);?>">跳转</a>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function(){
+                var wait = document.getElementById('wait'),
+                    href = document.getElementById('href').href;
+                var interval = setInterval(function(){
+                    var time = --wait.innerHTML;
+                    if(time <= 0) {
+                        location.href = href;
+                        clearInterval(interval);
+                    };
+                }, 1000);
+            })();
+        </script>
+    <?php
+    }
+    ?>
 </body>
 </html>

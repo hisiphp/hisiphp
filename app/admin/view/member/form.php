@@ -40,9 +40,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">会员有效期</label>
         <div class="layui-input-inline">
-            <input type="text" class="layui-input field-expire_time" name="expire_time" autocomplete="off" placeholder="请设置会员有效期" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})" readonly>
+            <input type="text" class="layui-input field-expire_time" name="expire_time" autocomplete="off" placeholder="参考格式：{:date('Y-m-d', strtotime('+1 years'))}" value="0" />
         </div>
-        <div class="layui-form-mid layui-word-aux"><a href="javascript:void(0);" id="reset_expire">点我设置为永久</a></div>
+        <div class="layui-form-mid layui-word-aux">参考格式：{:date('Y-m-d', strtotime('+1 years'))}，默认为0，表示永久有效</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">状&nbsp;&nbsp;&nbsp;&nbsp;态</label>
@@ -53,7 +53,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <input type="hidden" class="field-id" name="id">
+            <input type="hidden" name="id" class="field-id" />
             <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
             <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
@@ -62,17 +62,5 @@
 {include file="block/layui" /}
 <script>
 var formData = {:json_encode($data_info)};
-
-layui.use(['jquery', 'laydate'], function() {
-    var $ = layui.jquery, laydate = layui.laydate;
-    laydate.render({
-        elem: '.field-expire_time',
-        min:'0'
-    });
-
-    $('#reset_expire').on('click', function(){
-        $('input[name="expire_time"]').val(0);
-    });
-});
 </script>
 <script src="__ADMIN_JS__/footer.js"></script>

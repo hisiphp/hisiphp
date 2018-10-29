@@ -25,6 +25,7 @@
         <div class="layui-tab-content page-tab-content">
             <div class="layui-tab-item layui-show">
                 <ul class="icon-list">
+                    <li><i class="aicon ai-czbdlb"></i></li>
                     <li><i class="aicon ai-jinzhi"></i></li>
                     <li><i class="aicon ai-shezhi"></i></li>
                     <li><i class="aicon ai-icon01"></i></li>

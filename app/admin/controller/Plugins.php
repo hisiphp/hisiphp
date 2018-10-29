@@ -322,6 +322,10 @@ class Plugins extends Admin
             if ($sql_list) {
                 $sql_list = array_filter($sql_list);
                 foreach ($sql_list as $v) {
+                    // 防止删除整个数据库
+                    if (stripos(strtoupper($v), 'DROP DATABASE') !== false) {
+                        return $this->error('uninstall.sql文件疑似含有删除数据库的SQL');
+                    }
                     // 过滤sql里面的系统表
                     foreach (config('hs_system.tables') as $t) {
                         if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {

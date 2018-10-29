@@ -55,7 +55,7 @@
                                     <a href="{:url('system/index?group='.$vo['name'])}" class="layui-btn layui-btn-primary layui-btn-sm">配置</a>
                                     {/if}
                                     {if condition="$vo['app_id'] gt 0"}
-                                    <a href="{:url('upgrade/lists?app_type=module&app_id='.$vo['app_id'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
+                                    <a href="{:url('upgrade/lists?app_type=module&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
                                     {else /}
                                     {/if}
                                     <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">卸载</a>

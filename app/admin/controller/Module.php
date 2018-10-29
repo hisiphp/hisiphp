@@ -13,6 +13,7 @@ namespace app\admin\controller;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminConfig as ConfigModel;
 use app\admin\model\AdminMenu as MenuModel;
+use app\admin\model\AdminHook as HookModel;
 use app\common\util\Dir;
 use app\common\util\PclZip;
 use think\Db;
@@ -226,6 +227,16 @@ class Module extends Admin
                 $hooks = '';
                 foreach ($post['hooks']['key'] as $k => $v) {
                     $hooks .= "        '{$v}' => '{$post['hooks']['desc'][$k]}',\n";
+                    if ($module_db['status'] != 0) {
+                        //注册新钩子
+                        if (!HookModel::where('name', $v)->find()) {
+                            $map = [];
+                            $map['name'] = $v;
+                            $map['intro'] = $post['hooks']['desc'][$k];
+                            $map['source'] = 'module.'.$module_db['name'];
+                            HookModel::create($map);
+                        }
+                    }
                 }
                 $data['hooks'] = "[\n{$hooks}    ]";
             }
@@ -274,7 +285,7 @@ class Module extends Admin
             }
 
             $res = ModuleModel::where('id', $_id)->update($sqlmap);
-            if (!$res) {
+            if ($res === false) {
                 return $this->error('保存失败');
             }
             return $this->success('保存成功');
@@ -375,7 +386,7 @@ class Module extends Admin
             if ( file_exists($mod_path.'route.php') ) {
                 copy($mod_path.'route.php', APP_PATH.$mod['name'].'Route.php');
             }
-            
+
             // 导入菜单
             if ( file_exists($mod_path.'menu.php') ) {
                 $menus = include_once $mod_path.'menu.php';
@@ -675,8 +686,8 @@ class Module extends Admin
                     $sql_list = array_filter($sql_list);
                     foreach ($sql_list as $v) {
                         // 防止删除整个数据库
-                        if (stripos($v, config('database.database')) !== false) {
-                            return $this->error('uninstall.sql文件含有数据库名['.config('database.database').']');
+                        if (stripos(strtoupper($v), 'DROP DATABASE') !== false) {
+                            return $this->error('uninstall.sql文件疑似含有删除数据库的SQL');
                         }
                         // 过滤sql里面的系统表
                         foreach (config('hs_system.tables') as $t) {

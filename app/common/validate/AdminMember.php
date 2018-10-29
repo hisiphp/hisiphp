@@ -25,6 +25,7 @@ class AdminMember extends Validate
         'mobile|手机号' => 'requireWith:mobile|checkMobile:thinkphp|unique:admin_member', 
         'password|密码' => 'require|length:6,20',
         'nick|昵称'   => 'requireWith:nick|unique:admin_member',
+        'status|状态' => 'require|in:0,1',
     ];
 
     //定义验证提示
@@ -36,6 +37,13 @@ class AdminMember extends Validate
 
     //定义验证场景
     protected $scene = [
+        'register' => [
+            'username',
+            'email',
+            'mobile',
+            'password',
+            'nick',
+        ],
         //无token验证登录
         'login'  =>  [
             'username|用户名' => 'requireWith:username|checkUsername:thinkphp',
@@ -49,7 +57,25 @@ class AdminMember extends Validate
             'email|邮箱' => 'requireWith:email|email|checkEmail:thinkphp', 
             'mobile|手机号' => 'requireWith:mobile|checkMobile:thinkphp', 
             'password|密码' => 'require|length:6,20|token',
-        ]
+        ],
+        // 后台创建会员
+        'admin_create' => [
+            'username',
+            'email',
+            'mobile',
+            'password',
+            'nick',
+            'status',
+        ],
+        // 后台修改会员
+        'admin_update' => [
+            'username',
+            'email',
+            'mobile',
+            'password',
+            'nick',
+            'status',
+        ],
     ];
     
     /**

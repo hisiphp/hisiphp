@@ -200,7 +200,7 @@ class Admin extends Common
                         return $this->error($validate->getError());
                     }
                 }
-                if (!$model->validate(false)->save($postData, [$pk => $id])) {
+                if ($model->validate(false)->save($postData, [$pk => $id]) === false) {
                     return $this->error($model->getError());
                 }
                 return $this->success('保存成功', '');

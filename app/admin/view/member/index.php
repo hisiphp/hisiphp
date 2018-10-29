@@ -1,10 +1,14 @@
+<style type="text/css">
+    .layui-table-body{overflow-x:auto;}
+    .layui-table-cell{font-size:12px;}
+</style>
 <div class="page-toolbar">
     <div class="page-filter fr">
-        <form class="layui-form layui-form-pane" action="{:url()}" method="get">
+        <form class="layui-form layui-form-pane" action="{:url()}" id="hisiSearch" method="get">
         <div class="layui-form-item">
             <label class="layui-form-label">搜索</label>
             <div class="layui-input-inline">
-                <input type="text" name="q" value="{:input('get.q')}" lay-verify="required" placeholder="用户名、邮箱、手机、昵称" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword" value="" lay-verify="required" placeholder="用户名、邮箱、手机、昵称" autocomplete="off" class="layui-input">
             </div>
         </div>
         </form>
@@ -18,51 +22,47 @@
 </div>
 <form id="pageListForm">
 <div class="layui-form">
-    <table class="layui-table mt10" lay-even="" lay-skin="row">
-        <colgroup>
-            <col width="50">
-        </colgroup>
-        <thead>
-            <tr>
-                <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th>会员</th>
-                <th>等级&经验</th>
-                <th>资金</th>
-                <th>积分</th>
-                <th>注册&登陆</th>
-                <th>状态</th>
-                <th>操作</th>
-            </tr> 
-        </thead>
-        <tbody>
-            {php}
-                $level = config('hs_system.member_level');
-            {/php}
-            {volist name="data_list" id="vo"}
-            <tr>
-                <td><input type="checkbox" name="ids[]" class="layui-checkbox checkbox-ids" value="{$vo['id']}" lay-skin="primary"></td>
-                <td class="font12">
-                    <img src="{if condition="$vo['avatar']"}{$vo['avatar']}{else /}__ADMIN_IMG__/avatar.png{/if}" width="60" height="60" class="fl">
-                    <p class="ml10 fl"><strong class="mcolor">{$vo['username']} ({$vo['nick']})</strong><br>手机：{$vo['mobile']}<br>邮箱：{$vo['email']}</p>
-                </td>
-                <td class="font12">{$level[$vo['level_id']]['name']}<br>经验值：{$vo['exper']}</td>
-                <td class="font12">余额：{$vo['money']}<br>冻结：{$vo['frozen_money']}</td>
-                <td class="font12">积分：{$vo['integral']}<br>冻结：{$vo['frozen_integral']}</td>
-                <td class="font12">注册：{$vo['ctime']}<br>登陆：{:date('Y-m-d H:i:s', $vo['last_login_time'])}</td>
-                <td><input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked=""{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?table=admin_member&ids='.$vo['id'])}"></td>
-                <td>
-                    <div class="layui-btn-group">
-                        <div class="layui-btn-group">
-                        <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe642;</i></a>
-                        <a data-href="{:url('del?table=admin_member&ids='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del"><i class="layui-icon">&#xe640;</i></a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {/volist}
-        </tbody>
-    </table>
-    {$pages}
+    <table id="dataTable"></table>
+    <script type="text/html" id="usernameTpl">
+        <div style="line-height:18px;">
+        <img src="{{ d.avatar ? d.avatar : '__ADMIN_IMG__/avatar.png' }}" width="60" height="60" class="fl">
+        <p class="ml10 fl"><strong class="mcolor">{{ d.username }} ({{ d.nick }})</strong><br>手机：{{ d.mobile }}<br>邮箱：{{ d.email }}</p></div>
+    </script>
+    <script type="text/html" id="statusTpl">
+        <input type="checkbox" name="status" value="{{ d.status }}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" {{ d.status == 1 ? 'checked' : '' }} data-href="{:url('status')}?table=admin_member&id={{ d.id }}">
+    </script>
+    <script type="text/html" title="操作按钮模板" id="buttonTpl">
+        <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal">修改</a><a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+    </script>
 </div>
 </form>
 {include file="block/layui" /}
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,page: true //开启分页
+            ,limit: 20
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'username', title: '账号', templet: '#usernameTpl'}
+                ,{field: 'exper', title: '等级&经验', width: 120, templet: function(d){
+                    return d.has_level.name+'<br>经验值：'+d.exper;
+                }}
+                ,{field: 'money', title: '资金', width: 100, templet: function(d) {
+                    return '余额：'+d.money+'<br>冻结：'+d.frozen_money;
+                }}
+                ,{field: 'integral', title: '注册&登录', width: 180, templet: function(d) {
+                    return '注册：'+d.ctime+'<br>登录：'+d.last_login_time;
+                }}
+                ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

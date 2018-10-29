@@ -12,7 +12,7 @@ namespace app\admin\model;
 
 use think\Model;
 /**
- * 后台角色模型
+ * 模块模型
  * @package app\admin\model
  */
 class AdminModule extends Model

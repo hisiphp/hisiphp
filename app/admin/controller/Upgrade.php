@@ -87,17 +87,15 @@ class Upgrade extends Admin
                 // 缓存站点标识
                 $file = APP_PATH.'extra'.DS.'hs_cloud.php';
                 $str = "<?php\nreturn ['identifier' => '".$res['data']."'];\n";
-                if (is_file($file)) {
+                if (file_exists($file)) {
                     unlink($file);
                 }
                 file_put_contents($file, $str);
-                if (is_file($file)) {
-                    $cloud = include_once $file;
-                    if (isset($cloud['identifier']) && !empty($cloud['identifier'])) {
-                        return $this->success('恭喜您，已成功绑定云平台账号。');
-                    }
+                if (file_exists($file)) {
+                    return $this->success('恭喜您，已成功绑定云平台账号。');
+                } else {
+                    return $this->error('extra/hs_cloud.php写入失败！');
                 }
-                return $this->error('extra/hs_cloud.php写入失败！');
             }
             return $this->error($res['msg'] ? $res['msg'] : '云平台绑定失败！(-0)');
         }

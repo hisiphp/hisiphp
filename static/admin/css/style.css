@@ -1,4 +1,4 @@
-@import url(//at.alicdn.com/t/font_247300_crrz83kvhh.css);
+@import url(//at.alicdn.com/t/font_247300_r6e8bw2bb8.css);
 body {background-color:#fff}
 .fl {float:left}
 .fr {float:right}
@@ -182,3 +182,10 @@ body {background-color:#fff}
 .lock-screen input::-moz-placeholder {color:#fff}
 .lock-screen input:-ms-input-placeholder {color:#fff}
 .lock-screen button {float:left;margin-left:20px}
+/*应用themes*/
+.app-themes{}
+.app-themes li{float:left;width:360px;overflow:hidden;margin:10px 20px 10px 10px;}
+.app-themes li img{float:left;border-radius:5px;padding:2px;border:1px solid #ddd;}
+.app-themes li dl{float:right;width:190px;overflow:hidden;}
+.app-themes li dd{line-height:28px;}
+.app-themes li dt{margin-top:10px;}
