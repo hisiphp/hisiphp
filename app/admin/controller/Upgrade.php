@@ -487,7 +487,7 @@ class Upgrade extends Admin
             }
         }
 
-        if (!is_dir($decom_path.DS.'upload'.DS.$plugins->name)) {
+        if (!is_dir($decom_path.DS.'upload'.DS.'plugins'.DS.$plugins->name)) {
             $this->error = '升级失败，升级包文件不完整！';
             return false;
         }
