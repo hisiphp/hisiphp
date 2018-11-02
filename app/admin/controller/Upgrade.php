@@ -82,6 +82,7 @@ class Upgrade extends Admin
             $data['password'] = $password;
             $data['site_name'] = config('base.site_name');
             $data['version'] = config('hisiphp.version');
+            $data['ip'] = get_client_ip();
             $res = $this->cloud->data($data)->api('bind');
             if (isset($res['code']) && $res['code'] == 1) {
                 // 缓存站点标识
@@ -496,7 +497,7 @@ class Upgrade extends Admin
             return false;
         }
         // 复制插件目录
-        Dir::copyDir($decom_path.DS.'upload'.DS.$plugins->name, '.'.ROOT_DIR.'plugins'.DS.$plugins->name);
+        Dir::copyDir($decom_path.DS.'upload'.DS.'plugins'.DS.$plugins->name, '.'.ROOT_DIR.'plugins'.DS.$plugins->name);
 
         // 读取插件info
         if (!is_file('.'.ROOT_DIR.'plugins'.DS.$plugins->name.DS.'info.php')) {
