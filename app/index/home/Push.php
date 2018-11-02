@@ -208,9 +208,9 @@ class Push extends Home
             Dir::create('.'.ROOT_DIR.'plugins/'.$this->app_name, 0777, true);
         }
 
-        $appPath = $unzipPath.'upload/plugins/'.$this->app_name.DS;
+        $appPath = $unzipPath.DS.'upload'.DS.'plugins'.DS.$this->app_name.DS;
         if (!is_file($appPath.'info.php')) {
-            return $this->apiReturn('推送失败，升级包文件不完整！');
+            return $this->apiReturn($appPath.'info.php'.'推送失败，升级包文件不完整！');
         }
 
         $info = include_once $appPath.'info.php';
