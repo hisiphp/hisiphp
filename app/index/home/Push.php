@@ -31,8 +31,8 @@ class Push extends Home
         }
 
         parent::_initialize();
-        $this->cloud            = new CloudApi(config('hs_cloud.identifier'), $this->update_path);
         $this->update_path      = ROOT_PATH.'backup'.DS.'uppack'.DS;
+        $this->cloud            = new CloudApi(config('hs_cloud.identifier'), $this->update_path);
         $this->sign             = $this->request->param('sign/s');
         $this->token            = $this->request->param('token/s');
         $this->version          = $this->request->param('version/s');
