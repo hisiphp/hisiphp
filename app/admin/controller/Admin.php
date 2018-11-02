@@ -34,8 +34,11 @@ class Admin extends Common
         if (!$login['uid']) {
             return $this->error('请登陆之后在操作！', ROOT_DIR.config('sys.admin_path'));
         }
-        define('ADMIN_ID', $login['uid']);
-        define('ADMIN_ROLE', $login['role_id']);
+        
+        if (!defined('ADMIN_ID')) {
+            define('ADMIN_ID', $login['uid']);
+            define('ADMIN_ROLE', $login['role_id']);
+        }
         
         $c_menu = MenuModel::getInfo();
         if (!$c_menu) {
