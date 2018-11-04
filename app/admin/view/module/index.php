@@ -17,7 +17,7 @@
             </tr> 
         </thead>
         <tbody>
-            {volist name="data_list" id="vo" empty="<tr><td colspan='5' align='center' height='100'>未发现相关模块，快去<a href='http://store.hisiphp.com/modules' target='_blank'> <strong style='color:#428bca'>应用市场</strong> </a>看看吧！</td></tr>"}
+            {volist name="data_list" id="vo" empty="$emptyTips"}
             <tr>
                 <td>
                     <div class="module-list-info">
@@ -48,27 +48,27 @@
                                     <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del">删除</a>
                                 {/case}
                                 {case value="1"}
-                                    {if condition="config('develop.app_debug') && $vo['app_id'] eq 0"}
+                                    {if condition="config('develop.app_debug') && empty($vo['app_keys'])"}
                                         <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm red">编辑</a>
                                     {/if}
                                     {if condition="!empty($vo['config'])"}
                                     <a href="{:url('system/index?group='.$vo['name'])}" class="layui-btn layui-btn-primary layui-btn-sm">配置</a>
                                     {/if}
-                                    {if condition="$vo['app_id'] gt 0"}
+                                    {if condition="$vo['app_keys']"}
                                     <a href="{:url('upgrade/lists?app_type=module&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
                                     {else /}
                                     {/if}
                                     <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">卸载</a>
                                 {/case}
                                 {case value="2"}
-                                    {if condition="config('develop.app_debug') && $vo['app_id'] eq 0"}
+                                    {if condition="config('develop.app_debug') && empty($vo['app_keys'])"}
                                         <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm red">编辑</a>
                                     {/if}
                                     {if condition="!empty($vo['config'])"}
                                     <a href="{:url('system/index?group='.$vo['name'])}" class="layui-btn layui-btn-primary layui-btn-sm">配置</a>
                                     {/if}
                                     <a href="{:url('theme?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">主题</a>
-                                    {if condition="$vo['app_id'] gt 0"}
+                                    {if condition="$vo['app_keys']"}
                                     <a href="{:url('upgrade/lists?app_type=module&identifier='.$vo['identifier'])}" class="layui-btn layui-btn-primary layui-btn-sm">更新</a>
                                     {else /}
                                     {/if}

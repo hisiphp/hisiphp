@@ -46,10 +46,6 @@ class Module extends Admin
                 'url' => 'admin/module/index?status=0',
             ],
             [
-                'title' => '<strong style="color:#428bca">应用市场</strong>',
-                'url' => 'http://store.hisiphp.com/modules',
-            ],
-            [
                 'title' => '导入模块',
                 'url' => 'admin/module/import',
             ],
@@ -72,7 +68,7 @@ class Module extends Admin
         $map = [];
         $map['status'] = $status;
         $map['system'] = 0;
-        $modules = ModuleModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,default,system,app_id,identifier,config,name,version,status');
+        $modules = ModuleModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,default,system,app_keys,identifier,config,name,version,status');
         if ($status == 0) {
             // 自动将本地未入库的模块导入数据库
             $all_module = ModuleModel::order('sort,id')->column('id,name', 'name');
@@ -105,7 +101,7 @@ class Module extends Admin
                     $sql['status'] = 0;
                     $sql['default'] = 0;
                     $sql['system'] = 0;
-                    $sql['app_id'] = 0;
+                    $sql['app_keys'] = '';
                     $db = ModuleModel::create($sql);
                     $sql['id'] = $db->id;
                     $modules = array_merge($modules, [$sql]);
@@ -113,6 +109,7 @@ class Module extends Admin
             }
         }
 
+        $this->assign('emptyTips', '<tr><td colspan="5" align="center" height="100">未发现相关模块，快去<a href="'.url('store/index').'"> <strong style="color:#428bca">应用市场</strong> </a>看看吧！</td></tr>');
         $this->assign('data_list', array_values($modules));
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
@@ -324,125 +321,32 @@ class Module extends Admin
      */
     public function install($id = 0)
     {
+        if ($this->request->isPost()) {
+            $result = self::execInstall($id, 1);
+            if ($result !== true) {
+                return $this->error($result);
+            }
+            return $this->success('模块已安装成功', url('index?status=2'));
+        }
+
         $mod = ModuleModel::where('id', $id)->find();
         if (!$mod) {
             return $this->error('模块不存在');
         }
+        
         if ($mod['status'] > 0) {
             return $this->error('请勿重复安装此模块');
         }
-        $mod_path = APP_PATH.$mod['name'].DS;
+
+        $modPath = APP_PATH.$mod['name'].DS;
+        
         // 模块自定义配置
-        if (!file_exists($mod_path.'info.php')) {
+        if (!file_exists($modPath.'info.php')) {
             return $this->error('模块配置文件不存在[info.php]');
         }
-        $info = include_once $mod_path.'info.php';
-        if ($this->request->isPost()) {
-            // 过滤系统表
-            foreach ($info['tables'] as $t) {
-                if (in_array($t, config('hs_system.tables'))) {
-                    return $this->error('模块数据表与系统表重复['.$t.']');
-                }
-            }
 
-            $post = $this->request->post();
-            // 导入SQL
-            $sql_file = realpath($mod_path.'sql'.DS.'install.sql');
-            if (file_exists($sql_file)) {
-                $sql = file_get_contents($sql_file);
-                $sql_list = parse_sql($sql, 0, [$info['db_prefix'] => config('database.prefix')]);
-                if ($sql_list) {
-                    if ($post['clear'] == 1) {// 清空所有数据
-                        foreach ($info['tables'] as $table) {
-                            if (Db::query("SHOW TABLES LIKE '".config('database.prefix').$table."'")) {
-                                Db::execute('DROP TABLE IF EXISTS `'.config('database.prefix').$table.'`;');
-                            }
-                        }
-                    }
-                    $sql_list = array_filter($sql_list);
-                    foreach ($sql_list as $v) {
-                        // 过滤sql里面的系统表
-                        foreach (config('hs_system.tables') as $t) {
-                            if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
-                                return $this->error('install.sql文件含有系统表['.$t.']');
-                            }
-                        }
-                        if (stripos($v, 'DROP TABLE') === false) {
-                            try {
-                                Db::execute($v);
-                            } catch(\Exception $e) {
-                                if ($post['clear'] == 1) {
-                                    return $this->error('导入SQL失败，请检查install.sql的语句是否正确或者表是否存在');
-                                } else {
-                                    return $this->error('导入SQL失败，请尝试选择清除旧数据');
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        $info = include_once $modPath.'info.php';
 
-            // 导入路由
-            if ( file_exists($mod_path.'route.php') ) {
-                copy($mod_path.'route.php', APP_PATH.$mod['name'].'Route.php');
-            }
-
-            // 导入菜单
-            if ( file_exists($mod_path.'menu.php') ) {
-                $menus = include_once $mod_path.'menu.php';
-                // 如果不是数组且不为空就当JSON数据转换
-                if (!is_array($menus) && !empty($menus)) {
-                    $menus = json_decode($menus, 1);
-                }
-                if (MenuModel::importMenu($menus, $mod['name']) == false) {
-                    // 执行回滚
-                    MenuModel::where('module', $mod['name'])->delete();
-                    return $this->error('添加菜单失败，请重新安装');
-                }
-            }
-            
-            // 导入模块钩子
-            if (!empty($info['hooks'])) {
-                $hook_mod = model('AdminHook');
-                foreach ($info['hooks'] as $k => $v) {
-                    $map = [];
-                    $map['name'] = $k;
-                    $map['intro'] = $v;
-                    $map['source'] = 'module.'.$mod['name'];
-                    $hook_mod->storage($map);
-                }
-            }
-            cache('hook_plugins', null);
-            // 导入模块配置
-            if (isset($info['config']) && !empty($info['config'])) {
-                $menu = [];
-                $menu['pid'] = 10;
-                $menu['module'] = $mod['name'];
-                $menu['title'] = $mod['title'].'配置';
-                $menu['url'] = 'admin/system/index';
-                $menu['param'] = 'group='.$mod['name'];
-                $menu['system'] = 0;
-                $menu['debug'] = 0;
-                $menu['sort'] = 100;
-                $menu['status'] = 1;
-                $menu_mod = new MenuModel;
-                $menu_mod->storage($menu);
-                ModuleModel::where('id', $id)->setField('config', json_encode($info['config'], 1));
-            }
-            // 更新模块基础信息
-            $sqlmap = [];
-            $sqlmap['title'] = $info['title'];
-            $sqlmap['identifier'] = $info['identifier'];
-            $sqlmap['intro'] = $info['intro'];
-            $sqlmap['author'] = $info['author'];
-            $sqlmap['url'] = $info['author_url'];
-            $sqlmap['version'] = $info['version'];
-            $sqlmap['status'] = 2;
-            ModuleModel::where('id', $id)->update($sqlmap);
-            ModuleModel::moduleRoute(true);
-            ConfigModel::getConfig('', true);
-            return $this->success('模块已安装成功', url('index?status=2'));
-        }
         // 模块依赖检查
         foreach ($info['module_depend'] as $k => $v) {
             if (!isset($v[3])) {
@@ -477,11 +381,150 @@ class Module extends Admin
             }
             $info['module_depend'][$k] = $v;
         }
+
         // 插件依赖检查 TODO
+
         $info['id'] = $mod['id'];
+
         $this->assign('tables', $this->checkTable($info['tables']));
         $this->assign('data_info', $info);
         return $this->fetch();
+    }
+
+    /**
+     * 执行模块安装
+     * @date   2018-11-01
+     * @access public
+     * @author 橘子俊 364666827@qq.com
+     * @param  int          $id    模块ID
+     * @param  integer      $clear 清空旧数据
+     * @return bool|string  
+     */
+    public function execInstall($id, $clear = 1)
+    {
+        $mod = ModuleModel::where('id', $id)->find();
+        if (!$mod) {
+            return '模块不存在';
+        }
+        if ($mod['status'] > 0) {
+            return '请勿重复安装此模块';
+        }
+
+        $modPath = APP_PATH.$mod['name'].DS;
+        // 模块自定义配置
+        if (!file_exists($modPath.'info.php')) {
+            return '模块配置文件不存在[info.php]';
+        }
+
+        $info = include_once $modPath.'info.php';
+
+        // 过滤系统表
+        foreach ($info['tables'] as $t) {
+            if (in_array($t, config('hs_system.tables'))) {
+                return '模块数据表与系统表重复['.$t.']';
+            }
+        }
+
+        // 导入SQL
+        $sqlFile = realpath($modPath.'sql'.DS.'install.sql');
+        if (file_exists($sqlFile)) {
+            $sql = file_get_contents($sqlFile);
+            $sqlList = parse_sql($sql, 0, [$info['db_prefix'] => config('database.prefix')]);
+            if ($sqlList) {
+                if ($clear == 1) {// 清空所有数据
+                    foreach ($info['tables'] as $table) {
+                        if (Db::query("SHOW TABLES LIKE '".config('database.prefix').$table."'")) {
+                            Db::execute('DROP TABLE IF EXISTS `'.config('database.prefix').$table.'`;');
+                        }
+                    }
+                }
+                $sqlList = array_filter($sqlList);
+                foreach ($sqlList as $v) {
+                    // 过滤sql里面的系统表
+                    foreach (config('hs_system.tables') as $t) {
+                        if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
+                            return 'install.sql文件含有系统表['.$t.']';
+                        }
+                    }
+                    if (stripos($v, 'DROP TABLE') === false) {
+                        try {
+                            Db::execute($v);
+                        } catch(\Exception $e) {
+                            if ($clear == 1) {
+                                return '导入SQL失败，请检查install.sql的语句是否正确或者表是否存在';
+                            } else {
+                                return '导入SQL失败，请尝试选择清除旧数据';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 导入路由
+        if ( file_exists($modPath.'route.php') ) {
+            copy($modPath.'route.php', APP_PATH.$mod['name'].'Route.php');
+        }
+
+        // 导入菜单
+        if ( file_exists($modPath.'menu.php') ) {
+            $menus = include_once $modPath.'menu.php';
+            // 如果不是数组且不为空就当JSON数据转换
+            if (!is_array($menus) && !empty($menus)) {
+                $menus = json_decode($menus, 1);
+            }
+            if (MenuModel::importMenu($menus, $mod['name']) == false) {
+                // 执行回滚
+                MenuModel::where('module', $mod['name'])->delete();
+                return '添加菜单失败，请重新安装';
+            }
+        }
+        
+        // 导入模块钩子
+        if (!empty($info['hooks'])) {
+            $hook_mod = model('AdminHook');
+            foreach ($info['hooks'] as $k => $v) {
+                $map            = [];
+                $map['name']    = $k;
+                $map['intro']   = $v;
+                $map['source']  = 'module.'.$mod['name'];
+                $hook_mod->storage($map);
+            }
+        }
+
+        // 清空缓存钩子插件
+        cache('hook_plugins', null);
+
+        // 导入模块配置
+        if (isset($info['config']) && !empty($info['config'])) {
+            $menu           = [];
+            $menu['pid']    = 10;
+            $menu['module'] = $mod['name'];
+            $menu['title']  = $mod['title'].'配置';
+            $menu['url']    = 'admin/system/index';
+            $menu['param']  = 'group='.$mod['name'];
+            $menu['system'] = 0;
+            $menu['debug']  = 0;
+            $menu['sort']   = 100;
+            $menu['status'] = 1;
+            $menuModel = new MenuModel;
+            $menuModel->storage($menu);
+            ModuleModel::where('id', $id)->setField('config', json_encode($info['config'], 1));
+        }
+
+        // 更新模块基础信息
+        $sqlmap                 = [];
+        $sqlmap['title']        = $info['title'];
+        $sqlmap['identifier']   = $info['identifier'];
+        $sqlmap['intro']        = $info['intro'];
+        $sqlmap['author']       = $info['author'];
+        $sqlmap['url']          = $info['author_url'];
+        $sqlmap['version']      = $info['version'];
+        $sqlmap['status']       = 2;
+        ModuleModel::where('id', $id)->update($sqlmap);
+        ModuleModel::moduleRoute(true);
+        ConfigModel::getConfig('', true);
+        return true;
     }
 
     /**
