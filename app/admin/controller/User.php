@@ -122,7 +122,7 @@ class User extends Admin
             if($result !== true) {
                 return $this->error($result);
             }
-            unset($data['id'], $data['password_confirm']);
+            unset($data['id'], $data['password_confirm'], $data['__token__']);
             $data['last_login_ip'] = '';
             $data['auth'] = '';
             if (!UserModel::create($data)) {
@@ -182,7 +182,7 @@ class User extends Admin
             if ($data['password'] == '') {
                 unset($data['password']);
             }
-            unset($data['password_confirm']);
+            unset($data['password_confirm'], $data['__token__']);
 
             if (!UserModel::update($data)) {
                 return $this->error('修改失败');
@@ -234,7 +234,7 @@ class User extends Admin
             if ($data['password'] == '') {
                 unset($data['password']);
             }
-            unset($data['password_confirm']);
+            unset($data['password_confirm'], $data['__token__']);
 
             if (!UserModel::update($data)) {
                 return $this->error('修改失败');

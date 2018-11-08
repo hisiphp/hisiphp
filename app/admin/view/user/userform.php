@@ -92,6 +92,7 @@
 </div>
 <div class="layui-form-item">
     <div class="layui-input-block">
+        {:token()}
         <input type="hidden" class="field-id" name="id">
         <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
         <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>

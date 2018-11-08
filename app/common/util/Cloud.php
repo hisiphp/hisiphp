@@ -141,13 +141,14 @@ class Cloud {
      * @author 橘子俊 <364666827@qq.com>
      */
     private function run($request = true){
-        $params['format'] = 'json';
-        $params['timestamp'] = time();
-        $params['domain'] = get_domain().ROOT_DIR;
-        $params['identifier'] = $this->identifier;
+        $params['format']       = 'json';
+        $params['timestamp']    = time();
+        $params['domain']       = get_domain().ROOT_DIR;
+        $params['ip']           = $_SERVER['SERVER_ADDR'];
+        $params['identifier']   = $this->identifier;
         $params['hisi_version'] = config('hisiphp.version');
-        $params = array_merge($params,$this->data);
-        $params = array_filter($params);
+        $params                 = array_merge($params, $this->data);
+        $params                 = array_filter($params);
         if (is_file($this->lock)) {
             @unlink($this->lock);
         }

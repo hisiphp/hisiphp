@@ -24,27 +24,6 @@ class Menu extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    // public function index($pid = 0)
-    // {
-    //     $modules = MenuModel::where('pid', 0)->field('id,title')->order('sort asc')->select();
-    //     $tab_data = [];
-    //     foreach ($modules as $key => $value) {
-    //         $tab_data['menu'][$key]['title'] = $value['title'];
-    //         $tab_data['menu'][$key]['url'] = '?pid='.$value['id'];
-    //     }
-    //     if ($pid == 0) {
-    //         $pid = $modules[0]['id'];
-    //     }
-    //     $menu_list = MenuModel::getAllChild($pid, 0);
-    //     // print_r($menu_list);
-    //     $tab_data['current'] = url('?pid='.$pid);
-
-    //     $this->assign('menu_list', $menu_list);
-    //     $this->assign('pid', $pid);
-    //     $this->assign('tab_data', $tab_data);
-    //     $this->assign('tab_type', 1);
-    //     return $this->fetch();
-    // }
     public function index()
     {
         $menu_list = MenuModel::getAllChild(0, 0);
@@ -72,7 +51,7 @@ class Menu extends Admin
             if (!$model->storage()) {
                 return $this->error($model->getError());
             }
-            return $this->success('保存成功。', url('index'));
+            return $this->success('保存成功', url('index'));
         }
         $this->assign('module_option', model('AdminModule')->getOption($mod));
         $this->assign('menu_option', self::menuOption($pid));
@@ -91,13 +70,13 @@ class Menu extends Admin
             if (!$model->storage()) {
                 return $this->error($model->getError());
             }
-            return $this->success('保存成功。', url('index'));
+            return $this->success('保存成功', url('index'));
         }
 
         $row = MenuModel::where('id', $id)->find();
         // admin模块 只允许超级管理员在开发模式下修改
         if ($row['module'] == 'admin' && (ADMIN_ID != 1 || config('develop.app_debug') == 0)) {
-            return $this->error('禁止修改系统模块！');
+            return $this->error('禁止修改系统模块');
         }
         // 多语言
         if (config('sys.multi_language') == 1) {
@@ -156,7 +135,7 @@ class Menu extends Admin
         $id = input('param.ids/a');
         $model = new MenuModel();
         if ($model->del($id)) {
-            return $this->success('删除成功。');
+            return $this->success('删除成功');
         }
         return $this->error($model->getError());
     }
@@ -173,13 +152,13 @@ class Menu extends Admin
         $map['id'] = $id;
         $menu = MenuModel::where($map)->field('pid,title,icon,module,url,param,target,debug,system,nav,sort')->find()->toArray();
         if (!$menu) {
-            return $this->error('模块不存在！');
+            return $this->error('模块不存在');
         }
         if ($menu['pid'] > 0 && $menu['url'] != 'admin/plugins/run') {
-            return $this->error('只能通过顶级菜单导出！');
+            return $this->error('只能通过顶级菜单导出');
         }
         if ($menu['url'] == 'admin/plugins/run' && MenuModel::where('id', $menu['pid'])->value('url') == 'admin/plugins/run') {
-            return $this->error('只能通过顶级菜单导出！');
+            return $this->error('只能通过顶级菜单导出');
         }
         unset($menu['pid'], $menu['id']);
         $menus = [];
@@ -211,14 +190,14 @@ class Menu extends Admin
     {
         $id = input('param.id/d');
         if (!$id) {
-            return $this->error('参数传递错误！');
+            return $this->error('参数传递错误');
         }
         $map = [];
         $map['id'] = $id;
         
         $row = MenuModel::where($map)->find()->toArray();
         if (!$row) {
-            return $this->error('您添加的菜单不存在！');
+            return $this->error('您添加的菜单不存在');
         }
         
         unset($row['id'], $map['id']);
@@ -227,7 +206,7 @@ class Menu extends Admin
         $map['uid'] = ADMIN_ID;
         $row['pid'] = $map['pid'] = 4;
         if (MenuModel::where($map)->find()) {
-            return $this->error('您已添加过此快捷菜单！');
+            return $this->error('您已添加过此快捷菜单');
         }
         $row['uid'] = ADMIN_ID;
         $row['debug'] = 0;
@@ -236,9 +215,9 @@ class Menu extends Admin
         $model = new MenuModel();
         $res = $model->storage($row);
         if ($res === false) {
-            return $this->error('快捷菜单添加失败！');
+            return $this->error('快捷菜单添加失败');
         }
-        return $this->success('快捷菜单添加成功。');
+        return $this->success('快捷菜单添加成功');
     }
 
     /**

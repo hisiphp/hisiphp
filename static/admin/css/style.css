@@ -189,3 +189,18 @@ body {background-color:#fff}
 .app-themes li dl{float:right;width:190px;overflow:hidden;}
 .app-themes li dd{line-height:28px;}
 .app-themes li dt{margin-top:10px;}
+.apps-filter-tr{width:100%;overflow:hidden;display:block;padding:5px 0;line-height:25px;}
+.apps-filter-tr dt{float:left;text-align:right;color:#666;}
+.apps-filter-tr dd{float:left;width:90%;overflow:hidden;}
+.apps-filter-tr dd a{margin-left:0!important;margin-right:5px;margin-bottom:5px;}
+.app-spec{float:left;width:100%;margin:5px 0;}
+.app-spec dt{float:left;width:20%;overflow:hidden;height:30px;line-height:30px;text-align:center;}
+.app-spec dd{float:left;width:80%;overflow:hidden;}
+.app-spec dd a{margin:4px 5px 0 0;float:left;}
+.app-price,
+.app-order-id
+,.app-pay-success{text-align:center;font-weight:400;color:#000;}
+.app-price{font-size:24px;}
+.app-qrocde{display:block;width:100;text-align:center;}
+.app-order-id{color:#999;font-size:14px;line-height:20px;}
+.app-pay-success{height:200px;padding-top:80px;}

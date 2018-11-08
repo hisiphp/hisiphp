@@ -21,10 +21,13 @@ class AdminMenu extends Validate
 {
     //定义验证规则
     protected $rule = [
+        'title|菜单名称'  => 'require|chsDash',
         'url|菜单链接' => 'require|checkUrl:thinkphp',
-        'module|所属模块' => 'require',
-        'pid|所属菜单'    => 'require',
-        'title|菜单名称'  => 'require',
+        'module|所属模块' => 'require|alphaDash',
+        'pid|所属菜单'    => 'require|number',
+        'status|状态' => 'require|in:0,1',
+        'system|系统菜单' => 'require|in:0,1',
+        'nav|后台导航' => 'require|in:0,1|token',
     ];
 
     //定义验证提示

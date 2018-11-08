@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use app\admin\model\AdminConfig as ConfigModel;
 use app\admin\model\AdminModule as ModuleModel;
 use app\admin\model\AdminPlugins as PluginsModel;
+use think\Validate;
 /**
  * 系统设置控制器
  * @package app\admin\controller
@@ -35,7 +36,18 @@ class System extends Admin
             } else {
                 $ids = $data['id'] = '';
             }
-            unset($data['upload']);// 清除上传字段
+
+            // 清除上传字段
+            unset($data['upload']);
+            
+            // token 验证
+            $validate = new Validate([
+                '__token__' => 'token',
+            ]);
+            if (!$validate->check($data)) {
+                return $this->error($validate->getError());
+            }
+
             // 非系统模块配置保存
             if (isset($data['module'])) {
                 $row = ModuleModel::where('name', $data['module'])->field('id,config')->find()->toArray();
@@ -54,11 +66,12 @@ class System extends Admin
                 }
 
                 if (ModuleModel::where('id', $row['id'])->setField('config', json_encode($row['config'], 1)) === false) {
-                    return $this->error('保存失败！');
+                    return $this->error('保存失败');
                 }
                 ModuleModel::getConfig('', true);
-                return $this->success('保存成功。');
+                return $this->success('保存成功');
             }
+
             // 系统模块配置保存
             if (!$types) return false;
             $admin_path = config('sys.admin_path');
@@ -67,9 +80,11 @@ class System extends Admin
                     ConfigModel::where('name', $k)->update(['value' => 0]);
                     continue;
                 }
+
                 if ($v == 'checkbox' && isset($ids[$k])) {
                     $ids[$k] = json_encode($ids[$k], 1);
                 }
+                
                 // 修改后台管理目录
                 if ($k == 'admin_path' && $ids[$k] != config('sys.admin_path')) {
                     if (is_file(ROOT_PATH.config('sys.admin_path')) && is_writable(ROOT_PATH.config('sys.admin_path'))) {
@@ -82,11 +97,22 @@ class System extends Admin
                 }
                 ConfigModel::where('name', $k)->update(['value' => $ids[$k]]);
             }
-            // 更新配置缓存
-            ConfigModel::getConfig('', true);
 
-            return $this->success('保存成功。', ROOT_DIR.$admin_path.'/admin/system/index/group/'.$group.'.html');
+            // 更新配置缓存
+            $config = ConfigModel::getConfig('', true);
+
+            if ($group == 'develop') {
+                if (file_exists(ROOT_PATH.'.env')) {
+                    unlink(ROOT_PATH.'.env');
+                }
+                $env = "//设置开启调试模式\napp_debug = " . ($config['develop']['app_debug'] ? 'true' : 'false');
+                $env .= "\n//应用Trace\napp_trace = " . ($config['develop']['app_trace'] ? 'true' : 'false');
+                file_put_contents(ROOT_PATH.'.env', $env);
+            }
+
+            return $this->success('保存成功', ROOT_DIR.$admin_path.'/admin/system/index/group/'.$group.'.html');
         }
+
         $tab_data = [];
         foreach (config('sys.config_group') as $key => $value) {
             $arr = [];
@@ -94,6 +120,7 @@ class System extends Admin
             $arr['url'] = '?group='.$key;
             $tab_data['menu'][] = $arr;
         }
+
         $map = [];
         $map['group'] = $group;
         $map['status'] = 1;
@@ -104,6 +131,7 @@ class System extends Admin
                 $v['options'] = parse_attr($v['options']);
             }
         }
+
         // 模块配置
         $module = ModuleModel::where('status', 2)->column('name,title,config', 'name');
         foreach ($module as $mod) {
@@ -123,8 +151,10 @@ class System extends Admin
                 }
             }
         }
+
         $tab_data['current'] = url('?group='.$group);
         $_GET['group'] = $group;
+
         $this->assign('data_list', $data_list);
         $this->assign('tab_data', $tab_data);
         $this->assign('tab_type', 1);
@@ -146,7 +176,7 @@ define('APP_PATH', __DIR__ . '/app/');
 define('ENTRANCE', 'admin');
 
 // 检查是否安装
-if(!is_file(APP_PATH.'install/install.lock')) {
+if(!is_file(APP_PATH.'install/install.lock') && !is_file(APP_PATH.'install.lock')) {
     header('Location: /');
     exit;
 }

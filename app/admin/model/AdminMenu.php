@@ -65,6 +65,7 @@ class AdminMenu extends Model
             $this->error = $valid->getError();
             return false;
         }
+        unset($data['__token__']);
         $title = $data['title'];
         if (isset($data['id']) && !empty($data['id'])) {
             if (config('sys.multi_language') == 1) {
@@ -90,7 +91,7 @@ class AdminMenu extends Model
             }
         }
         if (!$res) {
-            $this->error = '保存失败！';
+            $this->error = '保存失败';
             return false;
         }
         self::getMainMenu(true);

@@ -87,7 +87,7 @@ class Upgrade extends Admin
             if (isset($res['code']) && $res['code'] == 1) {
                 // 缓存站点标识
                 $file = APP_PATH.'extra'.DS.'hs_cloud.php';
-                $str = "<?php\nreturn ['identifier' => '".$res['data']."'];\n";
+                $str = "<?php\n// 请妥善保管此文件，谨防泄漏\nreturn ['identifier' => '".$res['data']."'];\n";
                 if (file_exists($file)) {
                     unlink($file);
                 }

@@ -28,32 +28,11 @@
         </tr>
     </tbody>
 </table>
-<script type="text/html" id="popCloudBind">
-    <form class="layui-form layui-form-pane page-form" action="{:url()}" method="post" id="editForm">
-        <div class="layui-form-item">
-            <label class="layui-form-label">云平台账号</label>
-            <div class="layui-input-inline w200">
-                <input type="text" class="layui-input" name="account" lay-verify="required" autocomplete="off" placeholder="请输入云平台登陆账号">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">云平台密码</label>
-            <div class="layui-input-inline w200">
-                <input type="password" class="layui-input" name="password" lay-verify="required" autocomplete="off" placeholder="请输入云平台登陆密码">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-form-mid layui-word-aux" style="padding:0!important;">
-                温馨提示：确认绑定，表示您已了解并同意<a href="#" class="mcolor2">云平台相关协议</a>
-            </div>
-        </div>
-        <div class="layui-form-item" id="resultTips"></div>
-    </form>
-</script>
 {include file="block/layui" /}
-<script>
+{include file="block/bind_cloud" /}
+<script type="text/javascript">
 layui.use(['jquery', 'layer'], function() {
-    var $=layui.jquery, layer = layui.layer;
+    var $ = layui.jquery, layer = layui.layer;
     $.ajax({
         url:'{$api_url}connection',
         data:'domain={$_SERVER["SERVER_NAME"]}&version={:config("hisiphp.version")}',
@@ -64,30 +43,10 @@ layui.use(['jquery', 'layer'], function() {
             $('#upgrade').show();
         }
     });
-    $('#getTag').on('click', function(){
-        var that = $(this);
-        $.ajax({
-            url:'{$api_url}identifier',
-            data:'domain={$_SERVER["SERVER_NAME"]}&version={:config("hisiphp.version")}',
-            dataType:'json',
-            success:function(data) {
-                if (data.code == 1) {
-                    that.before(data.data).remove();
-                    $.ajax({
-                        type:'POST',
-                        url: '{:url("index")}',
-                        data: 'identifier='+data.data,
-                        success: function(res) {}
-                    });
-                    $('#upgrade').attr('href', '{:url("lists")}');
-                }
-            }
-        });
-        return false;
-    });
+
     $('.cloudBind').on('click', function() {
         layer.open({
-            title:'绑定云平台 / <a href="http://store.hisiphp.com/act/reg?domain={$_SERVER["SERVER_NAME"]}" target="_blank" class="mcolor">注册云平台</a>',
+            title:'绑定云平台 / <a href="https://store.hisiphp.com/act/reg?domain={$_SERVER["SERVER_NAME"]}" target="_blank" class="mcolor">注册云平台</a>',
             id:'popLoginBox',
             area:'380px',
             content:$('#popCloudBind').html(),
@@ -97,7 +56,7 @@ layui.use(['jquery', 'layer'], function() {
             yes:function(index) {
                 var tips = $('#resultTips');
                 tips.html('请稍后，云平台通信中...');
-                $.post('{:url('')}', $('#editForm').serialize(), function(res) {
+                $.post('{:url('')}', $('#cloudForm').serialize(), function(res) {
                     if (res.code == 1) {
                         layer.msg(res.msg);
                         setTimeout(function() {

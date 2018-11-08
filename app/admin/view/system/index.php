@@ -140,6 +140,7 @@
     {/volist}
     <div class="layui-form-item">
         <div class="layui-input-block">
+            {:token()}
             <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
         </div>
     </div>

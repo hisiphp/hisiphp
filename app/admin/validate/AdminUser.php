@@ -20,12 +20,12 @@ class AdminUser extends Validate
 {
     //定义验证规则
     protected $rule = [
-        'username|用户名' => 'require|alphaNum|unique:admin_user',
         'nick|昵称'       => 'require|unique:admin_user',
         'role_id|角色'    => 'requireWith:role_id|notIn:0,1',
         'email|邮箱'     => 'requireWith:email|email|unique:admin_user',
         'password|密码'  => 'require|length:6,20|confirm',
         'mobile|手机号'   => 'requireWith:mobile|regex:^1\d{10}',
+        'username|用户名' => 'require|alphaNum|unique:admin_user|token',
     ];
 
     //定义验证提示
@@ -44,10 +44,10 @@ class AdminUser extends Validate
     //定义验证场景
     protected $scene = [
         //更新
-        'update'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'mobile', 'role_id'],
+        'update'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'role_id', 'mobile'],
         //更新个人信息
         'info'  =>  ['username', 'email', 'password' => 'length:6,20|confirm', 'mobile'],
         //登录
-        'login'  =>  ['username' => 'require|token', 'password' => 'length:6,20'],
+        'login'  =>  ['username' => 'require', 'password' => 'length:6,20|token'],
     ];
 }

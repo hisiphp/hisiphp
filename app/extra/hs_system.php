@@ -35,7 +35,6 @@ return [
         'base'      => '基础',
         'sys'       => '系统',
         'upload'    => '上传',
-        'develop'   => '开发',
         'databases'  => '数据库',
     ],
     // 系统标准模块

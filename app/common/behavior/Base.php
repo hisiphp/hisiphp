@@ -46,9 +46,6 @@ class Base
         config(ModuleModel::getConfig());
         // 设置系统配置
         config(ConfigModel::getConfig());
-        if (config('develop.app_trace') == 1) {
-            config('app_trace', true);
-        }
 
         // 判断模块是否存在且已安装
         $theme = 'default';
@@ -70,33 +67,33 @@ class Base
         //静态目录扩展配置
         $view_replace_str = [
             // 站点根目录
-            '__ROOT_DIR__'    => ROOT_DIR,
+            '__ROOT_DIR__'      => ROOT_DIR,
             // 静态资源根目录
-            '__STATIC__'    => ROOT_DIR.'static',
+            '__STATIC__'        => ROOT_DIR.'static',
             // 文件上传目录
-            '__UPLOAD__'   => ROOT_DIR.'upload',
+            '__UPLOAD__'        => ROOT_DIR.'upload',
             // 插件目录
-            '__PLUGINS__' => ROOT_DIR.'plugins',
+            '__PLUGINS__'       => ROOT_DIR.'plugins',
             // 后台公共静态目录
-            '__ADMIN_CSS__'      => ROOT_DIR.'static/admin/css',
+            '__ADMIN_CSS__'     => ROOT_DIR.'static/admin/css',
             '__ADMIN_JS__'      => ROOT_DIR.'static/admin/js',
-            '__ADMIN_IMG__'      => ROOT_DIR.'static/admin/image',
+            '__ADMIN_IMG__'     => ROOT_DIR.'static/admin/image',
             // 后台模块静态目录
-            '__ADMIN_MOD_CSS__'      => ROOT_DIR.'static/'.$module.'/css',
-            '__ADMIN_MOD_JS__'      => ROOT_DIR.'static/'.$module.'/js',
-            '__ADMIN_MOD_IMG__'      => ROOT_DIR.'static/'.$module.'/image',
+            '__ADMIN_MOD_CSS__' => ROOT_DIR.'static/'.$module.'/css',
+            '__ADMIN_MOD_JS__'  => ROOT_DIR.'static/'.$module.'/js',
+            '__ADMIN_MOD_IMG__' => ROOT_DIR.'static/'.$module.'/image',
             // 前台公共静态目录
-            '__PUBLIC_CSS__'      => ROOT_DIR.'static/css',
-            '__PUBLIC_JS__'      => ROOT_DIR.'static/js',
-            '__PUBLIC_IMG__'      => ROOT_DIR.'static/image',
+            '__PUBLIC_CSS__'    => ROOT_DIR.'static/css',
+            '__PUBLIC_JS__'     => ROOT_DIR.'static/js',
+            '__PUBLIC_IMG__'    => ROOT_DIR.'static/image',
             // 前台模块静态目录
-            '__CSS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/css',
-            '__JS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/js',
-            '__IMG__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/image',
+            '__CSS__'           => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/css',
+            '__JS__'            => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/js',
+            '__IMG__'           => ROOT_DIR.'theme/'.$module.'/'.$theme.'/static/image',
             // WAP前台模块静态目录
-            '__WAP_CSS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/css',
-            '__WAP_JS__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/js',
-            '__WAP_IMG__'      => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/image',
+            '__WAP_CSS__'       => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/css',
+            '__WAP_JS__'        => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/js',
+            '__WAP_IMG__'       => ROOT_DIR.'theme/'.$module.'/'.$theme.'/wap/static/image',
         ];
         if (defined('PLUGIN_ENTRANCE')) {
             $plugins_name = isset($_GET['_p']) ? $_GET['_p'] : $dispatch['module'][2];

@@ -1,4 +1,4 @@
-<ul class="themes">
+<ul class="app-themes">
     {volist name="data_list" id="vo"}
     <li>
         <img src="{$vo['thumb']}" width="150" height="150">

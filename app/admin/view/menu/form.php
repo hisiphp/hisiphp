@@ -84,6 +84,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
+            {:token()}
             <input type="hidden" class="field-id" name="id">
             <input type="hidden" name="module" value="{:input('param.mod', 'admin')}">
             <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>

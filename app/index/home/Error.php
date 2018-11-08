@@ -48,6 +48,6 @@ class Error extends Home
             }
             return plugins_run($plugin.'/'.$controller.'/'.$action, $params, 'home');
         }
-        return $this->error('这是系统默认模块，您可以在后台指定其他模块为默认访问首页！，<a href="https://www.kancloud.cn/hisi/hisiphp/387483" target="_blank">点此查看开发手册</a>', '', '', 100);
+        return $this->error('您可以在后台指定其他模块为默认访问首页<br>&nbsp;路径：后台-系统-系统扩展-模块管理-设置默认模块', '', '', 100);
     }
 }
