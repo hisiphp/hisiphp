@@ -48,7 +48,7 @@
                                     <a data-href="{:url('del?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm j-tr-del">删除</a>
                                 {/case}
                                 {case value="1"}
-                                    {if condition="config('develop.app_debug') && empty($vo['app_keys'])"}
+                                    {if condition="config('sys.app_debug') && empty($vo['app_keys'])"}
                                         <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm red">编辑</a>
                                     {/if}
                                     {if condition="!empty($vo['config'])"}
@@ -61,7 +61,7 @@
                                     <a href="{:url('uninstall?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm">卸载</a>
                                 {/case}
                                 {case value="2"}
-                                    {if condition="config('develop.app_debug') && empty($vo['app_keys'])"}
+                                    {if condition="config('sys.app_debug') && empty($vo['app_keys'])"}
                                         <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-primary layui-btn-sm red">编辑</a>
                                     {/if}
                                     {if condition="!empty($vo['config'])"}

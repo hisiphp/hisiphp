@@ -150,7 +150,7 @@ class AdminRole extends Model
             }
             $role_auth = json_decode($auth, true);
             // 非开发模式，缓存数据
-            if (config('develop.app_debug') == 0) {
+            if (config('sys.app_debug') == 0) {
                 session('role_auth_'.$login['role_id'], $role_auth);
             }
         }

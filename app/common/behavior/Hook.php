@@ -31,7 +31,7 @@ class Hook
             $plugins = PluginsModel::where('status', 2)->column('status', 'name');
             $hook_plugins = HookPluginsModel::where('status', 1)->field('hook,plugins')->order('sort')->select();
             // 非开发模式，缓存数据
-            if (config('develop.app_debug') === 0) {
+            if (config('sys.app_debug') === 0) {
                 cache('hook_plugins', $hook_plugins);
                 cache('hooks', $hooks);
                 cache('plugins', $plugins);

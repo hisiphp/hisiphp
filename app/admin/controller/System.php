@@ -101,12 +101,12 @@ class System extends Admin
             // 更新配置缓存
             $config = ConfigModel::getConfig('', true);
 
-            if ($group == 'develop') {
+            if ($group == 'sys') {
                 if (file_exists(ROOT_PATH.'.env')) {
                     unlink(ROOT_PATH.'.env');
                 }
-                $env = "//设置开启调试模式\napp_debug = " . ($config['develop']['app_debug'] ? 'true' : 'false');
-                $env .= "\n//应用Trace\napp_trace = " . ($config['develop']['app_trace'] ? 'true' : 'false');
+                $env = "//设置开启调试模式\napp_debug = " . ($config['sys']['app_debug'] ? 'true' : 'false');
+                $env .= "\n//应用Trace\napp_trace = " . ($config['sys']['app_trace'] ? 'true' : 'false');
                 file_put_contents(ROOT_PATH.'.env', $env);
             }
 

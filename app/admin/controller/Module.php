@@ -50,7 +50,7 @@ class Module extends Admin
                 'url' => 'admin/module/import',
             ],
         ];
-        if (config('develop.app_debug') == 1) {
+        if (config('sys.app_debug') == 1) {
             array_push($tab_data['menu'], ['title' => '设计新模块', 'url' => 'admin/module/design',]);
         }
         $this->tab_data = $tab_data;
@@ -123,7 +123,7 @@ class Module extends Admin
      */
     public function design()
     {
-        if (config('develop.app_debug') == 0) {
+        if (config('sys.app_debug') == 0) {
             return $this->error('非开发模式禁止使用此功能');
         }
         if ($this->request->isPost()) {
