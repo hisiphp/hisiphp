@@ -27,8 +27,9 @@ class AdminMenu extends Validate
         'pid|所属菜单'    => 'require|number',
         'status|状态' => 'requireWith:status|in:0,1',
         'system|系统菜单' => 'requireWith:system|in:0,1',
-        'nav|后台导航' => 'require|in:0,1',
+        'nav|后台导航' => 'requireWith:nav|in:0,1',
     ];
+
 
     //定义验证提示
     protected $message = [
