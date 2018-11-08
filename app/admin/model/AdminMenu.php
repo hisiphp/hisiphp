@@ -65,7 +65,11 @@ class AdminMenu extends Model
             $this->error = $valid->getError();
             return false;
         }
-        unset($data['__token__']);
+
+        if (isset($data['__token__'])) {
+            unset($data['__token__']);
+        }
+        
         $title = $data['title'];
         if (isset($data['id']) && !empty($data['id'])) {
             if (config('sys.multi_language') == 1) {
