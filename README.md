@@ -60,6 +60,7 @@ www  WEB部署目录（或者子目录）
 
 [短信服务（阿里云通信、腾讯云短信、聚合数据短信API）](http://store.hisiphp.com/detail/1000008.html?from=github)
 
+[通用RESTful API（接口文档自动生成，输入参数自动检查，集成Oauth授权登录、在线测试工具等）](https://store.hisiphp.com/detail/1000014.html?from=github)
 
 ## QQ交流群
 [群①：50304283(2000人)](http://shang.qq.com/wpa/qunwpa?idkey=f70e4d4e0ad2ed6ad67a8b467475e695b286d536c7ff850db945542188871fc6)、[群②：640279557](http://shang.qq.com/wpa/qunwpa?idkey=7f77ff420f91ae529eef4045557d25553f3362f4c076d575a09974396597c88c)、[群③：679881764](http://shang.qq.com/wpa/qunwpa?idkey=a242a5d4d68dea7f073176be3fcc6ebd68e03bb6ed238827cbd2f00baae3f21f)、[群④：375815448](http://shang.qq.com/wpa/qunwpa?idkey=409636b5d168ddb78d13d9785a59a5c7ab6f5e0e65f3ee4059e36cd83ebacacd)
