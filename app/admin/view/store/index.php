@@ -25,7 +25,7 @@
                 return value == "" && (value = null), value;
             };
 
-        var install = function install(param) {
+        var install = function (param) {
             $('.app-info').html('<div class="app-pay-success red">正在安装应用中，请勿刷新或关闭此页面</div>');
             $.get('{:url('install')}', param, function(res) {
                 if (res.code == 1) {
@@ -38,6 +38,42 @@
                 }
             }, 'json');
         };
+
+        var popBindCloud = function ()
+        {
+            layer.open({
+                title:'登录云平台 / <a href="https://store.hisiphp.com/act/reg?domain={$_SERVER["SERVER_NAME"]}" target="_blank" class="mcolor">注册云平台</a>',
+                id:'popLoginBox',
+                area:'380px',
+                content:$('#popCloudBind').html(),
+                btn:['确认绑定', '取消'],
+                btnAlign:'c',
+                move:false,
+                yes:function(index) {
+                    var tips = $('#resultTips'), 
+                        account = $('#cloudAccount').val(), 
+                        password = $('#cloudPassword').val();
+                    tips.html('请稍后，云平台通信中...');
+                    $.post('{:url("upgrade/index")}', {account: account, password: password}, function(res) {
+                        if (res.code == 1) {
+                            layer.msg(res.msg);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+                        } else {
+                            tips.addClass('red').html(res.msg);
+                            setTimeout(function() {
+                                tips.removeClass('red').html('');
+                            }, 3000);
+                        }
+                    });
+                    return false;
+                },
+                success: function() {
+                    $('#cloudForm .layui-word-aux').html('温馨提示：您需要登录云平台后才能安装此应用');
+                }
+            });
+        }
 
         var specSelect = function() {
             var payment = $('.payment.layui-btn-normal').attr('data-value'),
@@ -63,7 +99,7 @@
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">点此安装</a>');
                         } else {
                             $('.app-price').html('￥'+price);
-                            $('.app-order-id').html('<span class="red">支付时请备注订单号：'+res.order_id+'</span><br><a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal" id="showQuestion">点此查看常见问题</a>');
+                            $('.app-order-id').html('<span class="red">支付时请备注订单号：'+res.order_id+'</span><br><a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
                             $('#qrcode').attr('src', res.qrcode).show();
                             // 定时刷新支付状态
                             var checkOrder = function() {
@@ -110,7 +146,7 @@
                     return '￥'+d.price;
                 }}
                 ,{field:'sales', width:70, title: '下载'}
-                ,{width:160, title: '操作', templet: '#buttonTpl'}
+                ,{width:160, title: '操作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-bind-cloud">绑定云平台</a>', templet: '#buttonTpl'}
             ]]
             ,done:function(res, curr, count) {
                 var type = getParam('type'), catId = getParam('cat_id');
@@ -145,38 +181,7 @@
         $(document).on('click', '.pop-install', function() {
             var that = $(this), data = new Function('return '+ that.attr('data-data'))();
             if (identifier == null || identifier == '') {
-                layer.open({
-                    title:'登录云平台 / <a href="https://store.hisiphp.com/act/reg?domain={$_SERVER["SERVER_NAME"]}" target="_blank" class="mcolor">注册云平台</a>',
-                    id:'popLoginBox',
-                    area:'380px',
-                    content:$('#popCloudBind').html(),
-                    btn:['确认绑定', '取消'],
-                    btnAlign:'c',
-                    move:false,
-                    yes:function(index) {
-                        var tips = $('#resultTips'), 
-                            account = $('#cloudAccount').val(), 
-                            password = $('#cloudPassword').val();
-                        tips.html('请稍后，云平台通信中...');
-                        $.post('{:url("upgrade/index")}', {account: account, password: password}, function(res) {
-                            if (res.code == 1) {
-                                layer.msg(res.msg);
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 3000);
-                            } else {
-                                tips.addClass('red').html(res.msg);
-                                setTimeout(function() {
-                                    tips.removeClass('red').html('');
-                                }, 3000);
-                            }
-                        });
-                        return false;
-                    },
-                    success: function() {
-                        $('#cloudForm .layui-word-aux').html('温馨提示：您需要登录云平台后才能安装此应用');
-                    }
-                });
+                popBindCloud();
             } else {
                 laytpl($('#installTpl').html()).render(data, function(html) {
                     layer.open({
@@ -199,6 +204,11 @@
             return false;
         });
 
+        // 弹出绑定云平台界面
+        $(document).on('click', '.j-bind-cloud', function() {
+            popBindCloud();
+        });
+
         // 应用分支和支付方式切换
         $(document).on('click', '.app-spec-a', function() {
             var that = $(this);
@@ -216,12 +226,12 @@
             install(param);
         });
 
-        $(document).on('click', '#showQuestion', function() {
+        $(document).on('click', '.j-show-question', function() {
             layer.open({
                 type: 1,
                 title: '购买常见问题',
                 shadeClose: true,
-                area:['500px', '300px'],
+                area:['580px', '300px'],
                 content: $('#questionTpl').html()
             });
         });
@@ -232,17 +242,18 @@
                 json.push({alt: that.attr('data-title'), pid: '123', src: 'https://store.hisiphp.com'+data[i], 'thumb': 'https://store.hisiphp.com'+data[i]});
             }
             layer.photos({photos: {status: 1, start: 0, title: that.attr('data-title'), id: 1, data: json}});
-        })
+        });
     });
 </script>
 <script type="text/html" id="questionTpl">
 <pre>
 
+  <span class="layui-badge layui-bg-blue">问</span> 如何实现线上域名本地解析？
+  <span class="layui-badge layui-bg-green">答</span> 通过<a href="https://jingyan.baidu.com/article/5bbb5a1b15c97c13eba1798a.html" class="red" target="_blank">修改hosts</a>实现本地解析，用解析后的新域名进入后台重新绑定云平台即可。
+
+
   <span class="layui-badge layui-bg-blue">问</span> 付款成功了，还是显示未支付？
   <span class="layui-badge layui-bg-green">答</span> 支付成功后正常是会立即生效，2分钟内未生效请联系<a href="http://wpa.qq.com/msgrd?v=3&uin=364666827&site=qq&menu=yes" target="_top">QQ：364666827</a>
-
-  <span class="layui-badge layui-bg-blue">问</span> 我想在本地测试没问题后再放上正式环境，怎么操作比较好？
-  <span class="layui-badge layui-bg-green">答</span> 您可以通过<a href="https://jingyan.baidu.com/article/5bbb5a1b15c97c13eba1798a.html" class="red" target="_blank">修改hosts文件</a>实现线上域名本地解析，然后在绑定云平台。
 
   <span class="layui-badge layui-bg-blue">问</span> a.com已经购买过此应用了，为什么www.a.com还要再购买？
   <span class="layui-badge layui-bg-green">答</span> 应用授权采用单域名授权，单域名规则并不是以根域名来判断的。
@@ -270,7 +281,7 @@
         <dl class="app-spec">
             <dt>特别说明：</dt>
             <dd>
-                <a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger">★本应用为单域名授权，购买成功后不支持域名变更★</a>
+                <a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★本应用为单域名授权，购买后不支持变更，点此查看解决方案★</a>
             </dd>
         </dl>
         <div class="layui-form-item app-info">
