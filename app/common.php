@@ -34,18 +34,19 @@ if (!function_exists('get_domain')) {
      * @return string
      */
     function get_domain($http = true) {
-        if ($http) {
-            $port = '';
-            if (input('server.server_port') != 80) {
-                $port = ':'.input('server.server_port');
-            }
-
-            if (input('server.https') && input('server.https') == 'on') {
-                return 'https://'.input('server.http_host').$port;
-            }
-            return 'http://'.input('server.http_host').$port;
+        $host = input('server.http_host');
+        if (input('server.server_port') != 80 && strpos($host, ':') === fasle) {
+            $host .= ':'.input('server.server_port');
         }
-        return input('server.http_host');
+
+        if ($http) {
+            if (input('server.https') && input('server.https') == 'on') {
+                return 'https://'.$host;
+            }
+            return 'http://'.$host;
+        }
+
+        return $host;
     }
 }
 
