@@ -144,7 +144,7 @@ class Cloud {
         $params['format']       = 'json';
         $params['timestamp']    = time();
         $params['domain']       = get_domain().ROOT_DIR;
-        $params['ip']           = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+        $params['ip']           = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : get_client_ip();
         $params['identifier']   = $this->identifier;
         $params['hisi_version'] = config('hisiphp.version');
         $params                 = array_merge($params, $this->data);
