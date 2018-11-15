@@ -261,7 +261,7 @@ class Upgrade extends Admin
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
-            $this->error = '升级失败，请开启[backup/uppack]文件夹权限！';
+            $this->error = '升级失败，升级包可能已损坏！';
             return false;
         }
         // 备份需要升级的旧版本
@@ -348,7 +348,7 @@ class Upgrade extends Admin
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
-            $this->error = '升级失败，请开启[backup/uppack]文件夹权限！';
+            $this->error = '升级失败，升级包可能已损坏！';
             return false;
         }
         // 获取本次升级信息
@@ -455,7 +455,7 @@ class Upgrade extends Admin
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
-            $this->error = '升级失败，请开启[backup/uppack]文件夹权限！';
+            $this->error = '升级失败，升级包可能已损坏！';
             return false;
         }
         // 获取本次升级信息
@@ -588,7 +588,7 @@ class Upgrade extends Admin
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $decom_path, PCLZIP_OPT_REPLACE_NEWER)) {
-            $this->error = '升级失败，请开启[backup/uppack]文件夹权限！';
+            $this->error = '升级失败，升级包可能已损坏！';
             return false;
         }
         // 获取本次升级信息

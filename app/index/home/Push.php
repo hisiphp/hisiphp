@@ -81,7 +81,7 @@ class Push extends Home
 
         $file = $this->cloud->data(['app_id' => $this->app_id, 'app_name' => $this->app_name, 'version' => $this->version, 'app_identifier' => $this->app_identifier, 'sign' => $this->sign, 'token' => $this->token])->down('module/get/install');
         if ($file === false || !is_file($file)) {
-            return $this->apiReturn('获取升级包失败，请稍后在试！');
+            return $this->apiReturn('获取安装包失败，请稍后在试！');
         }
 
         $unzipPath = $this->update_path.basename($file,".zip");
@@ -93,7 +93,7 @@ class Push extends Home
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $unzipPath, PCLZIP_OPT_REPLACE_NEWER)) {
-            return $this->apiReturn('推送失败，请开启[backup/uppack]文件夹权限！');
+            return $this->apiReturn('推送失败，安装包可能已损坏！');
         }
 
         // 应用目录
@@ -189,7 +189,7 @@ class Push extends Home
 
         $file = $this->cloud->data(['app_id' => $this->app_id, 'app_name' => $this->app_name, 'version' => $this->version, 'app_identifier' => $this->app_identifier, 'sign' => $this->sign, 'token' => $this->token])->down('plugins/get/install');
         if ($file === false || !is_file($file)) {
-            return $this->apiReturn('获取升级包失败，请稍后在试！');
+            return $this->apiReturn('获取安装包失败，请稍后在试！');
         }
 
         $unzipPath = $this->update_path.basename($file,".zip");
@@ -201,7 +201,7 @@ class Push extends Home
         $archive = new PclZip();
         $archive->PclZip($file);
         if(!$archive->extract(PCLZIP_OPT_PATH, $unzipPath, PCLZIP_OPT_REPLACE_NEWER)) {
-            return $this->apiReturn('推送失败，请开启[backup/uppack]文件夹权限！');
+            return $this->apiReturn('推送失败，安装包可能已损坏！');
         }
 
         if (!is_dir('.'.ROOT_DIR.'plugins/'.$this->app_name)) {
@@ -210,6 +210,7 @@ class Push extends Home
 
         $appPath = $unzipPath.DS.'upload'.DS.'plugins'.DS.$this->app_name.DS;
         if (!is_file($appPath.'info.php')) {
+            Dir::delDir('.'.ROOT_DIR.'plugins/'.$this->app_name);
             return $this->apiReturn($appPath.'info.php'.'推送失败，升级包文件不完整！');
         }
 
