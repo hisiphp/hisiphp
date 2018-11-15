@@ -35,7 +35,7 @@ if (!function_exists('get_domain')) {
      */
     function get_domain($http = true) {
         $host = input('server.http_host');
-        if (input('server.server_port') != 80 && strpos($host, ':') === fasle) {
+        if (input('server.server_port') != 80 && strpos($host, ':') === false) {
             $host .= ':'.input('server.server_port');
         }
 
