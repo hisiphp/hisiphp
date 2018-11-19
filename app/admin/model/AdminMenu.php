@@ -228,7 +228,7 @@ class AdminMenu extends Model
         $map = $menu = [];
         $map['id'] = $id;
         $row = self::where($map)->field('id,pid,title,url,param')->find();
-        if ($row->pid > 0) {
+        if (isset($row->pid) && $row->pid > 0) {
             if (isset($row->lang->title)) {
                 $row->title = $row->lang->title;
             }
