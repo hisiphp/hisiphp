@@ -96,7 +96,7 @@
                         };
 
                         if (res.app_keys != null && res.app_keys != '') {
-                            $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">点此安装</a>');
+                            $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
                             $('.app-price').html('￥'+price);
                             $('.app-order-id').html('<span class="red">支付时请备注订单号：'+res.order_id+'</span><br><a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
@@ -146,7 +146,7 @@
                     return '￥'+d.price;
                 }}
                 ,{field:'sales', width:70, title: '下载'}
-                ,{width:160, title: '操作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-bind-cloud">绑定云平台</a>', templet: '#buttonTpl'}
+                ,{width:160, title: ( identifier ? '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-bind-cloud">重新登录</a>' : ''), templet: '#buttonTpl'}
             ]]
             ,done:function(res, curr, count) {
                 var type = getParam('type'), catId = getParam('cat_id');
