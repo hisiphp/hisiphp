@@ -451,11 +451,11 @@ layui.define(['element', 'form', 'table'], function(exports) {
         for(var i in arr) {
             where[arr[i].name] = arr[i].value;
         }
-        where['page'] = 1;
 
         table.reload(dataTable, {
-          url: that.attr('action'),
-          where: where
+            page: true,
+            url: that.attr('action'),
+            where: where
         });
         return false;
     });
@@ -468,8 +468,8 @@ layui.define(['element', 'form', 'table'], function(exports) {
     $(document).on('click', '.hisi-table-a-filter', function(){
         var that = $(this), dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
         table.reload(dataTable, {
-          url: that.attr('href'),
-          page: 1
+            url: that.attr('href'),
+            page: true
         });
         return false;
     });
