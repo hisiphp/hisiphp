@@ -451,6 +451,7 @@ layui.define(['element', 'form', 'table'], function(exports) {
         for(var i in arr) {
             where[arr[i].name] = arr[i].value;
         }
+        where['page'] = 1;
 
         table.reload(dataTable, {
           url: that.attr('action'),
