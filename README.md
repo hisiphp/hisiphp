@@ -46,7 +46,8 @@ www  WEB部署目录（或者子目录）
 [store.hisiphp.com](http://store.hisiphp.com?source=github)
 
 ## 演示地址
-[demo.hisiphp.com](http://demo.hisiphp.com/admin.php?from=github)
+[HisiPHP v1(thinkphp5)](http://v1.demo.hisiphp.com/admin.php?from=github)
+[HisiPHP v2(thinkphp5.1)](http://v2.demo.hisiphp.com/admin.php?from=github)
 
 
 ## 模块推荐 
