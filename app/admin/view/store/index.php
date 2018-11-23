@@ -81,7 +81,7 @@
                 price = $('.branch_id.layui-btn-normal').attr('data-price');
             $.ajax({
                 url:'{$api_url}createOrder',
-                data: {identifier: identifier,domain: '{:get_domain()}/', payment: payment, branch_id: branchId},
+                data: {identifier: identifier,domain: '{:get_domain()}{:ROOT_DIR}', payment: payment, branch_id: branchId},
                 dataType: 'jsonp',
                 error: function(){
                     $('.app-order-id').html('支付二维码获取失败');
@@ -106,7 +106,7 @@
                                 clearTimeout(si);
                                 $.ajax({
                                     url:'{$api_url}checkOrder',
-                                    data: {branch_id: branchId, identifier: identifier, domain: '{:get_domain()}/'},
+                                    data: {branch_id: branchId, identifier: identifier, domain: '{:get_domain()}{:ROOT_DIR}'},
                                     dataType: 'jsonp',
                                     success: function(result) {
                                         installParam.app_keys = result.app_keys;
