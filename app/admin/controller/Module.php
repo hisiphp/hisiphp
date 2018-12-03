@@ -522,8 +522,7 @@ class Module extends Admin
         $sqlmap['version']      = $info['version'];
         $sqlmap['status']       = 2;
         ModuleModel::where('id', $id)->update($sqlmap);
-        ModuleModel::moduleRoute(true);
-        ConfigModel::getConfig('', true);
+        ModuleModel::getConfig('', true);
         return true;
     }
 
@@ -757,7 +756,7 @@ class Module extends Admin
             cache('hook_plugins', null);
             // 更新模块状态为未安装
             ModuleModel::where('id', $id)->update(['status' => 0, 'default' => 0, 'config' => '']);
-            ModuleModel::moduleRoute(true);
+            ModuleModel::getConfig('', true);
             $this->success('模块已卸载成功', url('index?status=0'));
         }
 
