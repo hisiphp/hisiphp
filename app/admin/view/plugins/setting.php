@@ -155,7 +155,7 @@ layui.use(['jquery', 'laydate', 'upload'], function() {
     var $ = layui.jquery, laydate = layui.laydate, layer = layui.layer, upload = layui.upload;
     upload.render({
         elem: '.layui-upload'
-        url: '{:url("admin/annex/upload?group=m_".$data_info["name"])}'
+        ,url: '{:url("admin/annex/upload?group=m_".$data_info["name"])}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
