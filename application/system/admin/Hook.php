@@ -36,7 +36,7 @@ class Hook extends Admin
             $keyword    = $this->request->param('keyword');
 
             if ($keyword) {
-                $where['name'] = ['like', "%{$keyword}%"];
+                $where[] = ['name', 'like', "%{$keyword}%"];
             }
 
             $data['data']   = HookModel::where($where)->page($page)->limit($limit)->select();
