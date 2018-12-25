@@ -1,3 +1,7 @@
+/runtime/*
+/backup/*
+/public/theme/*
+/public/upload/*
 /config/hs_auth.php
 /config/hs_cloud.php
 composer.lock
