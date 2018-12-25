@@ -1,0 +1,70 @@
+<form class="layui-form pt10" action="{:url()}" method="post" id="editForm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员等级</label>
+        <div class="layui-input-inline">
+            <select name="level_id" class="field-level_id" type="select">
+                {$levelOptions|raw}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员昵称</label>
+        <div class="layui-input-inline">
+            <input type="text" data-disabled class="layui-input field-nick" name="nick" autocomplete="off" placeholder="请输入昵称">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">登陆账号</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-username" name="username" lay-verify="required" autocomplete="off" placeholder="字母、数字、下划线">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">登陆密码</label>
+        <div class="layui-input-inline">
+            <input type="password" class="layui-input" name="password" autocomplete="off" placeholder="******">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-email" name="email" autocomplete="off" placeholder="请输入邮箱地址">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系手机</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-mobile" name="mobile" autocomplete="off" placeholder="请输入手机号码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员有效期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-expire_time" name="expire_time" autocomplete="off" placeholder="参考格式：{:date('Y-m-d', strtotime('+1 years'))}" value="0" />
+        </div>
+        <div class="layui-form-mid layui-word-aux">0为永久有效</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员状态</label>
+        <div class="layui-input-inline">
+            <input type="radio" class="field-status" name="status" value="1" title="启用" checked>
+            <input type="radio" class="field-status" name="status" value="0" title="禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            {:token()}
+            <input type="hidden" class="field-id" name="id">
+        </div>
+    </div>
+    <div class="pop-bottom-bar">
+        <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit" lay-data="{pop: true, refresh: true}">提交保存</button>
+        <a href="javascript:parent.layui.layer.closeAll();" class="layui-btn layui-btn-primary ml10">取消</a>
+    </div>
+</form>
+{include file="block/layui" /}
+<script>
+layui.use(['func'], function() {
+    layui.func.assign({:json_encode($formData)});
+});
+</script>

@@ -1,0 +1,4 @@
+lay/modules/element.js
+children(".layui-tab-item")
+改为
+find(".layui-tab-item")

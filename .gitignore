@@ -1,0 +1,8 @@
+/config/hs_auth.php
+/config/hs_cloud.php
+composer.lock
+install.lock
+.idea
+*.log
+.DS_Store
+Thumbs.db

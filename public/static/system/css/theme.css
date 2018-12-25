@@ -1,0 +1,31 @@
+/* 自定义主题方案,系统升级时此文件永远不会被覆盖
+ * 主题代码命名规则：只能使用字母、数字、下划线、破折号，且前后必须保留6个*号，以方便系统自动加载识别
+ * 系统默认主题代码命名采用100以内的纯数字，为避免冲突，请不要使用100以内的数字
+*/
+
+/*示例主题*/
+/******example******/
+.hisi-theme-item-example{background-color:#336633}
+.hisi-theme-example {
+    --hisi-head-bg:#336633;
+    --hisi-side-bg:#eef1f5;
+    --hisi-layui-form-checked:#336633;
+    --hisi-layui-nav-bar:#336633;
+    --hisi-layui-nav-item-a-bg:#eff2f6;
+    --hisi-layui-nav-item-a-c:#48576a;
+    --hisi-layui-nav-child-a-bg:#e5e9f2;
+    --hisi-layui-nav-child-a-c:#48576a;
+    --hisi-layui-nav-child-a-c-hover:#d1dbe5;
+    --hisi-layui-side-i:#48566a;
+    --hisi-layui-side-layui-this-a:#336633;
+    --hisi-side-layui-nav-more:#48566a;
+    --hisi-layui-tab-title:#f9f9f9;
+    --hisi-layui-nav-bar:#336633;
+    --hisi-layui-btn-normal:#336633;
+    --hisi-layui-btn-primary:#fff;
+    --hisi-layui-btn-primary-hover:#336633;
+    --hisi-layui-form-radio-hover:#336633;
+    --hisi-layui-laypage-em:#336633;
+    --hisi-border-color: #336633;
+    --hisi-layui-form-label:#666;
+}

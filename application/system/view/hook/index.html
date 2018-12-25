@@ -1,0 +1,56 @@
+<div class="page-toolbar">
+    <div class="page-filter fr">
+        <form class="layui-form layui-form-pane" action="{:url()}" method="get" id="hisi-table-search">
+        <div class="layui-form-item">
+            <label class="layui-form-label">搜索</label>
+            <div class="layui-input-inline">
+                <input type="text" name="keyword" lay-verify="required" placeholder="输入钩子名称，按回车搜索" class="layui-input">
+            </div>
+        </div>
+        </form>
+    </div>
+    <div class="layui-btn-group fl">
+        <a href="{:url('add')}" class="layui-btn layui-btn-primary layui-icon layui-icon-add-circle-fine j-iframe-pop" title="添加钩子" width="470" height="300">&nbsp;添加</a>
+        <a data-href="{:url('status?val=1')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-play" data-table="dataTable">&nbsp;启用</a>
+        <a data-href="{:url('status?val=0')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-pause" data-table="dataTable">&nbsp;禁用</a>
+        <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm layui-icon layui-icon-close red">&nbsp;删除</a>
+    </div>
+</div>
+<table id="dataTable"></table>
+{include file="block/layui" /}
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" name="status" value="{{ d.status }}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" {{ d.status == 1 ? 'checked' : '' }} {{ d.system == 1 ? 'disabled' : '' }} data-href="{:url('status')}?id={{ d.id }}">
+</script>
+<script type="text/html" title="操作按钮模板" id="buttonTpl">
+    {{# if (d.system != 1) { }}
+        <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="修改钩子" width="470" height="300">修改</a><a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+    {{# } else { }}
+        <a href="javascript:void(0);" title="系统钩子，禁止编辑" class="layui-btn layui-btn-xs layui-btn-normal layui-disabled">修改</a><a href="javascript:void(0);" title="系统钩子，禁止删除" class="layui-btn layui-btn-xs layui-btn-danger layui-disabled">删除</a>
+    {{# } }}
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,page: true //开启分页
+            ,skin: 'row'
+            ,even: true
+            ,limit: 20
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'name', title: '名称'}
+                ,{field: 'intro', title: '简介'}
+                ,{field: 'source', title: '钩子来源', width: 100, templet: function(d) {
+                    return d.source ? d.source : d.system ? '系统' : '未知';
+                }}
+                ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

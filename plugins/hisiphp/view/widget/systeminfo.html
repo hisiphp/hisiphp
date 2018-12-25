@@ -1,0 +1,29 @@
+    <table class="layui-table" lay-skin="line">
+        <colgroup>
+            <col width="160">
+            <col>
+        </colgroup>
+        <thead>
+            <tr>
+                <th colspan="2">系统基础信息</th>
+            </tr> 
+        </thead>
+        <tbody>
+            <tr>
+                <td>HisiPHP版本</td>
+                <td>V {:config('hisiphp.version')} <a href="{:url('upgrade/index')}" class="mcolor">检查新版本</a></td>
+            </tr>
+            <tr>
+                <td>MySql版本</td>
+                <td>MySql {:db()->query('select version() as version')[0]['version']}</td>
+            </tr>
+            <tr>
+                <td>PHP版本</td>
+                <td>PHP {$Think.const.PHP_VERSION} </td>
+            </tr>
+            <tr>
+                <td>服务器环境</td>
+                <td>{$Think.const.PHP_OS} / {$_SERVER["SERVER_SOFTWARE"]}</td>
+            </tr>
+        </tbody>
+    </table>

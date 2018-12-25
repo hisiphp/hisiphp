@@ -1,0 +1,33 @@
+<table id="dataTable"></table>
+{include file="block/layui" /}
+<script type="text/html" id="buttonTpl">
+    <div class="layui-btn-group">
+        <a data-href="{:url('import')}?id={{ d.id }}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">恢复</a>
+        <a data-href="{:url('del?')}?id={{ d.id }}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">删除</a>
+    </div>
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}?group=import' //数据接口
+            ,page: false //分页
+            ,skin: 'row'
+            ,even: true
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {field: 'name', title: '备份名称'}
+                ,{field: 'part', title: '备份卷数', width: 100}
+                ,{field: 'compress', title: '备份压缩', width: 100}
+                ,{field: 'size', title: '备份大小', width: 100, templet: function(d) {
+                    return parseInt(d.size / 1024) + 'KB';
+                }}
+                ,{field: 'time', title: '备份时间', width: 170}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

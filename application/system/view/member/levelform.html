@@ -1,0 +1,71 @@
+<form class="layui-form pt10" action="{:url()}" method="post" id="editForm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级名称</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-name" name="name" lay-verify="title" autocomplete="off" placeholder="请输入等级名称">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级折扣</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-discount" name="discount" value="100" lay-verify="number" autocomplete="off" placeholder="请输入等级折扣">
+        </div>
+        <div class="layui-form-mid layui-word-aux">%</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">最小经验值</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-min_exper" name="min_exper" value="0" lay-verify="number" autocomplete="off" placeholder="请输入最小经验值">
+        </div>
+        <div class="layui-form-mid layui-word-aux">升级到当前等级最小经验值</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">最大经验值</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-max_exper" name="max_exper" value="0" lay-verify="number" autocomplete="off" placeholder="请输入最大经验值">
+        </div>
+        <div class="layui-form-mid layui-word-aux">当前等级最大上限经验值</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员有效期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input field-expire w100" name="expire" value="0" lay-verify="number" autocomplete="off" placeholder="请输入会员有效期" style="display:inline-block;"><label>&nbsp;天</label>
+        </div>
+        <div class="layui-form-mid layui-word-aux">设置为0表示永久</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级状态</label>
+        <div class="layui-input-inline">
+            <input type="radio" class="field-status" name="status" value="1" checked title="启用">
+            <input type="radio" class="field-status" name="status" value="0" title="禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">默认等级</label>
+        <div class="layui-input-inline">
+            <input type="radio" class="field-default" name="default" value="1" title="是">
+            <input type="radio" class="field-default" name="default" value="0" checked title="否">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级简介</label>
+        <div class="layui-input-inline w300">
+            <textarea  class="layui-textarea field-intro" name="intro" lay-verify="" autocomplete="off" placeholder="[选填]等级简介"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="hidden" class="field-id" name="id">
+        </div>
+    </div>
+    <div class="pop-bottom-bar">
+        <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit" hisi-data="{pop: true, refresh: true}">提交保存</button>
+        <a href="javascript:parent.layui.layer.closeAll();" class="layui-btn layui-btn-primary ml10">取消</a>
+    </div>
+</form>
+{include file="block/layui" /}
+<script>
+layui.use(['func'], function() {
+    layui.func.assign({:json_encode($formData)});
+});
+</script>

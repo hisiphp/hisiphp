@@ -1,0 +1,50 @@
+
+<table id="dataTable"></table>
+
+{include file="block/layui" /}
+
+<script type="text/html" id="buttonTpl">
+    <div class="layui-btn-group">
+        <a data-href="{:url('optimize')}?id={{ d.Name }}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">优化</a>
+        <a data-href="{:url('repair?')}?id={{ d.Name }}" class="layui-btn layui-btn-primary layui-btn-sm j-ajax">修复</a>
+    </div>
+</script>
+
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-group fl">
+        <a data-href="{:url('export')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns" data-table="dataTable">备份数据库</a>
+        <a data-href="{:url('optimize')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns" data-table="dataTable">优化数据库</a>
+        <a data-href="{:url('repair')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns" data-table="dataTable">修复数据库</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}?group=export' //数据接口
+            ,page: false //分页
+            ,skin: 'row'
+            ,even: true
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,toolbar: '#toolbar'
+            ,defaultToolbar: ['filter']
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'Name', title: '表名'}
+                ,{field: 'Rows', title: '数据量', width: 100}
+                ,{field: 'Data_length', title: '大小', width: 100, templet: function(d) {
+                    return d.Data_length / 1024;
+                }}
+                ,{field: 'Data_free', title: '冗余', width: 100, templet: function(d) {
+                    return d.Data_free / 1024;
+                }}
+                ,{field: 'Comment', title: '备注'}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>

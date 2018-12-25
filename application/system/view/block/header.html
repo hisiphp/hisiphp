@@ -1,0 +1,55 @@
+{if condition="input('param.hisi_iframe') || cookie('hisi_iframe')"}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$hisiCurMenu['title']} -  Powered by {:config('hisiphp.name')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="__PUBLIC_JS__/layui/css/layui.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}" media="all">
+    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
+</head>
+<body class="hisi-theme-{:cookie('hisi_admin_theme')}">
+{else /}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{if condition="$hisiCurMenu['url'] eq 'system/index/index'"}管理控制台{else /}{$hisiCurMenu['title']}{/if} -  Powered by {:config('hisiphp.name')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="__PUBLIC_JS__/layui/css/layui.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/theme.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}" media="all">
+    <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
+    <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
+</head>
+<body class="layui-layout-body hisi-theme-{:cookie('hisi_admin_theme')}">
+{php}
+$ca = strtolower(request()->controller().'/'.request()->action());
+{/php}
+<div class="layui-layout layui-layout-admin">
+    {include file="system@block/menu" /}
+    <div class="layui-body" id="switchBody">
+        <ul class="bread-crumbs">
+            {volist name="hisiBreadcrumb" id="v"}
+                {if condition="$key gt 0 && $i neq count($hisiBreadcrumb)"}
+                    <li>></li>
+                    <li><a href="{:url($v['url'].'?'.$v['param'])}">{$v['title']}</a></li>
+                {elseif condition="$i eq count($hisiBreadcrumb)" /}
+                    <li>></li>
+                    <li><a href="javascript:void(0);">{$v['title']}</a></li>
+                {else /}
+                    <li><a href="javascript:void(0);">{$v['title']}</a></li>
+                {/if}
+            {/volist}
+            <li><a href="{:url('system/menu/quick?id='.$hisiCurMenu['id'])}" title="添加到首页快捷菜单" class="j-ajax">[+]</a></li>
+        </ul>
+        <div style="padding:0 10px;" class="mcolor">{:runhook('system_admin_tips')}</div>
+            <div class="page-body">
+{/if}
