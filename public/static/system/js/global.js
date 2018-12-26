@@ -189,11 +189,11 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      */
     $(document).on('click', '.j-iframe-pop', function() {
         var that = $(this), query = '';
-        var def = {width: '750px', height: '500px', idSync: false, table: 'dataTable', type: 2};
-        var opt = new Function('return '+ that.attr('hisi-data'))();
+        var def = {width: '750px', height: '500px', idSync: false, table: 'dataTable', type: 2, url: that.attr('href'), title: that.attr('title')};
+        var opt = new Function('return '+ that.attr('hisi-data'))() || {};
 
-        opt.url     = opt.url || that.attr('href');
-        opt.title   = opt.title || that.attr('title');
+        opt.url     = opt.url || def.url;
+        opt.title   = opt.title || def.title;
         opt.width   = opt.width || def.width;
         opt.height  = opt.height || def.height;
         opt.type    = opt.type || def.type;

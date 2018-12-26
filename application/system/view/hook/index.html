@@ -10,7 +10,7 @@
         </form>
     </div>
     <div class="layui-btn-group fl">
-        <a href="{:url('add')}" class="layui-btn layui-btn-primary layui-icon layui-icon-add-circle-fine j-iframe-pop" title="添加钩子" width="470" height="300">&nbsp;添加</a>
+        <a href="{:url('add')}" hisi-data="{width: '470px', height: '300px'}" class="layui-btn layui-btn-primary layui-icon layui-icon-add-circle-fine j-iframe-pop" title="添加钩子">&nbsp;添加</a>
         <a data-href="{:url('status?val=1')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-play" data-table="dataTable">&nbsp;启用</a>
         <a data-href="{:url('status?val=0')}" class="layui-btn layui-btn-primary j-page-btns layui-icon layui-icon-pause" data-table="dataTable">&nbsp;禁用</a>
         <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm layui-icon layui-icon-close red">&nbsp;删除</a>
@@ -23,7 +23,7 @@
 </script>
 <script type="text/html" title="操作按钮模板" id="buttonTpl">
     {{# if (d.system != 1) { }}
-        <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="修改钩子" width="470" height="300">修改</a><a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+        <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="修改钩子" hisi-data="{width: '470px', height: '300px'}">修改</a><a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
     {{# } else { }}
         <a href="javascript:void(0);" title="系统钩子，禁止编辑" class="layui-btn layui-btn-xs layui-btn-normal layui-disabled">修改</a><a href="javascript:void(0);" title="系统钩子，禁止删除" class="layui-btn layui-btn-xs layui-btn-danger layui-disabled">删除</a>
     {{# } }}
