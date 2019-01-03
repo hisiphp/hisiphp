@@ -699,3 +699,21 @@ CREATE TABLE `hisiphp_system_user` (
   `mtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='[系统] 管理用户';
+
+
+# Dump of table hisiphp_jobs
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `hisiphp_jobs`;
+
+CREATE TABLE `hisiphp_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

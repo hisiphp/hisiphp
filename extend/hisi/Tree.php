@@ -88,9 +88,9 @@ class Tree
         $str = $icon = '';
         if ($level > 0) {
             for ($i=0; $i < $level; $i++) {
-                for($j = 0; $j < self::$config['placeholder_number']; $j++) {
-                    $icon .= self::$config['placeholder'];
-                }
+            	for($j = 0; $j < self::$config['placeholder_number']; $j++) {
+                	$icon .= self::$config['placeholder'];
+            	}
             }
             $icon .= self::$config['icon'].'&nbsp;';
         }

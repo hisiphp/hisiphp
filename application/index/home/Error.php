@@ -15,6 +15,6 @@ class Error extends Common
 {
     public function _empty()
     {
-        return $this->error('这个模块是留给你自由发挥的<br>我们建议您在后台指定其他模块为默认访问首页<br>路径：后台-系统-系统扩展-模块管理-设置默认模块', '', '', 100);
+        return $this->error('这个模块是留给你自由发挥的<br>您也可以在后台指定其他模块为默认访问首页<br>路径：后台-系统-系统扩展-模块管理-设置默认模块', '', '', 100);
     }
 }
