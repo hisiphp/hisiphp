@@ -295,18 +295,19 @@ class SystemMenu extends Model
 
         if (empty($id)) {
 
-            $model      = request()->module();
+            $module     = request()->module();
             $controller = request()->controller();
             $action     = request()->action();
-            $map['url'] = $model.'/'.$controller.'/'.$action;
+            $map[] = ['url', '=', $module.'/'.$controller.'/'.$action];
 
         } else {
 
-            $map['id'] = (int)$id;
+            $map[] = ['id', '=', (int)$id];
 
         }
 
-        $map['status'] = 1;
+        $map[] = ['status', '=', 1];
+
         $rows = self::where($map)->column('id,title,url,param');
 
         if (!$rows) {
@@ -315,11 +316,11 @@ class SystemMenu extends Model
 
         sort($rows);
 
+        $_param = request()->param();
+
         if (count($rows) > 1) {
 
-            $_get = input('param.');
-
-            if (!$_get) {
+            if (!$_param) {
 
                 foreach ($rows as $k => $v) {
 
@@ -336,20 +337,22 @@ class SystemMenu extends Model
                 if ($v['param']) {
 
                     parse_str($v['param'], $param);
+                    
                     ksort($param);
-                    $param_arr = [];
+
+                    $paramArr = [];
 
                     foreach ($param as $kk => $vv) {
-                        if (isset($_get[$kk])) {
-                            $param_arr[$kk] = $_get[$kk];
+                        if (isset($_param[$kk])) {
+                            $paramArr[$kk] = $_param[$kk];
                         }
                     }
 
-                    $sqlmap = [];
-                    $sqlmap['param'] = http_build_query($param_arr);
-                    $sqlmap['url'] =  $map['url'];
+                    $where     = [];
+                    $where[]   = ['param', '=', http_build_query($paramArr)];
+                    $where[]   =  ['url', '=', $module.'/'.$controller.'/'.$action];
 
-                    $res = self::where($sqlmap)->field('id,title,url,param')->find();
+                    $res = self::where($where)->field('id,title,url,param')->find();
                     if ($res) {
                         return $res;
                     }
@@ -357,7 +360,7 @@ class SystemMenu extends Model
 
             }
 
-            $map['param'] = '';
+            $map[] = ['param', '=', ''];
 
             $res = self::where($map)->field('id,title,url,param')->find();
 
@@ -369,6 +372,24 @@ class SystemMenu extends Model
 
         }
 
+        // 扩展参数判断
+        if ($rows[0]['param']) {
+            parse_str($rows[0]['param'], $param);
+            ksort($param);
+            foreach ($param as $k => $v) {
+                if (!isset($_param[$k]) || $_param[$k] != $v) {
+                    return false;
+                }
+            }
+        } else {// 排除敏感参数
+            $param = ['hisiModel', 'hisiTable', 'hisiValidate', 'hisiScene'];
+            foreach ($param as $k => $v) {
+                if (isset($_param[$v])) {
+                    return false;
+                }
+            }
+        }
+        
         return $rows[0];
     }
 
@@ -384,14 +405,14 @@ class SystemMenu extends Model
 
         if (empty($id)) {
 
-            $model      = request()->module();
+            $module     = request()->module();
             $controller = request()->controller();
             $action     = request()->action();
-            $map['url'] = $model.'/'.$controller.'/'.$action;
+            $map[] = ['url', '=', $module.'/'.$controller.'/'.$action];
 
         } else {
 
-            $map['id'] = (int)$id;
+            $map[] = ['id', '=', (int)$id];
 
         }
 
