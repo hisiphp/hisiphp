@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | HisiPHP框架[基于ThinkPHP5.1开发]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2018 http://www.HisiPHP.com
+// | Copyright (c) 2016-2021 http://www.HisiPHP.com
 // +----------------------------------------------------------------------
 // | HisiPHP承诺基础框架永久免费开源，您可用于学习和商用，但必须保留软件版权信息。
 // +----------------------------------------------------------------------
@@ -14,6 +14,7 @@ use Env;
 use Request;
 use Route;
 use think\Container;
+use app\system\model\SystemModule as SystemModule;
 
 /**
  * 应用初始化行为
@@ -27,15 +28,32 @@ class Init
         
         if (defined('INSTALL_ENTRANCE')) return;
 
+        $path = Request::instance()->pathinfo();
+        $bind = Route::getBind();
+
+        if ($path != '/' && strtolower($path) != 'index' && !$bind) {
+
+            $path = explode('/', $path);
+
+            if (isset($path[0]) && !empty($path[0])) {
+
+                if (is_dir(Env::get('app_path').'/'.$path[0])) {
+                    $bind = $path[0];
+                }
+
+            }
+
+        }
+
         // 设置前台默认模块
-        if (empty(Route::getBind()) && !defined('ENTRANCE')) {
+        if (!defined('ENTRANCE') && !$bind) {
 
             $map    = [];
             $map[]  = ['default', '=', 1];
             $map[]  = ['status', '=', 2];
-            $modName = model('system/SystemModule')->where($map)->value('name');
-            if ($modName) {
-                Container::get('app')->bind($modName);
+
+            if ($name = SystemModule::where($map)->value('name')) {
+                Container::get('app')->bind($name);
             }
             
         }
