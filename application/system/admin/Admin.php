@@ -163,6 +163,29 @@ class Admin extends Common
     {
         if ($this->request->isPost()) {
 
+            $hisiModel      = $this->request->param('hisiModel');
+            $hisiTable      = $this->request->param('hisiTable');
+            $hisiValidate   = $this->request->param('hisiValidate');
+            $hisiScene      = $this->request->param('hisiScene');
+
+            if ($hisiModel) {
+                $this->hisiModel = $hisiModel;
+                $this->hisiTable = '';
+            }
+
+            if ($hisiTable) {
+                $this->hisiTable = $hisiTable;
+                $this->hisiModel = '';
+            }
+
+            if ($hisiValidate) {
+                $this->hisiValidate = $hisiValidate;
+            }
+
+            if ($hisiScene) {
+                $this->hisiAddScene = $hisiScene;
+            }
+
             $postData = $this->request->post();
 
             if ($this->hisiValidate) {// 数据验证
@@ -241,6 +264,30 @@ class Admin extends Common
     {
 
         if ($this->request->isPost()) {// 数据验证
+
+            $hisiModel      = $this->request->param('hisiModel');
+            $hisiTable      = $this->request->param('hisiTable');
+            $hisiValidate   = $this->request->param('hisiValidate');
+            $hisiScene      = $this->request->param('hisiScene');
+
+            if ($hisiModel) {
+                $this->hisiModel = $hisiModel;
+                $this->hisiTable = '';
+            }
+
+            if ($hisiTable) {
+                $this->hisiTable = $hisiTable;
+                $this->hisiModel = '';
+            }
+
+            if ($hisiValidate) {
+                $this->hisiValidate = $hisiValidate;
+            }
+
+            if ($hisiScene) {
+                $this->hisiEditScene = $hisiScene;
+            }
+
             $postData = $this->request->post();
 
             if ($this->hisiValidate) {
@@ -339,9 +386,21 @@ class Admin extends Common
      */
     public function status()
     {
-        $val    = $this->request->param('val/d');
-        $id     = $this->request->param('id/a');
-        $field  = $this->request->param('field/s', 'status');
+        $val        = $this->request->param('val/d');
+        $id         = $this->request->param('id/a');
+        $field      = $this->request->param('field/s', 'status');
+        $hisiModel  = $this->request->param('hisiModel');
+        $hisiTable  = $this->request->param('hisiTable');
+
+        if ($hisiModel) {
+            $this->hisiModel = $hisiModel;
+            $this->hisiTable = '';
+        }
+
+        if ($hisiTable) {
+            $this->hisiTable = $hisiTable;
+            $this->hisiModel = '';
+        }
 
         if (empty($id)) {
             return $this->error('缺少id参数');
@@ -403,7 +462,21 @@ class Admin extends Common
      */
     public function del()
     {
-        $id = $this->request->param('id/a');
+
+        $id         = $this->request->param('id/a');
+        $hisiModel  = $this->request->param('hisiModel');
+        $hisiTable  = $this->request->param('hisiTable');
+
+        if ($hisiModel) {
+            $this->hisiModel = $hisiModel;
+            $this->hisiTable = '';
+        }
+
+        if ($hisiTable) {
+            $this->hisiTable = $hisiTable;
+            $this->hisiModel = '';
+        }
+
         if (empty($id)) {
             return $this->error('缺少id参数');
         }
@@ -455,9 +528,21 @@ class Admin extends Common
      */
     public function sort()
     {
-        $id    = $this->request->param('id/a');
-        $field = $this->request->param('field/s', 'sort');
-        $val   = $this->request->param('val/d');
+        $id         = $this->request->param('id/a');
+        $field      = $this->request->param('field/s', 'sort');
+        $val        = $this->request->param('val/d');
+        $hisiModel  = $this->request->param('hisiModel');
+        $hisiTable  = $this->request->param('hisiTable');
+
+        if ($hisiModel) {
+            $this->hisiModel = $hisiModel;
+            $this->hisiTable = '';
+        }
+
+        if ($hisiTable) {
+            $this->hisiTable = $hisiTable;
+            $this->hisiModel = '';
+        }
 
         if (empty($id)) {
             return $this->error('缺少id参数');
