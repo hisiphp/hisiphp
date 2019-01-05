@@ -500,19 +500,20 @@ class Admin extends Common
                 $obj = model($this->hisiModel);
 
             }
+            
+            $result = $obj->destroy($id);
 
         } else if ($this->hisiTable) {
 
-            $obj = db($this->hisiTable);
+            $obj    = db($this->hisiTable);
+            $pk     = $obj->getPk();
+            $result = $obj->where([$pk => $id])->delete();
 
         } else {
 
             return $this->error('当前控制器缺少属性（hisiModel、hisiTable至少定义一个）');
 
         }
-
-        $pk     = $obj->getPk();
-        $result = $obj->where([$pk => $id])->delete();
 
         if ($result === false) {
             return $this->error('删除失败');
