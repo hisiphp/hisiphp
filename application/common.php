@@ -655,13 +655,18 @@ if (!function_exists('module_info')) {
         if (is_empty($name)) {
             $name = request()->module();
         }
-        
-        $path = \Env::get('app_path').strtolower($name).'/info.php';
-        if (!file_exists($path)) {
-            return false;
+
+        $module = model('system/SystemModule')->where('name', $name)->find();
+        if (!$module) {
+            $path = \Env::get('app_path').strtolower($name).'/info.php';
+            if (!file_exists($path)) {
+                return false;
+            }
+
+            return include_once $path;
         }
 
-        return include_once $path;
+        return $module->toArray();
     }
 }
 
