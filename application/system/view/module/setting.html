@@ -155,7 +155,7 @@ layui.use(['jquery', 'laydate', 'upload', 'func'], function() {
     layui.func.assign({:json_encode($formData)});
     upload.render({
         elem: '.layui-upload'
-        url: '{:url("system/annex/upload?group=m_".$formData["name"])}'
+        ,url: '{:url("system/annex/upload?group=m_".$formData["name"])}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
