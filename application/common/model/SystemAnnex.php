@@ -54,8 +54,9 @@ class SystemAnnex extends Model
             case 'ueditor':
                 $input = 'upfile';
                 if (isset($_GET['action']) && $_GET['action'] == 'config') {
-                    $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents('.'.config('view_replace_str.__PUBLIC_JS__').'/editor/ueditor/config.json')), true);
-                    echo json_encode($CONFIG);
+                    $content = file_get_contents(Env::get('root_path').'/public/static/js/editor/ueditor/config.json');
+                    $json = preg_replace("/\/\*[\s\S]+?\*\//", "", $content);
+                    echo json_encode(json_decode($json, 1), 1);
                     exit;
                 }
                 break;
