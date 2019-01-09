@@ -263,23 +263,24 @@ class Admin extends Common
     public function edit()
     {
 
+        $hisiModel = $this->request->param('hisiModel');
+        $hisiTable = $this->request->param('hisiTable');
+
+        if ($hisiModel) {
+            $this->hisiModel = $hisiModel;
+            $this->hisiTable = '';
+        }
+
+        if ($hisiTable) {
+            $this->hisiTable = $hisiTable;
+            $this->hisiModel = '';
+        }
+
         if ($this->request->isPost()) {// 数据验证
 
-            $hisiModel      = $this->request->param('hisiModel');
-            $hisiTable      = $this->request->param('hisiTable');
             $hisiValidate   = $this->request->param('hisiValidate');
             $hisiScene      = $this->request->param('hisiScene');
-
-            if ($hisiModel) {
-                $this->hisiModel = $hisiModel;
-                $this->hisiTable = '';
-            }
-
-            if ($hisiTable) {
-                $this->hisiTable = $hisiTable;
-                $this->hisiModel = '';
-            }
-
+            
             if ($hisiValidate) {
                 $this->hisiValidate = $hisiValidate;
             }
