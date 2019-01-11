@@ -1,17 +1,17 @@
 [
     {
         "name": "topthink/framework",
-        "version": "v5.0.21",
-        "version_normalized": "5.0.21.0",
+        "version": "v5.0.24",
+        "version_normalized": "5.0.24.0",
         "source": {
             "type": "git",
             "url": "https://github.com/top-think/framework.git",
-            "reference": "60e38a040b31885ade6887208d1429ac4052f623"
+            "reference": "c255c22b2f5fa30f320ecf6c1d29f7740eb3e8be"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/top-think/framework/zipball/60e38a040b31885ade6887208d1429ac4052f623",
-            "reference": "60e38a040b31885ade6887208d1429ac4052f623",
+            "url": "https://api.github.com/repos/top-think/framework/zipball/c255c22b2f5fa30f320ecf6c1d29f7740eb3e8be",
+            "reference": "c255c22b2f5fa30f320ecf6c1d29f7740eb3e8be",
             "shasum": "",
             "mirrors": [
                 {
@@ -32,7 +32,7 @@
             "phpunit/phpunit": "4.8.*",
             "sebastian/phpcpd": "2.*"
         },
-        "time": "2018-08-23T09:38:39+00:00",
+        "time": "2019-01-11T08:04:58+00:00",
         "type": "think-framework",
         "installation-source": "dist",
         "autoload": {
@@ -104,17 +104,17 @@
     },
     {
         "name": "topthink/think-helper",
-        "version": "v1.0.6",
-        "version_normalized": "1.0.6.0",
+        "version": "v1.0.7",
+        "version_normalized": "1.0.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/top-think/think-helper.git",
-            "reference": "0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f"
+            "reference": "5f92178606c8ce131d36b37a57c58eb71e55f019"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/top-think/think-helper/zipball/0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f",
-            "reference": "0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f",
+            "url": "https://api.github.com/repos/top-think/think-helper/zipball/5f92178606c8ce131d36b37a57c58eb71e55f019",
+            "reference": "5f92178606c8ce131d36b37a57c58eb71e55f019",
             "shasum": "",
             "mirrors": [
                 {
@@ -123,7 +123,7 @@
                 }
             ]
         },
-        "time": "2017-04-05T07:15:37+00:00",
+        "time": "2018-10-05T00:43:21+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
