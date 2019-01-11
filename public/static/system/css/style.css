@@ -60,12 +60,12 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .bread-crumbs li {float:left;margin:0 5px;color:#666;height:30px;line-height:30px}
 .bread-crumbs li a {color:#666}
 .page-body {display:block;padding:8px;overflow:auto;border:none!important;background-color:#f5f5f5;}
-.page-tab-content {background-color:#fff;overflow:auto;padding:8px;}
+.page-tab-content {background-color:#fff;overflow:auto;padding:0 8px;margin:8px;}
 .tool-btns {position:absolute;right:15px;top:11px;font-size:18px;color:#888}
 .tool-btns .sys-icon {color:#999;margin-left:8px}
 .fullscreen {position:fixed;top:0;right:0;bottom:0;left:0;z-index:1090;margin-bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-backface-visibility:hidden;backface-visibility:hidden;height:100%}
 .fullscreen.page-body,.fullscreen .layui-tab {margin:0}
-.page-toolbar {display:block;height:40px}
+.page-toolbar {display:block;height:40px;margin-top:8px;}
 .page-filter {height:40px}
 .page-filter .layui-form-pane .layui-form-label {width:auto}
 .page-filter .layui-form-pane .layui-form-item .layui-input-inline {margin-right:0}
@@ -120,6 +120,7 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .pop-bottom-bar .pages .pager li {float:left;margin:0 5px}
 .pop-bottom-bar .pages .pager li a,
 .pop-bottom-bar .pages .pager li span {height:38px;line-height:38px;padding:0 10px;font-weight:500;display:inline-block}
+.page-bottom-bar{position:fixed;left:0;right:0;bottom:44px;background-color:#fff;z-index:99998;text-align:center;padding:10px 0;border-top:1px solid #e6e6e6;}
 .hook-plugins-sort {margin:10px 0 20px 0;border-top:1px dotted #eee;border-left:1px dotted #eee;border-right:1px dotted #eee;float:left;overflow:hidden}
 .hook-plugins-sort li {float:left;width:100%;padding:5px 10px;border-bottom:1px dotted #eee;overflow:hidden}
 .hook-plugins-sort li span {float:left;margin-right:20px;width:150px;height:20px;line-height:22px}
@@ -209,3 +210,10 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .app-qrocde{display:block;width:100;text-align:center;}
 .app-order-id{color:#999;font-size:14px;line-height:20px;}
 .app-pay-success{height:200px;padding-top:80px;}
+@media screen and (max-device-width: 750px) {
+	.layui-layout-admin .layui-side{display:none;}
+	.layui-layout-admin .layui-body{left:0;}
+	.header-logo{display:none;}
+	.header-logo{display:none;}
+	.main-nav{display:none;}
+}

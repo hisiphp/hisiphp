@@ -45,16 +45,17 @@ class Store extends Admin
      */
     public function index()
     {
-    	if ($this->request->isAjax()) {
-    		$data = $param    = [];
-    		$param['page']    = $this->request->param('page/d', 1);
-    		$param['cat_id']  = $this->request->param('cat_id/d', 0);
-    		$param['type']    = $this->request->param('type/d', 1);
-    		$param['limit']   = $this->request->param('limit/d', 10);
+        if ($this->request->isAjax()) {
+            $data = $param    = [];
+            $param['page']    = $this->request->param('page/d', 1);
+            $param['cat_id']  = $this->request->param('cat_id/d', 0);
+            $param['type']    = $this->request->param('type/d', 1);
+            $param['limit']   = $this->request->param('limit/d', 10);
   
-    		$data['code'] = 0;
-    		$cloudData = $this->cloud->data($param)->api('apps');
-    		if ($cloudData['code'] == 1) {
+            $data['code'] = 0;
+            $data['data'] = [];
+            $cloudData = $this->cloud->data($param)->api('apps');
+            if ($cloudData['code'] == 1) {
                 switch ($param['type']) {
                     case 1:// 模块
                         $locApp = ModuleModel::where('system', 0)->column('identifier,version');
@@ -85,24 +86,22 @@ class Store extends Admin
                     }
                     $apps[] = $v;
                 }
-    			$data['data'] = $apps;
-    			$data['count'] = $cloudData['data']['count'];
-    		} else {
-    			$data['code'] = 1;
-    		}
+                $data['data'] = $apps;
+                $data['count'] = $cloudData['data']['count'];
+            }
 
-    		return json($data);
-    	}
+            return json($data);
+        }
 
-    	$data['cats'] = cache('cloud_app_cats');
-    	if (!$data['cats']) {
-    		$cats = $this->cloud->api('cats');
+        $data['cats'] = cache('cloud_app_cats');
+        if (!$data['cats']) {
+            $cats = $this->cloud->api('cats');
             $data['cats'] = $cats['data'];
-    		cache('cloud_app_cats', $data['cats']);
-    	}
+            cache('cloud_app_cats', $data['cats']);
+        }
         
         $this->assign('api_url', $this->cloud->apiUrl());
-    	$this->assign('data', $data);
+        $this->assign('data', $data);
         return $this->fetch();
     }
 
