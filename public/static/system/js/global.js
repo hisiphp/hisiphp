@@ -273,6 +273,8 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
 
         if (that.attr('hisi-data')) {
             options = new Function('return '+ that.attr('hisi-data'))();
+        } else if (that.attr('lay-data')) {
+            options = new Function('return '+ that.attr('lay-data'))();
         }
 
         // CKEditor专用
@@ -299,15 +301,14 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                             options.callback(that, res);
                         }
                         if (options.pop == true) {
-                            parent.layer.closeAll();
                             if (options.refresh == true) {
                                 parent.location.reload();
-                            }
-                            if (options.jump == true) {
+                            } else if (options.jump == true) {
                                 if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                                     parent.location.href = res.url;
                                 } 
                             }
+                            parent.layui.layer.closeAll();
                         } else {
                             if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                                 location.href = res.url;
