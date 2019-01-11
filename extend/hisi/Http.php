@@ -114,7 +114,7 @@ class Http {
 
         if (curl_errno($ch) || $curlInfo['http_code'] != 200) {
             curl_error($ch);
-            unlink($savePath);
+            @unlink($savePath);
             return false;
         } else {
             curl_close($ch);
