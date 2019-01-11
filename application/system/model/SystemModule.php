@@ -237,7 +237,7 @@ class SystemModule extends Model
             // 删除框架生成的html文件
             @unlink($path . 'view/index/index.html');
             file_put_contents($path . 'admin/Index.php', $admin_contro);
-            file_put_contents($path . 'view/index/index.html', '我是后台模板['.$path . 'view/index/index.html]');
+            file_put_contents($path . 'view/index/index.html', "我是后台模板[".$path."view/index/index.html]\n{include file=\"system@block/layui\" /}");
         }
 
         // 生成前台默认控制器
