@@ -14,6 +14,7 @@ use app\common\model\SystemAnnexGroup as GroupModel;
 use think\Model;
 use think\Image;
 use think\File;
+use Env;
 
 /**
  * 附件模型
