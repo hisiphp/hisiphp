@@ -191,7 +191,7 @@ class Error extends Common
         }
 
         $rule = [
-            'account|管理员账号' => 'require|alphaNum',
+            'account|管理员账号' => 'require|alphaNum|length:4,20',
             'password|管理员密码' => 'require|length:6,20',
         ];
 
