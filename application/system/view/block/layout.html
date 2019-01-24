@@ -23,12 +23,12 @@
             <div class="layui-tab layui-tab-brief">
                 <ul class="layui-tab-title">
                     {volist name="hisiTabData['menu']" id="vo" key="k"}
-                        {if condition="$k eq 1"}
-                        <li class="layui-this">
+                        {if ($k eq 1)}
+                            <li class="layui-this">
                         {else /}
-                        <li>
+                            <li>
                         {/if}
-                        <a href="javascript:;">{$vo['title']|raw}</a>
+                            <a href="javascript:;" class="{if (isset($vo['class']))}{$vo['class']}{/if}" id="{if (isset($vo['id']))}{$vo['id']}{/if}">{$vo['title']|raw}</a>
                         </li>
                     {/volist}
                 </ul>
@@ -47,16 +47,16 @@
                         {php}
                             $hisiTabData['current'] = isset($hisiTabData['current']) ? $hisiTabData['current'] : '';
                         {/php}
-                        {if condition="$vo['url'] eq $hisiCurMenu['url'] or (url($vo['url']) eq $hisiTabData['current'])"}
-                        <li class="layui-this">
+                        {if ($vo['url'] eq $hisiCurMenu['url'] or (url($vo['url']) eq $hisiTabData['current']))}
+                            <li class="layui-this">
                         {else /}
-                        <li>
+                            <li>
                         {/if}
-                        {if condition="substr($vo['url'], 0, 4) eq 'http'"}
-                            <a href="{$vo['url']}" target="_blank">{$vo['title']|raw}</a>
-                        {else /}
-                            <a href="{:url($vo['url'])}">{$vo['title']|raw}</a>
-                        {/if}
+                            {if (substr($vo['url'], 0, 4) eq 'http')}
+                                <a href="{$vo['url']}" target="_blank">{$vo['title']|raw}</a>
+                            {else /}
+                                <a href="{:url($vo['url'])}" class="{if (isset($vo['class']))}{$vo['class']}{/if}" id="{if (isset($vo['id']))}{$vo['id']}{/if}">{$vo['title']|raw}</a>
+                            {/if}
                         </li>
                     {/volist}
                 </ul>
