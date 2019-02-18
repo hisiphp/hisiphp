@@ -47,6 +47,13 @@ class Config extends Admin
             $arr['url']         = '?group='.$key;
             $tabData['menu'][]  = $arr;
         }
+        
+        $tabData['menu'][] = [
+            'title' => '添加分组',
+            'url'   => '#',
+            'class' => 'layui-icon layui-icon-add-circle',
+            'id'    => 'hisiAddGroup',
+        ];
 
         $tabData['current'] = url('?group='.$group);
 
@@ -148,5 +155,65 @@ class Config extends Admin
         // 更新配置缓存
         ConfigModel::getConfig('', true);
         return $this->error($model->getError());
+    }
+
+    /**
+     * 添加分组
+     * @date   2019-01-24
+     * @access public
+     * @author 橘子俊 364666827@qq.com
+     */
+    public function addGroup()
+    {
+        if (!$this->request->isPost()) {
+            return $this->error('请求异常');
+        }
+
+        $name = $this->request->param('name');
+
+        $exp = explode(':', $name);
+
+        if (count($exp) != 2) {
+            return $this->error('格式错误（示例：user:用户配置）');
+        }
+
+        if (empty($exp[0]) || empty($exp[1])) {
+            return $this->error('格式错误（示例：user:用户配置）');
+        }
+
+        $defConfig = config('sys.config_group');
+
+        if (isset($defConfig[$exp[0]])) {
+            return $this->error('别名已存在');
+        }
+
+        if (in_array($exp[1], $defConfig)) {
+            return $this->error('标题已存在');
+        }
+
+        $result = ConfigModel::where('name', 'config_group')->where('group', 'sys')->find();
+
+        $config = $result['value'];
+
+        if (!empty($config)) {
+
+            $config .= "\n".$name;
+
+        } else {
+
+            $config = $name;
+
+        }
+
+        $result->value = $config;
+
+        if ($result->save() === false) {
+            return $this->error('添加失败');
+        }
+
+        ConfigModel::getConfig('', true);
+
+        return $this->success('添加成功', url('index', ['group' => $exp[0]]));
+    
     }
 }

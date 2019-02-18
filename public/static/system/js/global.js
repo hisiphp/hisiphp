@@ -164,7 +164,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * 删除快捷菜单
      * @attr data-href 请求地址
      */
-    $('.j-del-menu').click(function(){
+    $('.j-del-menu,.hisi-del-menu').click(function(){
         var that = $(this);
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){
 
@@ -187,7 +187,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @title 弹窗标题
      * @hisi-data {width: '弹窗宽度', height: '弹窗高度', idSync: '是否同步ID', table: '数据表ID(同步ID时必须)', type: '弹窗类型'}
      */
-    $(document).on('click', '.j-iframe-pop', function() {
+    $(document).on('click', '.j-iframe-pop,.hisi-iframe-pop', function() {
         var that = $(this), query = '';
         var def = {width: '750px', height: '500px', idSync: false, table: 'dataTable', type: 2, url: that.attr('href'), title: that.attr('title')};
         var opt = new Function('return '+ that.attr('hisi-data'))() || {};
@@ -328,7 +328,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @attr href或data-href 请求地址
      * @attr refresh 操作完成后是否自动刷新
      */
-    $(document).on('click', '.j-tr-del', function() {
+    $(document).on('click', '.j-tr-del,.hisi-tr-del', function() {
         var that = $(this),
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href');
         layer.confirm('删除之后无法恢复，您确定要删除吗？', {title:false, closeBtn:0}, function(index){
@@ -354,7 +354,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @attr refresh 操作完成后是否自动刷新
      * @class confirm confirm提示内容
      */
-    $(document).on('click', '.j-ajax', function() {
+    $(document).on('click', '.j-ajax,.hisi-ajax', function() {
         var that = $(this), 
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href'),
             refresh = !that.attr('refresh') ? 'yes' : that.attr('refresh');
@@ -401,7 +401,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * 数据列表input编辑自动选中ids
      * @attr data-value 修改前的值
      */
-    $('.j-auto-checked').blur(function(){
+    $('.j-auto-checked,hisi-auto-checked').blur(function(){
         var that = $(this);
         if(that.attr('data-value') != that.val()) {
             that.parents('tr').find('input[name="ids[]"]').attr("checked", true);
@@ -416,7 +416,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @attr data-value 修改前的值
      * @attr data-href 提交地址
      */
-    $(document).on('focusout', '.j-ajax-input',function(){
+    $(document).on('focusout', '.j-ajax-input,.hisi-ajax-input',function(){
         var that = $(this), _val = that.val();
         if (_val == '') return false;
         if (that.attr('data-value') == _val) return false;
@@ -450,7 +450,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @class confirm 类似系统confirm
      * @attr tips confirm提示内容
      */
-    $(document).on('click', '.j-page-btns', function(){
+    $(document).on('click', '.j-page-btns,.hisi-page-btns', function(){
         var that = $(this),
             query = '',
             code = function(that) {
