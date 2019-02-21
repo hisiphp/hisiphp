@@ -129,13 +129,13 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
     });
 
     /* 后台主题设置 */
-    $('#admin-theme-setting').on('click', function() {
+    $('#hisi-theme-setting').on('click', function() {
         var that = $(this);
         layer.open({
             type: 5,
             title: '主题方案',
             shade: 0.3,
-            area: ['295px', '90%'],
+            area: ['295px', '93%'],
             offset: 'rb',
             maxmin: true,
             shadeClose: true,
@@ -155,6 +155,27 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                         }
                     }, 'json');
                 });
+            }
+        }); 
+        return false;
+    });
+
+    /* 清空缓存 */
+    $('#hisi-clear-cache').on('click', function() {
+        var that = $(this);
+        layer.open({
+            type: 5,
+            title: '删除缓存',
+            shade: 0.3,
+            area: ['205px', '93%'],
+            offset: 'rb',
+            maxmin: true,
+            shadeClose: true,
+            closeBtn: false,
+            anim: 2,
+            content: $('#hisi-clear-cache-tpl').html(),
+            success: function(layero, index) {
+                form.render('checkbox');
             }
         }); 
         return false;
@@ -296,7 +317,8 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                         that.removeClass('layui-btn-danger').addClass('layui-btn-normal').text(text);
                     }, 3000);
                 } else {
-                    setTimeout(function(){
+                    setTimeout(function() {
+                        that.text(text).prop('disabled', false);
                         if (options.callback) {
                             options.callback(that, res);
                         }
@@ -309,7 +331,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                                 } 
                             }
                             parent.layui.layer.closeAll();
-                        } else {
+                        } else if (options.refresh == true) {
                             if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                                 location.href = res.url;
                             } else {

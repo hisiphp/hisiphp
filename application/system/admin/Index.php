@@ -53,9 +53,23 @@ class Index extends Admin
      */
     public function clear()
     {
-        if (Dir::delDir(Env::get('runtime_path')) === false) {
-            return $this->error('缓存清理失败');
+        $path   = Env::get('runtime_path');
+        $cache  = $this->request->param('cache/d', 0);
+        $log    = $this->request->param('log/d', 0);
+        $temp   = $this->request->param('temp/d', 0);
+
+        if ($cache == 1) {
+            Dir::delDir($path.'cache');
         }
-        return $this->success('缓存清理成功');
+
+        if ($temp == 1) {
+            Dir::delDir($path.'temp');
+        }
+
+        if ($log == 1) {
+            Dir::delDir($path.'log');
+        }
+
+        return $this->success('任务执行成功');
     }
 }

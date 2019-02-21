@@ -16,13 +16,13 @@
             <a href="__ROOT_DIR__" target="_blank" class="aicon ai-ai-home" title="前台"></a>
         </li>
         <li class="layui-nav-item">
-            <a href="{:url('system/index/clear')}" class="j-ajax aicon ai-qingchu" refresh="yes" title="清缓存"></a>
+            <a href="javascript:void(0);" class="aicon ai-qingchu" id="hisi-clear-cache" title="清缓存"></a>
         </li>
         <li class="layui-nav-item">
             <a href="javascript:void(0);" class="aicon ai-suo" id="lockScreen" title="锁屏"></a>
         </li>
         <li class="layui-nav-item">
-            <a href="{:url('system/user/setTheme')}" id="admin-theme-setting" class="aicon ai-theme"></a>
+            <a href="{:url('system/user/setTheme')}" id="hisi-theme-setting" class="aicon ai-theme"></a>
         </li>
         <li class="layui-nav-item">
             <a href="javascript:void(0);">{$login['nick']}&nbsp;&nbsp;</a>
@@ -89,4 +89,20 @@
         <li data-theme="{$vo}" class="hisi-theme-item-{$vo}"></li>
         {/volist}
     </ul>
+</script>
+<script type="text/html" id="hisi-clear-cache-tpl">
+    <form class="layui-form" style="padding:10px 0 0 30px;" action="{:url('system/index/clear')}" method="post">
+        <div class="layui-form-item">
+            <input type="checkbox" name="cache" value="1" title="数据缓存" />
+        </div>
+        <div class="layui-form-item">
+            <input type="checkbox" name="log" value="1" title="日志缓存" />
+        </div>
+        <div class="layui-form-item">
+            <input type="checkbox" name="temp" value="1" title="模板缓存" />
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">执行删除</button>
+        </div>
+    </form>
 </script>
