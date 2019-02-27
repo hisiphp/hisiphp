@@ -285,7 +285,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
         var _form = '', 
             that = $(this), 
             text = that.text(),
-            options = {pop: false, refresh: false, jump: false, callback: null};
+            options = {pop: false, refresh: true, jump: false, callback: null};
         if ($(this).attr('data-form')) {
             _form = $(that.attr('data-form'));
         } else {
@@ -298,7 +298,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             options = new Function('return '+ that.attr('lay-data'))();
         }
 
-        // CKEditor专用
+        /* CKEditor专用 */
         if (typeof(CKEDITOR) != 'undefined') {
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
@@ -325,14 +325,12 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                         if (options.pop == true) {
                             if (options.refresh == true) {
                                 parent.location.reload();
-                            } else if (options.jump == true) {
-                                if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
-                                    parent.location.href = res.url;
-                                } 
+                            } else if (options.jump == true && res.url != '') {
+                                parent.location.href = res.url;
                             }
                             parent.layui.layer.closeAll();
                         } else if (options.refresh == true) {
-                            if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
+                            if (res.url != '') {
                                 location.href = res.url;
                             } else {
                                 location.reload();
