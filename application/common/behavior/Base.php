@@ -164,5 +164,7 @@ class Base
                 cookie('_language', Lang::range());
             }
         }
+
+        define('HISI_LANG', Lang::range());
     }
 }
