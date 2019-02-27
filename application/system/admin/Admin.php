@@ -502,7 +502,9 @@ class Admin extends Common
 
             }
             
-            $result = $obj->destroy($id);
+            $row = $obj->withTrashed()->get($id);
+
+            $result = $row->delete();
 
         } else if ($this->hisiTable) {
 
