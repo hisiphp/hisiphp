@@ -519,7 +519,7 @@ if (!function_exists('editor')) {
                 $html .= '<script src="'.$jsPath.'ueditor/ueditor.all.min.js"></script>';
                 $html .= '<script>';
                 foreach ($obj as $k =>$v) {
-                    $html .= 'var ue'.$k.' = UE.ui.Editor({serverUrl:"'.$url.'",initialFrameHeight:300,initialFrameWidth:"100%"});ue'.$k.'.render("'.$v.'");';
+                    $html .= 'var ue'.$k.' = UE.ui.Editor({serverUrl:"'.$url.'",initialFrameHeight:500,initialFrameWidth:"100%",autoHeightEnabled:false});ue'.$k.'.render("'.$v.'");';
                 }
                 $html .= '</script>';
                 break;
@@ -531,7 +531,7 @@ if (!function_exists('editor')) {
                         <script>
                             var editor;
                             KindEditor.ready(function(K) {
-                                editor = K.create(\'#'.$obj.'\', {uploadJson: "'.$url.'",allowFileManager : false,minHeight:300, width:"100%", afterBlur:function(){this.sync();}});
+                                editor = K.create(\'#'.$obj.'\', {uploadJson: "'.$url.'",allowFileManager : false,minHeight:500, width:"100%",autoHeightEnabled:false, afterBlur:function(){this.sync();}});
                             });
                         </script>';
                 break;
@@ -554,7 +554,8 @@ if (!function_exists('editor')) {
                 foreach ($obj as  $k => $v) {
                     $html .= 'var um'.$k.' = UM.getEditor("'.$v.'", {
                                 initialFrameWidth:"100%"
-                                ,initialFrameHeight:"300"
+                                ,initialFrameHeight:"500"
+                                ,autoHeightEnabled:false
                                 ,imageUrl:"'.$url.'"
                                 ,imageFieldName:"upfile"});';
                 }
