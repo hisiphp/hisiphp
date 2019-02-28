@@ -22,7 +22,7 @@ class SystemMenu extends Validate
 {
     //定义验证规则
     protected $rule = [
-        'url|菜单链接'      => 'require|checkUrl:thinkphp',
+        'url|菜单链接'      => 'requireWith:url|checkUrl:thinkphp',
         'module|所属模块'   => 'require',
         'pid|所属菜单'      => 'require',
         'title|菜单名称'    => 'require',
