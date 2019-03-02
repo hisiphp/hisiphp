@@ -240,7 +240,7 @@ class Module extends Admin
      */
     public function execInstall($id, $clear = 1)
     {
-        file_put_contents('./module.txt', $id);
+        
         $mod = ModuleModel::where('id', $id)->find();
         if (!$mod) {
             return '模块不存在';
