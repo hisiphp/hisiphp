@@ -591,4 +591,19 @@ class Admin extends Common
 
         return $this->success('排序设置成功');
     }
+
+    /**
+     * [通用方法]上传附件
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function upload()
+    {
+
+        $model = new app\common\model\SystemAnnex;
+        
+        return json($model::fileUpload());
+
+    }
+
 }
