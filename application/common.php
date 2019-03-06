@@ -509,8 +509,8 @@ if (!function_exists('editor')) {
             $name = config('sys.editor');
         }
 
-        if (empty($url)){
-            $url = url("system/annex/upload?thumb=no&from=".$name);
+        if (empty($url)) {
+            $url = url("system/annex/upload?full_path=yes&thumb=no&from=".$name);
         }
 
         switch (strtolower($name)) {
