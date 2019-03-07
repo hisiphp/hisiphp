@@ -74,13 +74,13 @@ class SystemAnnex extends Model
             $param = request()->param();
         }
 
-        $from       = $param['from'] ?? 'input';
-        $group      = $param['group'] ?? 'sys';
-        $water      = $param['water'] ?? '';
-        $thumb      = $param['thumb'] ?? '';
-        $thumbType  = $param['thumb_type'] ?? config('upload.thumb_type');
-        $input      = $param['input'] ?? 'file';
-        $fullPath   = $param['full_path'] ?? false;
+        $from       = isset($param['from']) ? $param['from'] : 'input';
+        $group      = isset($param['group']) ? $param['group'] : 'sys';
+        $water      = isset($param['water']) ? $param['water'] : '';
+        $thumb      = isset($param['thumb']) ? $param['thumb'] : '';
+        $thumbType  = isset($param['thumb_type']) ? $param['thumb_type'] : config('upload.thumb_type');
+        $input      = isset($param['input']) ? $param['input'] : 'file';
+        $fullPath   = isset($param['full_path']) ? $param['full_path'] : false;
 
         switch ($from) {
 
