@@ -524,7 +524,7 @@ class SystemMenu extends Model
                     unset($v['childs']);
                 }
 
-                $res = model('SystemMenu')->storage($v);
+                $res = (new \app\system\model\SystemMenu)->storage($v);
 
                 if (!$res) {
                     return false;
@@ -560,7 +560,7 @@ class SystemMenu extends Model
                     unset($v['childs']);
                 }
 
-                $res = model('SystemMenu')->storage($v);
+                $res = (new \app\system\model\SystemMenu)->storage($v);
                 if (!$res) {
                     return false;
                 }
