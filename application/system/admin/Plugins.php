@@ -263,7 +263,7 @@ class Plugins extends Admin
                         try {
                             Db::execute($v);
                         } catch(\Exception $e) {
-                            return '导入SQL失败，请检查install.sql的语句是否正确或者表是否存在';
+                            return $e->getMessage();
                         }
                     }
                 }
@@ -362,7 +362,7 @@ class Plugins extends Admin
                     try {
                         Db::execute($v);
                     } catch(\Exception $e) {
-                        return $this->error('导入SQL失败，请检查uninstall.sql的语句是否正确');
+                        return $e->getMessage();
                     }
                 }
             }
