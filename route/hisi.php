@@ -14,8 +14,8 @@
  */
 
 // 插件路由
-Route::rule('plugins/:_p/:_c', 'system/plugins/index?_p=:_p&_c=:_c&_a=index');
 Route::rule('plugins/:_p/:_c/:_a', 'system/plugins/index?_p=:_p&_c=:_c&_a=:_a');
+Route::rule('plugins/:_p/:_c', 'system/plugins/index?_p=:_p&_c=:_c&_a=index');
 
 // 应用商店推送
 Route::rule('push/module', 'system/push/module');
