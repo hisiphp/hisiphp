@@ -289,11 +289,7 @@ class Module extends Admin
                         try {
                             Db::execute($v);
                         } catch(\Exception $e) {
-                            if ($clear == 1) {
-                                return '导入SQL失败，请检查install.sql的语句是否正确或者表是否存在';
-                            } else {
-                                return '导入SQL失败，请尝试选择清除旧数据';
-                            }
+                            return $e->getMessage();
                         }
                     }
                 }
@@ -565,7 +561,7 @@ class Module extends Admin
                         try {
                             Db::execute($v);
                         } catch(\Exception $e) {
-                            return $this->error('导入SQL失败，请检查uninstall.sql的语句是否正确');
+                            return $e->getMessage();
                         }
                     }
                 }
