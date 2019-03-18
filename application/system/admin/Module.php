@@ -222,10 +222,14 @@ class Module extends Admin
             }
             $info['module_depend'][$k] = $v;
         }
+
         // 插件依赖检查 TODO
         $info['id'] = $mod['id'];
+        $info['demo_data'] = file_exists($modPath.'sql/demo.sql') ? true : false;
+
         $this->assign('tables', $this->checkTable($info['tables']));
         $this->assign('formData', $info);
+
         return $this->fetch();
     }
 
@@ -264,7 +268,7 @@ class Module extends Admin
             }
         }
 
-        // 导入SQL
+        // 导入安装SQL
         $sqlFile = realpath($modPath.'sql/install.sql');
         if (file_exists($sqlFile)) {
             $sql = file_get_contents($sqlFile);
@@ -285,6 +289,32 @@ class Module extends Admin
                             return 'install.sql文件含有系统表['.$t.']';
                         }
                     }
+                    if (stripos($v, 'DROP TABLE') === false) {
+                        try {
+                            Db::execute($v);
+                        } catch(\Exception $e) {
+                            return $e->getMessage();
+                        }
+                    }
+                }
+            }
+        }
+
+        // 导入演示SQL
+        $sqlFile = realpath($modPath.'sql/demo.sql');
+        if (file_exists($sqlFile) && $this->request->param('demo_data/d', 0) === 1) {
+            $sql = file_get_contents($sqlFile);
+            $sqlList = parse_sql($sql, 0, [$info['db_prefix'] => config('database.prefix')]);
+            if ($sqlList) {
+                $sqlList = array_filter($sqlList);
+                foreach ($sqlList as $v) {
+                    // 过滤sql里面的系统表
+                    foreach (config('hs_system.tables') as $t) {
+                        if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
+                            return 'demo.sql文件含有系统表['.$t.']';
+                        }
+                    }
+
                     if (stripos($v, 'DROP TABLE') === false) {
                         try {
                             Db::execute($v);

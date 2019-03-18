@@ -259,6 +259,7 @@ class SystemModule extends Model
         }
         file_put_contents($path . 'sql/install.sql', "/*\n sql安装文件\n*/");
         file_put_contents($path . 'sql/uninstall.sql', "/*\n sql卸载文件\n*/");
+        file_put_contents($path . 'sql/demo.sql', "/*\n 演示数据\n*/");
     }
 
     /**
