@@ -78,6 +78,15 @@ $error = false;
             选择“是”，将删除数据库中已存在的相同数据表
         </div>
     </div>
+    {if ($formData['demo_data'])}
+    <div class="layui-form-item">
+        <label class="layui-form-label">导入演示数据</label>
+        <div class="layui-input-inline">
+            <input type="radio" name="demo_data" value="1" title="是">
+            <input type="radio" name="demo_data" value="0" title="否" checked>
+        </div>
+    </div>
+    {/if}
     <div class="layui-form-item">
         <label class="layui-form-label"> </label>
         <div class="layui-input-block">
