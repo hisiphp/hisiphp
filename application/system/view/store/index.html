@@ -99,8 +99,8 @@
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
-                            $('.app-price').html('￥'+price);
-                            $('.app-order-id').html('<span class="red">支付时请备注订单号：'+res.order_id+'</span><br><a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
+                            $('.app-price').html('￥'+price+'<span class="red" style="display:block;font-size:14px;padding-bottom:10px;">支付时请备注订单号：'+res.order_id+'</span>');
+                            $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
                             $('#qrcode').attr('src', res.qrcode).show();
                             // 定时刷新支付状态
                             var checkOrder = function() {
@@ -190,7 +190,7 @@
                         shade: 0.5,
                         title: '安装'+data.title,
                         skin: 'layui-layer-rim',
-                        area: ['480px', '460px'],
+                        area: ['480px', '480px'],
                         content: html,
                         success: function(layero, index) {
                             specSelect();
@@ -276,7 +276,7 @@
             <dt>支付方式：</dt>
             <dd>
                 <a href="javascript:void(0);" data-value="wechat" class="layui-btn layui-btn-xs layui-btn-normal payment app-spec-a">微信支付</a>
-                <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a>
+                <!-- <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a> -->
             </dd>
         </dl>
         <dl class="app-spec">
