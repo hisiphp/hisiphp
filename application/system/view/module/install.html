@@ -26,9 +26,9 @@ $error = false;
                     <td>{$v[1]}</td>
                     <td>{$v[5]}</td>
                     <td>{$v[2]}</td>
-                    <td>{$v[4]}</td>
+                    <td>{$v[4]|raw}</td>
                 </tr>
-                {if condition="$v[4] neq '✔︎'"}
+                {if ($v[4] != '✔︎')}
                     {php}
                         $error = true;
                     {/php}
