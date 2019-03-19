@@ -135,12 +135,17 @@ www  WEB部署目录（不建议使用子目录）
 ## 演示地址
 [v2.demo.hisiphp.com](http://v2.demo.hisiphp.com/admin.php?from=oschina)
 
-## 模块推荐 
+## 应用推荐 
+
+[CMS内容管理系统](https://store.hisiphp.com/detail/1000025.html?from=oschina)
+
 [在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](https://store.hisiphp.com/detail/1000019.html?from=oschina)
 
 [通用RESTfulAPI接口](https://store.hisiphp.com/detail/1000022.html?from=oschina)
 
 [响应式轻博客](https://store.hisiphp.com/detail/1000021.html?from=oschina)
+
+[第三方登录](https://store.hisiphp.com/detail/1000024.html?from=oschina)
 
 
 
