@@ -18,7 +18,7 @@
             <td>绑定云平台：{if condition="config('hs_cloud.identifier')"}{:substr(config('hs_cloud.identifier'), 0, 5)}***{:substr(config('hs_cloud.identifier'), -5)} <a href="javascript:void(0);" class="layui-btn layui-btn-primary layui-btn-xs cloudBind">重新绑定</a>{else /}<a href="javascript:void(0);" class="layui-btn layui-btn-normal layui-btn-xs cloudBind">绑定云平台账号</a><span class="font12" style="color:#999"> [温馨提示：只有绑定了云平台，才可以使用在线升级]</span>{/if}</td>
         </tr>
         <tr>
-            <td>授权认证：{$_SERVER['SERVER_NAME']} <span class="red">未认证</span></td>
+            <td>授权认证：{:get_domain(false)} <span class="red">未认证</span></td>
         </tr>
         <tr>
             <td>运行环境：{$_SERVER["SERVER_SOFTWARE"]}</td>
