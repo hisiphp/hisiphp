@@ -1,4 +1,4 @@
-    <table class="layui-table" lay-skin="line">
+<table class="layui-table" lay-skin="line">
         <colgroup>
             <col width="160">
             <col>
@@ -10,19 +10,23 @@
         </thead>
         <tbody>
             <tr>
-                <td>HisiPHP版本</td>
+                <td align="right">HisiPHP版本</td>
                 <td>V {:config('hisiphp.version')} <a href="{:url('upgrade/index')}" class="mcolor">检查新版本</a></td>
             </tr>
             <tr>
-                <td>MySql版本</td>
+                <td align="right">MySql版本</td>
                 <td>MySql {:db()->query('select version() as version')[0]['version']}</td>
             </tr>
             <tr>
-                <td>PHP版本</td>
+                <td align="right">PHP版本</td>
                 <td>PHP {$Think.const.PHP_VERSION} </td>
             </tr>
             <tr>
-                <td>服务器环境</td>
+                <td align="right">TP版本</td>
+                <td><?php echo \think\facade\App::version(); ?></td>
+            </tr>
+            <tr>
+                <td align="right">服务器环境</td>
                 <td>{$Think.const.PHP_OS} / {$_SERVER["SERVER_SOFTWARE"]}</td>
             </tr>
         </tbody>
