@@ -13,6 +13,7 @@ namespace app\system\admin;
 
 use app\common\controller\Common;
 use app\system\model\SystemUser as UserModel;
+use think\captcha\Captcha;
 
 /**
  * 后台公共控制器
@@ -28,16 +29,41 @@ class Publics extends Common
     public function index()
     {
         $model = new UserModel;
+        $loginError = (int)session('admin_login_error');
+        
         if ($this->request->isPost()) {
-            $username = $this->request->post('username/s');
-            $password = $this->request->post('password/s');
+            $captchaObj = new Captcha();
+            $username   = $this->request->post('username/s');
+            $password   = $this->request->post('password/s');
+            $captcha    = $this->request->post('captcha/s');
+            $data       = [];
+
+            if ($loginError >= 3) {
+
+                if (empty($captcha)) {
+                    return $this->error('请输入验证码');
+                }
+
+                if (!captcha_check($captcha)) {
+                    return $this->error('验证码错误');
+                }
+            }
             
             if (!$model->login($username, $password)) {
-                $data = [];
+
+                session('admin_login_error', ($loginError+1));
+
                 $data['token'] = $this->request->token();
+                $data['captcha'] = captcha_src();
+
                 return $this->error($model->getError(), url('index'), $data);
+
             }
+
+            session('admin_login_error', 0);
+            
             return $this->success('登陆成功，页面跳转中...', url('index/index'));
+
         }
 
         if ($model->isLogin()) {
@@ -45,6 +71,9 @@ class Publics extends Common
         }
 
         $this->view->engine->layout(false);
+        
+        $this->assign('loginError', $loginError);
+
         return $this->fetch();
     }
 
