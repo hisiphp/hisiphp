@@ -233,7 +233,7 @@ class Error extends Common
         $map['role_id']         = 1;
         $map['nick']            = '超级管理员';
         $map['username']        = $account;
-        $map['password']        = $password;
+        $map['password']        = password_hash(md5($password), PASSWORD_DEFAULT);;
         $map['auth']            = '';
         $map['email']           = '';
         $map['mobile']          = '';
