@@ -28,15 +28,6 @@ class SystemUser extends Model
     // 自动写入时间戳
     protected $autoWriteTimestamp = true;
 
-    // 对密码进行加密
-    public function setPasswordAttr($value)
-    {
-        if (strlen($value) != 32) {
-            $value = md5($value);
-        }
-        return password_hash($value, PASSWORD_DEFAULT);
-    }
-
     // 写入时，将权限ID转成JSON格式
     public function setAuthAttr($value)
     {
@@ -45,9 +36,15 @@ class SystemUser extends Model
     }
 
     // 获取最后登陆ip
-    public function setLastLoginIpAttr()
+    public function setLastLoginIpAttr($value)
     {
         return get_client_ip();
+    }
+
+    // 格式化最后登录时间
+    public function getLastLoginTimeAttr($value)
+    {
+        return date('Y-m-d H:i', $value);
     }
 
     // 权限

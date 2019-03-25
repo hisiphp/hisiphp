@@ -114,9 +114,11 @@ class User extends Admin
     public function addUser()
     {
         if ($this->request->isPost()) {
+
             $data = $this->request->post();
             $data['password'] = md5($data['password']);
             $data['password_confirm'] = md5($data['password_confirm']);
+
             // 验证
             $result = $this->validate($data, 'SystemUser');
             if($result !== true) {
@@ -124,11 +126,15 @@ class User extends Admin
             }
             
             unset($data['id'], $data['password_confirm']);
+
             $data['last_login_ip'] = '';
             $data['auth'] = '';
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
             if (!UserModel::create($data)) {
                 return $this->error('添加失败');
             }
+
             return $this->success('添加成功');
         }
         
@@ -180,6 +186,12 @@ class User extends Admin
                 return $this->error($result);
             }
 
+            if ($data['password']) {
+                $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            } else {
+                unset($data['password']);
+            }
+
             if (!UserModel::update($data)) {
                 return $this->error('修改失败');
             }
@@ -229,6 +241,12 @@ class User extends Admin
             $result = $this->validate($data, 'SystemUser.info');
             if($result !== true) {
                 return $this->error($result);
+            }
+
+            if ($data['password']) {
+                $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            } else {
+                unset($data['password']);
             }
 
             if (!UserModel::update($data)) {
