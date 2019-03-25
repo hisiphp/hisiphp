@@ -377,7 +377,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
     $(document).on('click', '.j-ajax,.hisi-ajax', function() {
         var that = $(this), 
             href = !that.attr('data-href') ? that.attr('href') : that.attr('data-href'),
-            refresh = !that.attr('refresh') ? 'yes' : that.attr('refresh');
+            refresh = !that.attr('refresh') ? 'true' : that.attr('refresh');
         if (!href) {
             layer.msg('请设置data-href参数');
             return false;
@@ -387,7 +387,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             layer.msg('数据提交中...', {time:500000});
             $.get(href, {}, function(res) {
                 layer.msg(res.msg, {}, function() {
-                    if (refresh == 'yes') {
+                    if (refresh == 'true') {
                         if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                             location.href = res.url;
                         } else {
@@ -402,7 +402,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                 layer.msg('数据提交中...', {time:500000});
                 $.get(href, {}, function(res) {
                     layer.msg(res.msg, {}, function() {
-                        if (refresh == 'yes') {
+                        if (refresh == 'true') {
                             if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                                 location.href = res.url;
                             } else {
