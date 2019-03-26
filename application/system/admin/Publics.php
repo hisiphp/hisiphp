@@ -51,10 +51,11 @@ class Publics extends Common
             
             if (!$model->login($username, $password)) {
 
-                session('admin_login_error', ($loginError+1));
+                $loginError = ($loginError+1);
+                session('admin_login_error', $loginError);
 
                 $data['token'] = $this->request->token();
-                $data['captcha'] = captcha_src();
+                $data['captcha'] = $loginError >= 3 ? captcha_src() : '';
 
                 return $this->error($model->getError(), url('index'), $data);
 
@@ -123,4 +124,5 @@ class Publics extends Common
 
         return $this->success('解锁成功');
     }
+
 }
