@@ -502,8 +502,20 @@ class Admin extends Common
 
             }
             
-            $row = $obj->withTrashed()->get($id);
-
+            try {
+                $row = $obj->withTrashed()->get($id);
+            } catch (\think\Exception $err) {
+                if (strpos($err->getMessage(), 'withTrashed')) {
+                    $row = $obj->get($id);
+                } else {
+                    return $this->error($err->getMessage());
+                }
+            }
+            
+            if (!$row) {
+                return $this->error('数据不存在');
+            }
+            
             $result = $row->delete();
 
         } else if ($this->hisiTable) {
