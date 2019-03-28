@@ -387,7 +387,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             layer.msg('数据提交中...', {time:500000});
             $.get(href, {}, function(res) {
                 layer.msg(res.msg, {}, function() {
-                    if (refresh == 'true') {
+                    if (refresh == 'true' || refresh == 'yes') {
                         if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
                             location.href = res.url;
                         } else {
