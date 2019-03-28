@@ -75,15 +75,15 @@ class SystemMenu extends Model
 
             if (config('sys.multi_language') == 1) {
 
-                if (Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->find()) {
-                    Db::name('admin_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->update(['title' => $title]);
+                if (Db::name('system_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->find()) {
+                    Db::name('system_menu_lang')->where(['menu_id' => $data['id'], 'lang' => dblang('admin')])->update(['title' => $title]);
                 } else {
 
                     $map = [];
                     $map['menu_id'] = $data['id'];
                     $map['title'] = $title;
                     $map['lang'] = dblang('admin');
-                    Db::name('admin_menu_lang')->insert($map);
+                    Db::name('system_menu_lang')->insert($map);
                     
                 }
 
@@ -99,7 +99,7 @@ class SystemMenu extends Model
                 $map['menu_id'] = $res->id;
                 $map['title'] = $title;
                 $map['lang'] = dblang('admin');
-                Db::name('admin_menu_lang')->insert($map);
+                Db::name('system_menu_lang')->insert($map);
             }
 
         }
@@ -151,7 +151,7 @@ class SystemMenu extends Model
 
                     // 多语言支持
                     if (config('sys.multi_language') == 1) {
-                        $title = Db::name('admin_menu_lang')->where(['menu_id' => $v['id'], 'lang' => dblang('admin')])->value('title');
+                        $title = Db::name('system_menu_lang')->where(['menu_id' => $v['id'], 'lang' => dblang('admin')])->value('title');
                         if ($title) {
                             $v['title'] = $title;
                         }
