@@ -8,13 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
-namespace app\common\validate;
+
+namespace app\system\validate;
 
 use think\Validate;
 
 /**
- * 语言包验证器
- * @package app\common\validate
+ * 角色验证器
+ * @package app\system\validate
  */
 class SystemLanguage extends Validate
 {

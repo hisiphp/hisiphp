@@ -19,6 +19,11 @@ use app\common\model\SystemLanguage as LanguageModel;
  */
 class Language extends Admin
 {
+    // [通用添加、修改专用] 模型名称，格式：模块名/模型名
+    protected $hisiModel = 'SystemLanguage';
+    // [通用添加、修改专用] 验证器类，格式：app\模块\validate\验证器类名
+    protected $hisiValidate = 'app\system\validate\SystemLanguage';
+
     /**
      * 语言包管理首页
      * @author 橘子俊 <364666827@qq.com>
@@ -34,58 +39,5 @@ class Language extends Admin
         }
 
         return $this->fetch();
-    }
-
-    /**
-     * 添加语言包
-     * @author 橘子俊 <364666827@qq.com>
-     * @return mixed
-     */
-    public function add()
-    {
-        if ($this->request->isPost()) {
-            $model = new LanguageModel();
-            if (!$model->storage()) {
-                return $this->error($model->getError());
-            }
-            return $this->success('保存成功');
-        }
-
-        return $this->fetch('form');
-    }
-
-    /**
-     * 修改语言包
-     * @author 橘子俊 <364666827@qq.com>
-     * @return mixed
-     */
-    public function edit()
-    {
-        $id = get_num();
-        if ($this->request->isPost()) {
-            $model = new LanguageModel();
-            if (!$model->storage()) {
-                return $this->error($model->getError());
-            }
-            return $this->success('保存成功');
-        }
-        $dataInfo = LanguageModel::get($id);
-        $this->assign('formData', $dataInfo);
-        return $this->fetch('form');
-    }
-
-    /**
-     * 删除语言包
-     * @author 橘子俊 <364666827@qq.com>
-     * @return mixed
-     */
-    public function del()
-    {
-        $id = get_num();
-        $model = new LanguageModel(); 
-        if ($model->del($id) === false) {
-            return $this->error('删除失败');
-        }
-        return $this->success('删除成功');
     }
 }
