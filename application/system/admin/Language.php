@@ -11,7 +11,7 @@
 
 namespace app\system\admin;
 
-use app\common\model\SystemLanguage as LanguageModel;
+use app\system\model\SystemLanguage as LanguageModel;
 
 /**
  * 语言包管理控制器
