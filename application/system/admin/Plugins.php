@@ -400,7 +400,7 @@ class Plugins extends Admin
             
             $decomPath = '.'.trim(str_replace(ROOT_DIR, '/', $_file), '.zip');
             if (!is_dir($decomPath)) {
-                Dir::create($decomPath, 0777, true);
+                Dir::create($decomPath, 0777);
             }
             // 解压安装包到$decomPath
             $archive = new PclZip();
@@ -428,7 +428,7 @@ class Plugins extends Admin
                 @unlink($file);
                 return $this->error('插件已存在');
             } else {
-                Dir::create(Env::get('root_path').'plugins/'.$appName, 0777, true);
+                Dir::create(Env::get('root_path').'plugins/'.$appName, 0777);
             }
 
             // 复制插件

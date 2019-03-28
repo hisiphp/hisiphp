@@ -155,7 +155,7 @@ class Upgrade extends Admin
         }
 
         if (!is_dir($this->updatePath)) {
-            Dir::create($this->updatePath, 0755, true);
+            Dir::create($this->updatePath, 0755);
         }
 
         $lock = $this->updatePath.$this->identifier.'upgrade.lock';
@@ -275,7 +275,7 @@ class Upgrade extends Admin
         }
         $decomPath = $this->updatePath.basename($file,".zip");
         if (!is_dir($decomPath)) {
-            Dir::create($decomPath, 0777, true);
+            Dir::create($decomPath, 0777);
         }
         // 解压升级包
         $archive = new PclZip();
@@ -288,7 +288,7 @@ class Upgrade extends Admin
         $upInfo = include_once $decomPath.'/upgrade.php';
         $backPath = $this->updateBackPath.config('hisiphp.version').'/';
         if (!is_dir($backPath)) {
-            Dir::create($backPath, 0777, true);
+            Dir::create($backPath, 0777);
         }
         $layout = '';
         array_push($upInfo['update'], '/version.php');
@@ -297,7 +297,7 @@ class Upgrade extends Admin
             $v = trim($v, '/');
             $_dir = $backPath.dirname($v).'/';
             if (!is_dir($_dir)) {
-                Dir::create($_dir, 0777, true);
+                Dir::create($_dir, 0777);
             }
             if (basename($v) == 'layout.html') {
                 $layout = $this->appPath.'system/view/layout.html';
@@ -365,7 +365,7 @@ class Upgrade extends Admin
 
         $decomPath = $this->updatePath.basename($file,".zip");
         if (!is_dir($decomPath)) {
-            Dir::create($decomPath, 0777, true);
+            Dir::create($decomPath, 0777);
         }
 
         // 解压升级包
@@ -388,7 +388,7 @@ class Upgrade extends Admin
                 $v  = trim($v, '/');
                 $dir = $backPath.dirname($v).'/';
                 if (!is_dir($dir)) {
-                    Dir::create($dir, 0777, true);
+                    Dir::create($dir, 0777);
                 }
                 if (is_file($this->rootPath.$v)) {
                     @copy($this->rootPath.$v, $dir.basename($v));
@@ -416,7 +416,7 @@ class Upgrade extends Admin
             $v = trim($v, '/');
             $dir = $this->rootPath.dirname($v).'/';
             if (!is_dir($dir)) {
-                Dir::create($dir, 0777, true);
+                Dir::create($dir, 0777);
             }
 
             if (is_file($decomPath.'/upload/'.$v)) {
@@ -482,7 +482,7 @@ class Upgrade extends Admin
 
         $decomPath = $this->updatePath.basename($file,".zip");
         if (!is_dir($decomPath)) {
-            Dir::create($decomPath, 0777, true);
+            Dir::create($decomPath, 0777);
         }
 
         // 解压升级包
@@ -521,7 +521,7 @@ class Upgrade extends Admin
             $v = trim($v, '/');
             $_dir = $backPath.dirname($v).'/';
             if (!is_dir($_dir)) {
-                Dir::create($_dir, 0777, true);
+                Dir::create($_dir, 0777);
             }
             if (is_file($this->rootPath.$v)) {
                 @copy($this->rootPath.$v, $_dir.basename($v));
@@ -546,7 +546,7 @@ class Upgrade extends Admin
             $v = trim($v, '/');
             $dir = $this->rootPath.dirname($v).'/';
             if (!is_dir($dir)) {
-                Dir::create($dir, 0777, true);
+                Dir::create($dir, 0777);
             }
 
             if (is_file($decomPath.'/upload/'.$v)) {
@@ -642,7 +642,7 @@ class Upgrade extends Admin
 
         $decomPath = $this->updatePath.basename($file,".zip");
         if (!is_dir($decomPath)) {
-            Dir::create($decomPath, 0777, true);
+            Dir::create($decomPath, 0777);
         }
 
         // 解压升级包
@@ -664,7 +664,7 @@ class Upgrade extends Admin
         foreach ($upInfo['update'] as $k => $v) {
             $_dir = $backPath.dirname($v).'/';
             if (!is_dir($_dir)) {
-                Dir::create($_dir, 0777, true);
+                Dir::create($_dir, 0777);
             }
             if (is_file('./'.$v)) {
                 @copy('./'.$v, $_dir.basename($v));

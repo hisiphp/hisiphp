@@ -453,7 +453,7 @@ class Module extends Admin
             $decomPath = '.'.trim($_file, '.zip');
 
             if (!is_dir($decomPath)) {
-                Dir::create($decomPath, 0777, true);
+                Dir::create($decomPath, 0777);
             }
 
             // 解压安装包到$decomPath
@@ -507,12 +507,12 @@ class Module extends Admin
 
             // 复制app目录
             if (!is_dir(Env::get('root_path').'application/'.$appName)) {
-                Dir::create(Env::get('root_path').'application/'.$appName, 0777, true);
+                Dir::create(Env::get('root_path').'application/'.$appName, 0777);
             }
 
             Dir::copyDir($appPath, Env::get('app_path').$appName);
             if (!is_dir(Env::get('root_path').'public/static/'.$appName.'/')) {
-                Dir::create(Env::get('root_path').'public/static/'.$appName.'/', 0755, true);
+                Dir::create(Env::get('root_path').'public/static/'.$appName.'/', 0755);
             }
 
             // 复制static目录
@@ -742,18 +742,25 @@ class Module extends Admin
         }
         $theme = Dir::getList($path);
         $themes = [];
+        
         foreach ($theme as $k => $v) {
-            if (!is_file($path.$v.'/config.xml')) {
+            if (is_file($path.$v.'/config.xml')) {
+                $xml = file_get_contents($path.$v.'/config.xml');
+                $themes[$k] = xml2array($xml);
+            } else if (is_file($path.$v.'/config.json')) {
+                $json = file_get_contents($path.$v.'/config.json');
+                $themes[$k] = json_decode($json, 1);
+            } else {
                 continue;
             }
-            $xml = file_get_contents($path.$v.'/config.xml');
-            $themes[$k] = xml2array($xml);
+
             $themes[$k]['name'] = $v;
             $themes[$k]['thumb'] = ROOT_DIR.'theme/'.$module['name'].'/'.$v.'/thumb.png';
             if (!is_file($themes[$k]['thumb'])) {
                 $themes[$k]['thumb'] = ROOT_DIR.'static/system/image/theme.png';
             }
         }
+
         $this->assign('formData', $module);
         $this->assign('data_list', $themes);
         return $this->fetch();
