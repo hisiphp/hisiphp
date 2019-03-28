@@ -31,7 +31,7 @@
                     <a data-id="00" class="admin-nav-item top-nav-item" href="{:url('system/user/info')}">个人设置</a>
                 </dd>
                 <dd>
-                    <a href="{:url('system/user/iframe')}" class="j-ajax" refresh="yes">{:input('cookie.hisi_iframe') ? '单页布局' : '框架布局' }</a>
+                    <a href="{:url('system/user/iframe')}" class="hisi-ajax" refresh="true">{:input('cookie.hisi_iframe') ? '单页布局' : '框架布局' }</a>
                 </dd>
                 {volist name="languages" id="vo"}
                     {if condition="$vo['pack']"}
