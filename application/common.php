@@ -42,7 +42,7 @@ if (!function_exists('dblang')) {
         if (empty($lang)) {
             $lang = config('default_lang');
         }
-        return model('SystemLanguage')->lists($lang);
+        return (new app\system\model\SystemLanguage)->lists($lang);
     }
 }
 

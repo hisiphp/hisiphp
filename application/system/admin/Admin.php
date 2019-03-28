@@ -16,6 +16,7 @@ use app\system\model\SystemMenu as MenuModel;
 use app\system\model\SystemRole as RoleModel;
 use app\system\model\SystemUser as UserModel;
 use app\system\model\SystemLog as LogModel;
+use app\system\model\SystemLanguage as LangModel;
 use think\Db;
 
 /**
@@ -104,7 +105,7 @@ class Admin extends Common
                 // 表单数据默认变量名
                 $this->assign('formData', '');
                 $this->assign('login', $login);
-                $this->assign('languages', model('SystemLanguage')->lists());
+                $this->assign('languages', (new LangModel)->lists());
                 $this->view->engine->layout(true);
             }
         }

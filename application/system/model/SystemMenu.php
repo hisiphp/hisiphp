@@ -30,7 +30,7 @@ class SystemMenu extends Model
     
     public function lang()
     {
-        return $this->belongsTo('SystemMenuLang', 'id', 'menu_id')->field('title');
+        return $this->belongsTo('\app\system\model\SystemMenuLang', 'id', 'menu_id')->field('title');
     }
 
     /**
