@@ -12,6 +12,7 @@
 namespace app\system\admin;
 
 use app\system\model\SystemMenu as MenuModel;
+use Env;
 
 /**
  * 菜单控制器
@@ -53,12 +54,21 @@ class Menu extends Admin
     public function add($pid = '', $mod = '')
     {
         if ($this->request->isPost()) {
-
+            $url = $this->request->post('url');
             $model = new MenuModel();
 
-            if (!$model->storage()) {
+            $result = $model->storage();
+            if (!$result) {
                 return $this->error($model->getError());
             }
+
+            // 将最新的菜单保存到模块下面
+            if (strtolower($url) != 'system/plugins/run') {
+                $pid = $model->getParents($result->id);
+                $this->export($pid, false);
+            }
+
+            $this->export($pid, false);
 
             return $this->success('保存成功', url('index'));
 
@@ -80,10 +90,18 @@ class Menu extends Admin
 
         if ($this->request->isPost()) {
 
+            $url = $this->request->post('url');
+
             $model = new MenuModel();
 
             if (!$model->storage()) {
                 return $this->error($model->getError());
+            }
+
+            // 将最新的菜单保存到模块下面
+            if (strtolower($url) != 'system/plugins/run') {
+                $pid = $model->getParents($id);
+                $this->export($pid, false);
             }
 
             return $this->success('保存成功', url('index'));
@@ -175,9 +193,8 @@ class Menu extends Admin
      * @author 橘子俊 <364666827@qq.com>
      * @return string
      */
-    public function export()
+    public function export($id, $down = true)
     {
-        $id         = $this->request->param('id/d');
         $map        = [];
         $map['id']  = $id;
         $menu       = MenuModel::where($map)
@@ -214,11 +231,17 @@ class Menu extends Admin
         $str    = json_indent(json_encode($menus, 1));
         $str    = "<?php\nreturn ".$menus.";\n";
 
-        header('Content-Type: text/html; charset=utf-8');
-        header('Content-Disposition: attachment; filename="menu.php"');
-        header('Content-Length:'.strLen($str));
+        if ($down) {
 
-        echo $str;
+            header('Content-Type: text/html; charset=utf-8');
+            header('Content-Disposition: attachment; filename="menu.php"');
+            header('Content-Length:'.strLen($str));
+
+            echo $str;
+                
+        } else if ($menu['url'] != 'system/plugins/run') {
+            @file_put_contents(Env::get('app_path').$menu['module'].'/menu.php', $str);
+        }
     }
 
     /**
