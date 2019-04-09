@@ -197,69 +197,6 @@ CREATE TABLE `hisiphp_system_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='[系统] 操作日志';
 
-
-# Dump of table hisiphp_system_member
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `hisiphp_system_member`;
-
-CREATE TABLE `hisiphp_system_member` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `level_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会员等级ID',
-  `nick` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
-  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
-  `mobile` bigint(11) unsigned NOT NULL DEFAULT '0' COMMENT '手机号',
-  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `password` varchar(128) NOT NULL DEFAULT '' COMMENT '密码',
-  `salt` varchar(16) NOT NULL DEFAULT '' COMMENT '密码混淆',
-  `money` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '可用金额',
-  `frozen_money` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '冻结金额',
-  `income` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '收入统计',
-  `expend` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '开支统计',
-  `exper` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '经验值',
-  `integral` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
-  `frozen_integral` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '冻结积分',
-  `sex` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '性别(1男，0女)',
-  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
-  `last_login_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '最后登陆IP',
-  `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登陆时间',
-  `login_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登陆次数',
-  `expire_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '到期时间(0永久)',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0禁用，1正常)',
-  `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000001 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='[系统] 会员表';
-
-
-INSERT INTO `hisiphp_system_member` (`id`, `level_id`, `nick`, `username`, `mobile`, `email`, `password`, `salt`, `money`, `frozen_money`, `income`, `expend`, `exper`, `integral`, `frozen_integral`, `sex`, `avatar`, `last_login_ip`, `last_login_time`, `login_count`, `expire_time`, `status`, `ctime`)
-VALUES
-  (1000000,1,'hisiphp','test',0,'','b2d26290850b48f6e1436da7b24cb409','hJF5p30z0Pff3Q37',0.00,0.00,0.00,0.00,0,0,0,1,'','',0,0,0,1,1493274686);
-
-# Dump of table hisiphp_system_member_level
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `hisiphp_system_member_level`;
-
-CREATE TABLE `hisiphp_system_member_level` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL COMMENT '等级名称',
-  `min_exper` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最小经验值',
-  `max_exper` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最大经验值',
-  `discount` int(2) unsigned NOT NULL DEFAULT '100' COMMENT '折扣率(%)',
-  `intro` varchar(255) NOT NULL COMMENT '等级简介',
-  `default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '默认等级',
-  `expire` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会员有效期(天)',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `ctime` int(10) unsigned NOT NULL DEFAULT '0',
-  `mtime` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='[系统] 会员等级';
-
-INSERT INTO `hisiphp_system_member_level` (`id`, `name`, `min_exper`, `max_exper`, `discount`, `intro`, `default`, `expire`, `status`, `ctime`, `mtime`)
-VALUES
-  (1,'注册会员',0,0,100,'',1,0,1,0,1540354507);
-
-
 # Dump of table hisiphp_system_menu
 # ------------------------------------------------------------
 
