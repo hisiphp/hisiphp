@@ -613,7 +613,7 @@ class Admin extends Common
     public function upload()
     {
 
-        $model = new app\common\model\SystemAnnex;
+        $model = new \app\common\model\SystemAnnex;
         
         return json($model::fileUpload());
 
