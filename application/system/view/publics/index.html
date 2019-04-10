@@ -65,6 +65,7 @@
 {include file="block/layui" /}
 <script src="__PUBLIC_JS__/particles.min.js"></script>
 <script type="text/javascript">
+window.sessionStorage.clear();
 layui.use(['form', 'layer', 'jquery', 'md5'], function() {
     var $ = layui.jquery, layer = layui.layer, form = layui.form, md5 = layui.md5, captchaUrl = '{:captcha_src()}';
     form.on('submit(formLogin)', function(data) {

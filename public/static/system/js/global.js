@@ -12,6 +12,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
     checkBrowser();
 
     var lockscreen = function() {
+        if ($('.lock-screen', parent.document)[0]) return;
         document.oncontextmenu=new Function("event.returnValue=false;");
         document.onselectstart=new Function("event.returnValue=false;");
         layer.open({
