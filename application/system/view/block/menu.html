@@ -24,6 +24,19 @@
         <li class="layui-nav-item">
             <a href="{:url('system/user/setTheme')}" id="hisi-theme-setting" class="aicon ai-theme"></a>
         </li>
+        <li class="layui-nav-item hisi-lang">
+            <a href="javascript:void(0);"><i class="layui-icon layui-icon-website"></i></a>
+            <dl class="layui-nav-child">
+                {volist name="languages" id="vo"}
+                    {if condition="$vo['pack']"}
+                    <dd><a href="{:url('system/index/index')}?lang={$vo['code']}">{$vo['name']}</a></dd>
+                    {/if}
+                {/volist}
+                <dd>
+                    <a data-id="000" class="admin-nav-item top-nav-item" href="{:url('system/language/index')}">语言包管理</a>
+                </dd>
+            </dl>
+        </li>
         <li class="layui-nav-item">
             <a href="javascript:void(0);">{$login['nick']}&nbsp;&nbsp;</a>
             <dl class="layui-nav-child">
@@ -32,14 +45,6 @@
                 </dd>
                 <dd>
                     <a href="{:url('system/user/iframe')}" class="hisi-ajax" refresh="true">{:input('cookie.hisi_iframe') ? '单页布局' : '框架布局' }</a>
-                </dd>
-                {volist name="languages" id="vo"}
-                    {if condition="$vo['pack']"}
-                    <dd><a href="{:url('system/index/index')}?lang={$vo['code']}">{$vo['name']}</a></dd>
-                    {/if}
-                {/volist}
-                <dd>
-                    <a data-id="000" class="admin-nav-item top-nav-item" href="{:url('system/language/index')}">语言包管理</a>
                 </dd>
                 <dd>
                     <a href="{:url('system/publics/logout')}">退出登陆</a>
@@ -64,17 +69,21 @@
                         <dd>
                             <a class="admin-nav-item" data-id="0" href="{:input('cookie.hisi_iframe') ? url('system/index/welcome') : url('system/index/index')}"><i class="aicon ai-shouye"></i> 后台首页</a>
                         </dd>
+                        {if (isset($vv['childs']))}
                         {volist name="vv['childs']" id="vvv"}
                         <dd>
                             <a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'], $vvv['param'])}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a><i data-href="{:url('system/menu/del?id='.$vvv['id'])}" class="layui-icon j-del-menu">&#xe640;</i>
                         </dd>
                         {/volist}
+                        {/if}
                     {else /}
+                        {if (isset($vv['childs']))}
                         {volist name="vv['childs']" id="vvv"}
                         <dd>
                             <a class="admin-nav-item" data-id="{$vvv['id']}" href="{if condition="strpos('http', $vvv['url']) heq false"}{:url($vvv['url'], $vvv['param'])}{else /}{$vvv['url']}{/if}">{if condition="file_exists('.'.$vvv['icon'])"}<img src="{$vvv['icon']}" width="16" height="16" />{else /}<i class="{$vvv['icon']}"></i>{/if} {$vvv['title']}</a>
                         </dd>
                         {/volist}
+                        {/if}
                     {/if}
                 </dl>
             </li>

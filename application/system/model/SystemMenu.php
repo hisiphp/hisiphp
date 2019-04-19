@@ -12,8 +12,12 @@
 namespace app\system\model;
 
 use app\system\model\SystemRole as RoleModel;
+use app\system\model\SystemUser as UserModel;
+use app\system\model\SystemMenuLang as LangModel;
 use think\Db;
 use think\Model;
+use hisi\Tree;
+use Cache;
 
 /**
  * 后台菜单模型
@@ -44,9 +48,9 @@ class SystemMenu extends Model
             $data = request()->post();
         }
 
-        // admin模块 只允许超级管理员在开发模式下修改
+        // system模块 只允许超级管理员在开发模式下修改
         if (isset($data['id']) && !empty($data['id'])) {
-            if ($data['module'] == 'admin' && (ADMIN_ID != 1 || config('sys.app_debug') == 0)) {
+            if ($data['module'] == 'system' && (ADMIN_ID != 1 || config('sys.app_debug') == 0)) {
                 $this->error = '禁止修改系统模块！';
                 return false;
             }
@@ -176,78 +180,68 @@ class SystemMenu extends Model
     /**
      * 获取后台主菜单(一级 > 二级 > 三级)
      * 后台顶部和左侧使用
-     * @param int $pid 父ID
-     * @param int $level 层级数
-     * @param int $uid 登陆用户ID
+     * @param bool $update 是否更新缓存
      * @author 橘子俊 <364666827@qq.com>
      * @return array
      */
-    public static function getMainMenu($update = false, $pid = 0, $level = 0, $data = [])
+    public static function getMainMenu($update = false)
     {
-        $cache_tag = '_admin_menu'.ADMIN_ID.dblang('admin');
-        $trees = [];
+        $cacheName = 'admin_menu_'.ADMIN_ID.'_'.dblang('admin').'_'.config('sys.app_debug');
+        $cacheData = Cache::get($cacheName);
         
-        if (config('sys.app_debug') == 0 && $level == 0 && $update == false) {
-            $trees = cache($cache_tag);
+        if (config('sys.app_debug') == 0 && $cacheData && $update == false) {
+            return $cacheData;
+        }
+        
+        $where = [];
+        $where[] = ['nav', '=', 1];
+        $where[] = ['status', '=', 1];
+
+        if (config('sys.app_debug') == 0) {
+            $where[] = ['debug', '=', 0];
         }
 
-        if (empty($trees) || $update === true) {
+        $menus = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
 
-            if (empty($data)) {
-                $map    = [];
-                $map[]  = ['status', '=', 1];
-                $map[]  = ['nav', '=', 1];
-                $map[]  = ['uid', 'in', '0,'.ADMIN_ID];
-
-                if (config('sys.app_debug') == 0) {
-                    $map[] = ['debug', '=', 0];
-                }
-
-                $data = self::where($map)
-                        ->order('sort asc,id asc')
-                        ->column('id,pid,module,title,url,param,target,icon');
-                $data = array_values($data); 
+        if (ADMIN_ID == 1 || ADMIN_ROLE == 1) {
+            $auths = $menus;
+        } else if (!empty($menus)) {
+            $keys   = array_keys($menus);
+            $role   = UserModel::where('id', ADMIN_ID)->find();
+            if (empty($role->auth)) {
+                $role = RoleModel::where('id', ADMIN_ROLE)->find();
             }
-
-            foreach ($data as $k => $v) {
-
-                if ($v['pid'] == $pid) {
-
-                    if ($level == 3) {
-                        return $trees;
-                    }
-
-                    // 过滤没访问权限的节点
-                    if (!RoleModel::checkAuth($v['id'])) {
-                        unset($data[$k]);
-                        continue;
-                    }
-
-                    // 多语言支持
-                    if (config('sys.multi_language') == 1) {
-                        $title = Db::name('system_menu_lang')
-                                ->where(['menu_id' => $v['id'], 'lang' => dblang('admin')])
-                                ->value('title');
-                        if ($title) {
-                            $v['title'] = $title;
-                        }
-                    }
-
-                    unset($data[$k]);
-
-                    $v['childs'] = self::getMainMenu($update, $v['id'], $level+1, $data);
-                    $trees[] = $v;
+            
+            $merge  = array_merge($keys, $role->auth);
+            $unique = array_unique($merge);
+            $diff   = array_diff_assoc($merge, $unique);
+    
+            $auths = [];
+            foreach($diff as $v) {
+                if (isset($menus[$v])) {
+                    $auths[$v] = $menus[$v];
                 }
-
-            }
-
-            // 非开发模式，缓存菜单
-            if (config('sys.app_debug') == 0) {
-                cache($cache_tag, $trees);
             }
         }
 
-        return $trees;
+        if (empty($auths)) {
+            return [];
+        }
+
+        // 获取多语言
+        $where = [];
+        $where[] = ['menu_id', 'in', array_keys($auths)];
+        $where[] = ['lang', '=', dblang('admin')];
+
+        $langs = LangModel::where($where)->column('menu_id,title');
+        foreach($langs as $k => $v) {
+            $auths[$k]['title'] = $v;
+        }
+
+        $auths = Tree::toTree($auths);
+        Cache::set($cacheName, $auths);
+        
+        return $auths;
     }
 
     /**

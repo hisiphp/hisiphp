@@ -528,19 +528,20 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @attr data-table table容器ID
      * @attr action 搜索请求地址
      */
-    $('#hisiSearch,#hisi-table-search').submit(function() {
-        var that = $(this), 
-            arr = that.serializeArray(), 
-            where = new Array(),
-            dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
-        for(var i in arr) {
-            where[arr[i].name] = arr[i].value;
+    $(document).on('submit', '#hisiSearch,#hisi-table-search', function() {
+        var t = $(this), 
+            a = t.serializeArray(), 
+            w = new Array(),
+            obj = t.attr('data-table') ? t.attr('data-table') : 'dataTable';
+
+        for(var i in a) {
+            w[a[i].name] = a[i].value;
         }
 
-        table.reload(dataTable, {
+        table.reload(obj, {
             page: true,
-            url: that.attr('action'),
-            where: where
+            url: t.attr('action'),
+            where: w
         });
         return false;
     });

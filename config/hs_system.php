@@ -39,7 +39,7 @@ return [
         'databases'  => '数据库',
     ],
     // 系统标准模块
-    'modules' => ['system', 'common', 'index', 'install', 'hisiphp'],
+    'modules' => ['system', 'common', 'index', 'install', 'hisiphp', 'lang'],
     // 系统标准配置文件
     'config' => ['app', 'cache', 'cookie', 'database', 'log', 'queue', 'session', 'template', 'trace', 'hs_auth', 'hs_cloud', 'hs_system', 'hisiphp'],
 ];

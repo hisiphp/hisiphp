@@ -211,11 +211,5 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .app-qrocde{display:block;width:100;text-align:center;}
 .app-order-id{color:#999;font-size:14px;line-height:20px;}
 .app-pay-success{height:200px;padding-top:80px;}
-@media screen and (max-device-width: 750px) {
-	.layui-layout-admin .layui-side{display:none;}
-	.layui-layout-admin .layui-body{left:0;}
-	.header-logo{display:none;}
-	.header-logo{display:none;}
-	.main-nav{display:none;}
-}
 .edui-body-container img{max-width:100%!important;}
+.hisi-lang .layui-nav-more{display:none;}

@@ -112,19 +112,19 @@ class SystemLanguage extends Model
                 return false;
             }
 
-            // 导入语言包到admin
+            // 导入系统模块语言包
             $adminLang = $decomPath.'system/'.$obj['code'].'.php';
             if (file_exists($adminLang)) {
                 copy($adminLang, Env::get('app_path').'system/lang/'.$obj['code'].'.php');
             }
 
-            // 导入语言包到common
-            $commonLang = $decomPath.'common/'.$obj['code'].'.php';
+            // 导入公共语言包
+            $commonLang = $decomPath.'lang/'.$obj['code'].'.php';
             if (file_exists($commonLang)) {
-                if (!is_dir(Env::get('app_path').'common/lang/')) {
-                    Dir::create(Env::get('app_path').'common/lang/');
+                if (!is_dir(Env::get('app_path').'lang/')) {
+                    Dir::create(Env::get('app_path').'lang/');
                 }
-                copy($commonLang, Env::get('app_path').'common/lang/'.$obj['code'].'.php');
+                copy($commonLang, Env::get('app_path').'lang/'.$obj['code'].'.php');
             }
 
             // 导入后台菜单
@@ -132,6 +132,7 @@ class SystemLanguage extends Model
                 $menu = include_once $decomPath.'menu.php';
                 $menuData = [];
                 foreach ($menu as $key => $v) {
+                    if (empty($v['title'])) continue;
                     $menuData[$key]['menu_id'] = $v['menu_id'];
                     $menuData[$key]['title'] = $v['title'];
                     $menuData[$key]['lang'] = $obj['id'];
