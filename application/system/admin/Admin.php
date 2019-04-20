@@ -504,35 +504,37 @@ class Admin extends Common
             }
             
             try {
-                $row = $obj->withTrashed()->get($id);
+
+                foreach($id as $v) {
+                    $row = $obj->withTrashed()->get($v);
+                    if (!$row) continue;
+                    $row->delete();
+                }
+
             } catch (\think\Exception $err) {
                 if (strpos($err->getMessage(), 'withTrashed')) {
-                    $row = $obj->get($id);
+
+                    foreach($id as $v) {
+                        $row = $obj->get($v);
+                        if (!$row) continue;
+                        $row->delete();
+                    }
+
                 } else {
                     return $this->error($err->getMessage());
                 }
             }
-            
-            if (!$row) {
-                return $this->error('数据不存在');
-            }
-            
-            $result = $row->delete();
 
         } else if ($this->hisiTable) {
 
             $obj    = db($this->hisiTable);
             $pk     = $obj->getPk();
-            $result = $obj->where([$pk => $id])->delete();
+            $obj->where($pk, 'in', $id)->delete();
 
         } else {
 
             return $this->error('当前控制器缺少属性（hisiModel、hisiTable至少定义一个）');
 
-        }
-
-        if ($result === false) {
-            return $this->error('删除失败');
         }
 
         return $this->success('删除成功');
