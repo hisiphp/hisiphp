@@ -28,11 +28,16 @@ class SystemUser extends Model
     // 自动写入时间戳
     protected $autoWriteTimestamp = true;
 
-    // 写入时，将权限ID转成JSON格式
     public function setAuthAttr($value)
     {
         if (empty($value)) return '';
         return json_encode($value);
+    }
+
+    public function getAuthAttr($value)
+    {
+        if (empty($value)) return [];
+        return json_decode($value, 1);
     }
 
     // 获取最后登陆ip
@@ -186,7 +191,7 @@ class SystemUser extends Model
             self::setTheme(isset($user->theme) ? $user->theme : 0);
             self::getThemes(true);
             // 缓存角色权限
-            session('role_auth_'.$user->role_id, $user->auth ? json_decode($user->auth, true) : json_decode($role['auth'], true));
+            session('role_auth_'.$user->role_id, $user->auth ? $user->auth : $role['auth']);
             // 缓存登录信息
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));
