@@ -200,11 +200,10 @@ class User extends Admin
 
         $row = UserModel::where('id', $id)->field('id,username,role_id,nick,email,mobile,auth,status')->find()->toArray();
         if (!$row['auth']) {
-            $auth = RoleModel::where('id', $row['role_id'])->value('auth');
-            $row['auth'] = json_decode($auth);
-        } else {
-            $row['auth'] = json_decode($row['auth']);
+            $role = RoleModel::where('id', $row['role_id'])->find();
+            $row['auth'] = $role->auth;
         }
+        
         $tabData = [];
         $tabData['menu'] = [
             ['title' => '修改管理员'],
@@ -373,7 +372,7 @@ class User extends Admin
             ['title' => '设置权限'],
         ];
         $row = RoleModel::where('id', $id)->field('id,name,intro,auth,status')->find()->toArray();
-        $row['auth'] = json_decode($row['auth']);
+
         $this->assign('formData', $row);
         $this->assign('menu_list', MenuModel::getAllChild());
         $this->assign('hisiTabData', $tabData);

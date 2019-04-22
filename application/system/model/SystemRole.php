@@ -27,10 +27,16 @@ class SystemRole extends Model
     // 自动写入时间戳
     protected $autoWriteTimestamp = true;
 
-    // 写入时，将权限ID转成JSON格式
     public function setAuthAttr($value)
     {
+        if (empty($value)) return '';
         return json_encode($value);
+    }
+
+    public function getAuthAttr($value)
+    {
+        if (empty($value)) return [];
+        return json_decode($value, 1);
     }
 
     /**
@@ -139,19 +145,19 @@ class SystemRole extends Model
             return true;
         }
         // 获取当前角色的权限明细
-        $role_auth = (array)session('role_auth_'.$login['role_id']);
-        if (!$role_auth) {
-            $auth = self::where('id', $login['role_id'])->value('auth');
-            if (!$auth) {
+        $roleAuth = (array)session('role_auth_'.$login['role_id']);
+        if (!$roleAuth) {
+            $role = self::where('id', $login['role_id'])->find();
+            if (!$role) {
                 return false;
             }
-            $role_auth = json_decode($auth, true);
+            $roleAuth = $role->auth;
             // 非开发模式，缓存数据
             if (config('sys.app_debug') == 0) {
-                session('role_auth_'.$login['role_id'], $role_auth);
+                session('role_auth_'.$login['role_id'], $roleAuth);
             }
         }
-        if (!$role_auth) return false;
-        return in_array($id, $role_auth);
+        if (!$roleAuth) return false;
+        return in_array($id, $roleAuth);
     }
 }
