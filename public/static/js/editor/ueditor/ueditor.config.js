@@ -29,6 +29,7 @@
             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
             'print', 'preview', 'searchreplace', 'drafts', 'help'
         ]]
+		,allowDivTransToP: false
         ,maximumWords:50000       //允许的最大字符数
 		// xss 过滤是否开启,inserthtml等操作
 		,xssFilterRules: true
