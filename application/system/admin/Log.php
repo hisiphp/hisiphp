@@ -39,7 +39,7 @@ class Log extends Admin
                 $where['uid'] = $uid;
             }
 
-            $data['data']   = LogModel::with('user')->where($where)->page($page)->limit($limit)->select();
+            $data['data']   = LogModel::with('user')->where($where)->page($page)->order('mtime desc')->limit($limit)->select();
             $data['count']  = LogModel::where($where)->count('id');
             $data['code']   = 0;
 
