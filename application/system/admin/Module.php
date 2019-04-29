@@ -732,7 +732,16 @@ class Module extends Admin
      */
     public function theme($id = 0)
     {
-        $module = ModuleModel::where(['id' => $id, 'status' => 2])->find();
+        $where = [];
+        $where[] = ['status', '=', 2];
+
+        if (is_numeric($id)) {
+            $where[] = ['id', '=', $id];
+        } else {
+            $where[] = ['name', '=', $id];
+        }
+
+        $module = ModuleModel::where($where)->find();
         if (!$module) {
             return $this->error('模块不存在或未安装');
         }
