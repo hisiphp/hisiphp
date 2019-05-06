@@ -38,7 +38,7 @@ class SystemModule extends Model
     public static function getConfig($name = '', $update = false)
     {
         $result = cache('module_config');
-        if (!$result || $update == true) {
+        if ($result === false || $update == true) {
             $rows = self::where('status', 2)->column('name,config', 'name');
             $result = [];
             foreach ($rows as $k => $r) {
