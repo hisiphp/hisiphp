@@ -43,7 +43,6 @@ class Admin extends Common
     {
         parent::initialize();
         $model = new UserModel();
-
         // 判断登陆
         $login = $model->isLogin();
         if (!$login['uid']) {
@@ -80,12 +79,12 @@ class Admin extends Common
                 $menuParents = ['pid' => 1];
 
                 if ($curMenu['id']) {
-                    $breadCrumbs = MenuModel::getBrandCrumbs($curMenu['id']);
+                    $breadCrumbs = MenuModel::getBreadCrumbs($curMenu['id']);
                     $menuParents = current($breadCrumbs);
+                } else {
+                    $breadCrumbs = MenuModel::getBreadCrumbs($curMenu['id']);
                 }
-
-                // 获取面包屑导航
-                $breadCrumbs = MenuModel::getBrandCrumbs($curMenu['id']);
+                
                 $this->assign('hisiBreadcrumb', $breadCrumbs);
                 // 获取当前访问的菜单信息
                 $this->assign('hisiCurMenu', $curMenu);
