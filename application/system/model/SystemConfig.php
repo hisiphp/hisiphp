@@ -33,10 +33,10 @@ class SystemConfig extends Model
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    public static function getConfig($name = '', $update = true)
+    public static function getConfig($name = '', $update = false)
     {
         $result = cache('sys_config');
-        if (!$result || $update == true) {
+        if ($result === false || $update == true) {
             $configs = self::column('value,type,group', 'name');
             $result = [];
             foreach ($configs as $config) {
