@@ -94,7 +94,7 @@ class SystemMenu extends Model
             }
 
             $res = $this->update($data);
-
+            Cache::rm('admin_bread_crumbs_'.$data['id']);
         } else {
 
             $res = $this->create($data);
@@ -178,7 +178,7 @@ class SystemMenu extends Model
     }
 
     /**
-     * 获取后台主菜单(一级 > 二级 > 三级)
+     * 获取后台菜单
      * 后台顶部和左侧使用
      * @param bool $update 是否更新缓存
      * @author 橘子俊 <364666827@qq.com>
@@ -250,8 +250,14 @@ class SystemMenu extends Model
      * @author 橘子俊 <364666827@qq.com>
      * @return array
      */
-    public static function getBrandCrumbs($id)
+    public static function getBreadCrumbs($id)
     {
+        $menu = Cache::get('admin_bread_crumbs_'.$id);
+
+        if ($menu) {
+            return $menu;
+        }
+
         if (!$id) {
             return false;
         }
@@ -266,13 +272,15 @@ class SystemMenu extends Model
             }
 
             $menu[] = $row;
-            $childs = self::getBrandCrumbs($row->pid);
+            $childs = self::getBreadCrumbs($row->pid);
 
             if ($childs) {
                 $menu = array_merge($childs, $menu);
             }
 
         }
+
+        Cache::set('admin_bread_crumbs_'.$id, $menu);
 
         return $menu;
     }
