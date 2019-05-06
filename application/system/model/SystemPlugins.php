@@ -44,7 +44,7 @@ class SystemPlugins extends Model
     public static function getConfig($name = '', $update = false)
     {
         $result = cache('plugins_config');
-        if (!$result || $update == true) {
+        if ($result === false || $update == true) {
             $rows = self::where('status', 2)->column('name,config', 'name');
             $result = [];
             foreach ($rows as $k => $r) {
@@ -69,6 +69,7 @@ class SystemPlugins extends Model
             }
             cache('plugins_config', $result);
         }
+
         return $name != '' ? $result[$name] : $result;
     }
 
@@ -225,6 +226,7 @@ class SystemPlugins extends Model
         }
         file_put_contents($path . 'sql/install.sql', "/*\n sql安装文件\n*/");
         file_put_contents($path . 'sql/uninstall.sql', "/*\n sql卸载文件\n*/");
+        file_put_contents($path . 'sql/demo.sql', "/*\n 演示数据\n*/");
     }
 
     /**
