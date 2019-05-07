@@ -213,3 +213,9 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .app-pay-success{height:200px;padding-top:80px;}
 .edui-body-container img{max-width:100%!important;}
 .hisi-lang .layui-nav-more{display:none;}
+.hisi-search {padding-top:10px;}
+.hisi-search .layui-form-item{display:inline-block;width:24%;padding:0;}
+.hisi-search .layui-form-label {width:auto;min-width:20%;text-align:right;padding:9px 0px;white-space: nowrap;}
+.hisi-search .layui-form-item .layui-input-inline {padding:0;margin:0; width:65%;flex:1 1;}
+.hisi-search .hisi-search-btn {text-align:left;}
+.hisi-search .hisi-search-btn .layui-form-label:after {content: normal;}
