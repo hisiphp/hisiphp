@@ -153,6 +153,10 @@ class Store extends Admin
         }
 
         clearstatcache();
+
+        // 删除临时目录
+        Dir::delDir($this->tempPath);
+
         if ($res === true) {
             return $this->success('安装成功');
         }
@@ -308,8 +312,49 @@ class Store extends Admin
      * @param  [string]     $unzipPath 解压路径
      * @return bool|string
      */
+    /**
+     * 安装主题
+     * @date   2018-10-31
+     * @access private
+     * @author 橘子俊 364666827@qq.com
+     * @param  [string]     $appName   应用名称
+     * @param  [string]     $appKeys   应用私钥
+     * @param  [string]     $file      安装包路径
+     * @param  [string]     $unzipPath 解压路径
+     * @return bool|string
+     */
     private function _themeInstall($appName, $appKeys, $file, $unzipPath)
     {
+        $base = $unzipPath.'/upload/';
+        $xml = $base.$appName.'/config.xml';
+        if (!file_exists($xml)) {
+            return '安装包缺少配置文件！';
+        }
+
+        $xml = file_get_contents($xml);
+        $config = xml2array($xml);
+
+        if (!isset($config['depend']) || empty($config['depend'])) {
+            return '配置文件信息不完整！';
+        }
+
+        $depend = trim($config['depend']);
+        $exp = explode('.', $depend);
+        if (count($exp) != 4) {
+            return '依赖的模块标识格式错误！';
+        }
+
+        if (!ModuleModel::where('identifier', $depend)->find()) {
+            return '请先安装'.$exp[0].'模块';
+        }
+
+        $target = './theme/'.$exp[0].'/'.$appName;
+        if (is_dir($target)) {
+            return '请勿重复安装';
+        }
+
+        Dir::copyDir($base.$appName, $target);
+
         return true;
     }
 }
