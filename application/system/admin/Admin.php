@@ -507,7 +507,9 @@ class Admin extends Common
                 foreach($id as $v) {
                     $row = $obj->withTrashed()->get($v);
                     if (!$row) continue;
-                    $row->delete();
+                    if (!$row->delete()) {
+                        return $this->error($row->getError());
+                    }
                 }
 
             } catch (\think\Exception $err) {
@@ -516,7 +518,9 @@ class Admin extends Common
                     foreach($id as $v) {
                         $row = $obj->get($v);
                         if (!$row) continue;
-                        $row->delete();
+                        if (!$row->delete()) {
+                            return $this->error($row->getError());
+                        }
                     }
 
                 } else {
