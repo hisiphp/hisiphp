@@ -763,6 +763,11 @@ class Module extends Admin
                 continue;
             }
 
+            $themes[$k]['sql'] = 0;
+            if (is_file($path.$v.'/install.sql')) {
+                $themes[$k]['sql'] = 1;
+            }
+
             $themes[$k]['name'] = $v;
             $themes[$k]['thumb'] = ROOT_DIR.'theme/'.$module['name'].'/'.$v.'/thumb.png';
             if (!is_file($themes[$k]['thumb'])) {
