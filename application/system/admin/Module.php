@@ -753,12 +753,12 @@ class Module extends Admin
         $themes = [];
         
         foreach ($theme as $k => $v) {
-            if (is_file($path.$v.'/config.xml')) {
-                $xml = file_get_contents($path.$v.'/config.xml');
-                $themes[$k] = xml2array($xml);
-            } else if (is_file($path.$v.'/config.json')) {
+            if (is_file($path.$v.'/config.json')) {
                 $json = file_get_contents($path.$v.'/config.json');
                 $themes[$k] = json_decode($json, 1);
+            } else if (is_file($path.$v.'/config.xml')) {
+                $xml = file_get_contents($path.$v.'/config.xml');
+                $themes[$k] = xml2array($xml);
             } else {
                 continue;
             }
@@ -778,6 +778,62 @@ class Module extends Admin
         $this->assign('formData', $module);
         $this->assign('data_list', $themes);
         return $this->fetch();
+    }
+
+    /**
+     * 执行主题SQL安装
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    public function exeSql()
+    {
+        $app    = $this->request->param('app_name');
+        $theme  = $this->request->param('theme');
+        $path   = './theme/'.$app.'/'.$theme.'/';
+        if (!is_file($path.'install.sql')) {
+            return $this->error('SQL文件不存在');
+        }
+
+        if (is_file($path.'config.json')) {
+            $json = file_get_contents($path.'config.json');
+            $config = json_decode($json, 1);
+        } elseif (is_file($path.'config.xml')) {
+            $xml = file_get_contents($path.'config.xml');
+            $config = xml2array($xml);
+        } else  {
+            return $this->error('缺少配置文件');
+        }
+
+        if (!isset($config['db_prefix'])) {
+            return $this->error('配置文件缺少db_prefix配置');
+        }
+        
+        $sql        = file_get_contents($path.'install.sql');
+        $sqlList    = parse_sql($sql, 0, [$config['db_prefix'] => config('database.prefix')]);
+        if ($sqlList) {
+            $sqlList = array_filter($sqlList);
+            foreach ($sqlList as $v) {
+                // 防止删除整个数据库
+                if (stripos(strtoupper($v), 'DROP DATABASE') !== false) {
+                    return $this->error('install.sql文件疑似含有删除数据库的SQL');
+                }
+
+                // 过滤sql里面的系统表
+                foreach (config('hs_system.tables') as $t) {
+                    if (stripos($v, '`'.config('database.prefix').$t.'`') !== false) {
+                        return $this->error('install.sql文件含有系统表['.$t.']');
+                    }
+                }
+                
+                try {
+                    Db::execute($v);
+                } catch(\Exception $e) {
+                    return $this->error($e->getMessage());
+                }
+            }
+        }
+
+        return $this->success('导入成功');
     }
 
     /**

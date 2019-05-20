@@ -376,6 +376,7 @@ INFO;
     <item id="time"><![CDATA['.date('Y-m-d H:i').']]></item>
     <item id="author"><![CDATA[HisiPHP]]></item>
     <item id="copyright"><![CDATA[HisiPHP]]></item>
+    <item id="db_prefix"><![CDATA[db_]]></item>
     <item id="identifier" title="默认模板必须留空，非默认模板必须填写对应的应用标识"><![CDATA[]]></item>
     <item id="depend" title="请填写当前对应的模块标识"><![CDATA['.$data['identifier'].']]></item>
 </root>';
