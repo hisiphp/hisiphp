@@ -703,9 +703,14 @@ if (!function_exists('runhook')) {
      * 监听钩子的行为
      * @param string $name 钩子名称
      * @param array $params 参数
+     * @param  bool   $return   是否需要返回结果
+     * @param  bool   $once   只获取一个有效返回值
      */
-    function runhook($name = '', $params = []) {
-        \Hook::listen($name, $params);
+    function runhook($name = '', $params = null, $return = false, $once = false) {
+        $result = \Hook::listen($name, $params, $once);
+        if ($return) {
+            return $result;
+        }
     }
 }
 

@@ -138,16 +138,30 @@ abstract class Plugins
     }
 
     /**
-     * 必须实现安装方法
+     * 安装前
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
     abstract public function install();
 
     /**
-     * 必须实现卸载方法
+     * 安装后
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    abstract public function installAfter();
+
+    /**
+     * 卸载前
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
     abstract public function uninstall();
+
+    /**
+     * 卸载后
+     * @author 橘子俊 <364666827@qq.com>
+     * @return mixed
+     */
+    abstract public function uninstallAfter();
 }

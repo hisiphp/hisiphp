@@ -42,7 +42,6 @@ class SystemAnnex extends Model
      */
     public static function upload($from = 'input', $group = 'sys', $water = '', $thumb = '', $thumbType = '', $input = 'file')
     {
-
         $param                  = [];
         $param['from']          = $from;
         $param['group']         = $group;
@@ -50,6 +49,12 @@ class SystemAnnex extends Model
         $param['thumb']         = $thumb;
         $param['thumb_type']    = $thumbType;
         $param['input']         = $input;
+
+        $params = request()->param();
+        
+        if (isset($params['full_path'])) {
+            $param['full_path'] = true;
+        }
 
         return self::fileUpload($param);
 
@@ -63,7 +68,7 @@ class SystemAnnex extends Model
      * @param string $thumb 缩略图，参数为空默认调用系统配置，no直接关闭缩略图，如需生成 500x500 的缩略图，则 500x500多个规格请用";"隔开
      * @param string $thumb_type 缩略图方式
      * @param string $input 文件表单字段名
-     * @param string $full_path 是否返回完整的文件路径(含域名)
+     * @param string $full_path 是否返回完整的文件路径(含域名)本地上传有效
      * @author 橘子俊 <364666827@qq.com>
      * @return json
      */
@@ -158,147 +163,156 @@ class SystemAnnex extends Model
 
         }
 
-        // 文件存放路径
-        $filePath = '/upload/'.$group.'/'.$type.'/';
-
-        // 如果文件已经存在，直接返回数据
-        // $res = self::where('hash', $file->hash())->find();
-        // if ($res) {
-        //     return self::result('文件上传成功。', $from, 1, $res);
-        // }
-
-        // 执行上传
-        $upfile = $file->rule('md5')->move('.'.$filePath);
-        if ( !is_file('.'.$filePath.$upfile->getSaveName()) ) {
-            return self::result('文件上传失败！', $from);
-        }
-
-        $fileCount  = 1;
-        $fileSize   = round($upfile->getInfo('size')/1024, 2);
-
-        $data = [
-            'file'      => $filePath.str_replace('\\', '/', $upfile->getSaveName()),
-            'hash'      => $upfile->hash(),
-            'data_id'   => input('param.data_id', 0),
-            'type'      => $type,
-            'size'      => $fileSize,
-            'group'     => $group,
-            'ctime'     => request()->time(),
-        ];
-
-        // 记录入库
-        // self::create($data);
-        // $group_info = GroupModel::where('name', $group)->find();
-        // if (!$group_info) {
-        //     GroupModel::create(['name' => $group]);
-        // }
-
-        $data['thumb'] = [];
-
-        if ($type == 'image') {
-
-            $image = \think\Image::open('.'.$data['file']);
-
-            // 水印
-            if (!empty($water) && $water != 'no') {
-
-                if ($water == 'text') {// 传参优先
-
-                    if (is_file('.'.config('upload.text_watermark_font'))) {
-
-                        $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
-                        ->save('.'.$data['file']); 
-
-                    }
-
-                } else if($water == 'image') {
-
-                    if (is_file('.'.config('upload.image_watermark_pic'))) {
-
-                        $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
-                        ->save('.'.$data['file']); 
-
-                    }
-
-                } else if (config('upload.image_watermark') == 1) {// 未传参，图片水印优先[开启图片水印]
-
-                    if (is_file('.'.config('upload.image_watermark_pic'))) {
-
-                        $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
-                        ->save('.'.$data['file']); 
-
-                    }
-
-                } else if (config('upload.text_watermark') == 1) {// 开启文字水印
-
-                    if (is_file('.'.config('upload.text_watermark_font'))) {
-
-                        $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
-                        ->save('.'.$data['file']); 
-
-                    }
-
-                }
-
-            }
-
-            // 缩略图
-            if (!empty($thumb) && $thumb != 'no') {
-
-                $thumbs = [];
-
-                if (strpos($thumb, 'x')) {// 传参优先
-
-                    $thumbs = explode(';', $thumb);
-
-                } else if (!empty(config('upload.thumb_size'))) {
-
-                    $thumbs = explode(';', config('upload.thumb_size'));
-
-                }
-
-                foreach ($thumbs as $k => $v) {
-
-                    $tSize = explode('x', strtolower($v));
-
-                    if (!isset($tSize[1])) {
-                        $tSize[1] = $tSize[0];
-                    }
-
-                    $newThumb = $data['file'].'_'.$tSize[0].'x'.$tSize[1].'.'.strtolower(pathinfo($upfile->getInfo('name'), PATHINFO_EXTENSION));
-
-                    $image->thumb($tSize[0], $tSize[1], $thumbType)->save('.'.$newThumb);
-
-                    $thumbSize = round(filesize('.'.$newThumb)/1024, 2);
-
-                    $data['thumb'][$k]['type']      = 'image';
-                    $data['thumb'][$k]['group']     = $group;
-                    $data['thumb'][$k]['file']      = $newThumb;
-                    $data['thumb'][$k]['size']      = $thumbSize;
-                    $data['thumb'][$k]['hash']      = hash_file('md5', '.'.$newThumb);
-                    $data['thumb'][$k]['ctime']     = request()->time();
-                    $data['thumb'][$k]['data_id']   = input('param.data_id', 0);
-
-                    $fileSize+$thumbSize;
-                    $fileCount++;
-
-                }
-                // if (!empty($data['thumb'])) {
-                //     self::insertAll($data['thumb']);
-                // }
-            }
-
-        }
+        if (!empty(config('upload.upload_driver')) && 
+            config('upload.upload_driver') != 'local') {
         
-        // 附件分组统计
-        // GroupModel::where('name', $group)->setInc('count', $fileCount);
-        // GroupModel::where('name', $group)->setInc('size', $fileSize);
-
-        runhook('system_annex_upload', $data);
-
-        // 返回带域名的路径
-        if ($fullPath) {
-            $data['file'] = get_domain().$data['file'];
+            $data = runhook('system_annex_upload', $file, true, true);
+            if (!is_array($data)) {
+                return self::result($data);
+            }
+        } else {
+            // 文件存放路径
+            $filePath = '/upload/'.$group.'/'.$type.'/';
+    
+            // 如果文件已经存在，直接返回数据
+            // $res = self::where('hash', $file->hash())->find();
+            // if ($res) {
+            //     return self::result('文件上传成功。', $from, 1, $res);
+            // }
+    
+            // 执行上传
+            $upfile = $file->rule('md5')->move('.'.$filePath);
+            if ( !is_file('.'.$filePath.$upfile->getSaveName()) ) {
+                return self::result('文件上传失败！', $from);
+            }
+    
+            $fileCount  = 1;
+            $fileSize   = round($upfile->getInfo('size')/1024, 2);
+    
+            $data = [
+                'file'      => $filePath.str_replace('\\', '/', $upfile->getSaveName()),
+                'hash'      => $upfile->hash(),
+                'data_id'   => input('param.data_id', 0),
+                'type'      => $type,
+                'size'      => $fileSize,
+                'group'     => $group,
+                'ctime'     => request()->time(),
+            ];
+    
+            // 记录入库
+            // self::create($data);
+            // $group_info = GroupModel::where('name', $group)->find();
+            // if (!$group_info) {
+            //     GroupModel::create(['name' => $group]);
+            // }
+    
+            $data['thumb'] = [];
+    
+            if ($type == 'image') {
+    
+                $image = \think\Image::open('.'.$data['file']);
+    
+                // 水印
+                if (!empty($water) && $water != 'no') {
+    
+                    if ($water == 'text') {// 传参优先
+    
+                        if (is_file('.'.config('upload.text_watermark_font'))) {
+    
+                            $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
+                            ->save('.'.$data['file']); 
+    
+                        }
+    
+                    } else if($water == 'image') {
+    
+                        if (is_file('.'.config('upload.image_watermark_pic'))) {
+    
+                            $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
+                            ->save('.'.$data['file']); 
+    
+                        }
+    
+                    } else if (config('upload.image_watermark') == 1) {// 未传参，图片水印优先[开启图片水印]
+    
+                        if (is_file('.'.config('upload.image_watermark_pic'))) {
+    
+                            $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
+                            ->save('.'.$data['file']); 
+    
+                        }
+    
+                    } else if (config('upload.text_watermark') == 1) {// 开启文字水印
+    
+                        if (is_file('.'.config('upload.text_watermark_font'))) {
+    
+                            $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
+                            ->save('.'.$data['file']); 
+    
+                        }
+    
+                    }
+    
+                }
+    
+                // 缩略图
+                if (!empty($thumb) && $thumb != 'no') {
+    
+                    $thumbs = [];
+    
+                    if (strpos($thumb, 'x')) {// 传参优先
+    
+                        $thumbs = explode(';', $thumb);
+    
+                    } else if (!empty(config('upload.thumb_size'))) {
+    
+                        $thumbs = explode(';', config('upload.thumb_size'));
+    
+                    }
+    
+                    foreach ($thumbs as $k => $v) {
+    
+                        $tSize = explode('x', strtolower($v));
+    
+                        if (!isset($tSize[1])) {
+                            $tSize[1] = $tSize[0];
+                        }
+    
+                        $newThumb = $data['file'].'_'.$tSize[0].'x'.$tSize[1].'.'.strtolower(pathinfo($upfile->getInfo('name'), PATHINFO_EXTENSION));
+    
+                        $image->thumb($tSize[0], $tSize[1], $thumbType)->save('.'.$newThumb);
+    
+                        $thumbSize = round(filesize('.'.$newThumb)/1024, 2);
+    
+                        $data['thumb'][$k]['type']      = 'image';
+                        $data['thumb'][$k]['group']     = $group;
+                        $data['thumb'][$k]['file']      = $newThumb;
+                        $data['thumb'][$k]['size']      = $thumbSize;
+                        $data['thumb'][$k]['hash']      = hash_file('md5', '.'.$newThumb);
+                        $data['thumb'][$k]['ctime']     = request()->time();
+                        $data['thumb'][$k]['data_id']   = input('param.data_id', 0);
+    
+                        $fileSize+$thumbSize;
+                        $fileCount++;
+    
+                    }
+                    // if (!empty($data['thumb'])) {
+                    //     self::insertAll($data['thumb']);
+                    // }
+                }
+    
+            }
+            
+            // 附件分组统计
+            // GroupModel::where('name', $group)->setInc('count', $fileCount);
+            // GroupModel::where('name', $group)->setInc('size', $fileSize);
+    
+            runhook('system_annex_upload', $data);
+    
+            // 返回带域名的路径
+            if ($fullPath) {
+                $data['file'] = get_domain().$data['file'];
+            }
         }
 
         return self::result('文件上传成功。', $from, 1, $data);
@@ -323,10 +337,6 @@ class SystemAnnex extends Model
      */
     private static function result($info = '', $from = 'input', $status = 0, $data = [])
     {
-
-        // 删除无关的数据
-        unset($data['hash'], $data['group'], $data['ctime']);
-
         $arr = [];
 
         switch ($from) {

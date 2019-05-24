@@ -526,37 +526,40 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
     /**
      * layui非静态table搜索渲染
      * @attr data-table table容器ID
+     * @attr hisi-data table基础参数
      * @attr action 搜索请求地址
      */
-    $(document).on('submit', '#hisiSearch,#hisi-table-search', function() {
-        var t = $(this), 
-            a = t.serializeArray(), 
-            w = new Array(),
-            obj = t.attr('data-table') ? t.attr('data-table') : 'dataTable';
-
-        for(var i in a) {
-            w[a[i].name] = a[i].value;
-        }
-
-        table.reload(obj, {
-            page: true,
-            url: t.attr('action'),
-            where: w
-        });
+    $('#hisiSearch,#hisi-table-search').submit(function() {
+        var that = $(this), 
+            arr = that.serializeArray(), 
+            where = new Array(),
+            dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable',
+            options = new Function('return '+ that.attr('hisi-data'))() || {page: true};
+        
+            for(var i in arr) {
+                where[arr[i].name] = arr[i].value;
+            }
+        
+        options.url = that.attr('action');
+        options.where = where;
+        
+        table.reload(dataTable, options);
         return false;
     });
     
     /**
      * layui非静态table过滤渲染
      * @attr data-table table容器ID
+     * @attr hisi-data table基础参数
      * @attr href 过滤请求地址
      */
     $(document).on('click', '.hisi-table-a-filter', function() {
-        var that = $(this), dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable';
-        table.reload(dataTable, {
-          url: that.attr('href'),
-          page: true
-        });
+        var that = $(this), dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable',
+        options = new Function('return '+ that.attr('hisi-data'))() || {page: true};
+        
+        options.url = that.attr('href');
+
+        table.reload(dataTable, options);
         return false;
     });
     exports('global', {});

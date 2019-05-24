@@ -344,12 +344,13 @@ INFO;
  */
 return [
     [
-        'title'         => '插件功能1',
-        'icon'          => 'aicon ai-shezhi',
+        'title'         => '{$data["title"]}',
+        'icon'          => 'fa fa-cog',
         'url'           => 'system/plugins/run',
         'param'         => '_p={$data['name']}&_c=index&_a=index',
         'target'        => '_self',
         'sort'          => 0,
+        'nav'           => 1,
         'childs'        => [
             [
                 'title'         => '插件功能1-1',

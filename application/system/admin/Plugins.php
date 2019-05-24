@@ -72,7 +72,7 @@ class Plugins extends Admin
         $map            = [];
         $map['status']  = $status;
         $map['system']  = 0;
-        $plugins = PluginsModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,system,app_keys,identifier,name,version,status');
+        $plugins = PluginsModel::where($map)->order('sort,id')->column('id,title,author,intro,icon,system,app_keys,identifier,name,version,config,status');
         if ($status == 0) {
             $pluginsPath = Env::get('root_path').'plugins/';
             // 自动将本地未入库的插件导入数据库
@@ -148,7 +148,14 @@ class Plugins extends Admin
      */
     public function setting($id = 0)
     {
-        $row = PluginsModel::where('id', $id)->field('id,name,config,title')->find()->toArray();
+        $where = [];
+        if (is_numeric($id)) {
+            $where[] = ['id', '=', $id];
+        } else {
+            $where[] = ['name', '=', $id];
+        }
+
+        $row = PluginsModel::where($where)->field('id,name,config,title')->find()->toArray();
         $pluginsInfo = plugins_info($row['name']);
         if (!$row['config'] && !$pluginsInfo['config']) {
             return $this->error('此插件无需配置');
@@ -232,9 +239,9 @@ class Plugins extends Admin
         }
 
         $plugObj = new $plugClass;
-        // 安装前先执行插件内部安装程序
+        
         if(!$plugObj->install()) {
-            return '插件预安装失败（原因：'. $plugObj->getError().'）';
+            return '插件安装前的方法执行失败（原因：'. $plugObj->getError().'）';
         }
 
         // 将插件钩子注入到钩子索引表
@@ -300,6 +307,11 @@ class Plugins extends Admin
         $sqlmap['status'] = 2;
         PluginsModel::where('id', $id)->update($sqlmap);
         PluginsModel::getConfig('', true);
+        
+        if(!$plugObj->installAfter()) {
+            return '插件安装前的方法执行失败（原因：'. $plugObj->getError().'）';
+        }
+
         return true;
     }
 
@@ -331,9 +343,9 @@ class Plugins extends Admin
         }
 
         $plugObj = new $plugClass;
-        // 卸载前先执行插件内部卸载程序
+
         if(!$plugObj->uninstall()) {
-            return $this->error('插件预卸载失败（原因：'. $plugObj->getError().'）');
+            return $this->error('插件卸载前的方法执行失败（原因：'. $plugObj->getError().'）');
         }
 
         if (!HookPluginsModel::del($plug['name'])) {
@@ -373,6 +385,11 @@ class Plugins extends Admin
         PluginsModel::where('id', $id)->setField('status', 0);
         PluginsModel::where('id', $id)->setField('config', '');
         PluginsModel::getConfig('', true);
+        
+        if(!$plugObj->uninstallAfter()) {
+            return $this->error('插件卸载后的方法执行失败（原因：'. $plugObj->getError().'）');
+        }
+
         return $this->success('插件已卸载成功', url('index?status=0'));
     }
 
