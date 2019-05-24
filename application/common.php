@@ -109,7 +109,7 @@ if (!function_exists('is_mobile')) {
      * @return bool
      */
     function is_mobile($num) {
-        return preg_match("/^1(3|4|5|7|8|9)\d{9}$/", $num);
+        return preg_match("/^1(3|4|5|6|7|8|9)\d{9}$/", $num);
     }
 }
 
