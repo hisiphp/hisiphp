@@ -165,8 +165,8 @@ class SystemAnnex extends Model
 
         if (!empty(config('upload.upload_driver')) && 
             config('upload.upload_driver') != 'local') {
-        
-            $data = runhook('system_annex_upload', $file, true, true);
+            $param['file'] = $file;
+            $data = runhook('system_annex_upload', $param, true, true);
             if (!is_array($data)) {
                 return self::result($data);
             }
