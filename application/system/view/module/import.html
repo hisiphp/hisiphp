@@ -20,7 +20,7 @@ layui.use(['jquery', 'laydate', 'upload'], function() {
     var $ = layui.jquery, layer = layui.layer, upload = layui.upload;
     upload.render({
         elem: '.layui-upload',
-        url: '{:url("system/annex/upload?thumb=no&water=no&group=temp")}'
+        url: '{:url("system/annex/upload?thumb=no&water=no&group=temp&driver=local")}'
         ,method: 'post'
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
