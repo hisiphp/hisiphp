@@ -180,6 +180,7 @@ class SystemAnnex extends Model
                 }
             }
         } else {
+            
             // 文件存放路径
             $filePath = '/upload/'.$group.'/'.$type.'/';
     
@@ -315,9 +316,7 @@ class SystemAnnex extends Model
             // 附件分组统计
             // GroupModel::where('name', $group)->setInc('count', $fileCount);
             // GroupModel::where('name', $group)->setInc('size', $fileSize);
-    
-            runhook('system_annex_upload', $data);
-    
+            
             // 返回带域名的路径
             if ($fullPath) {
                 $data['file'] = get_domain().$data['file'];
