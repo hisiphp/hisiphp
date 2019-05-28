@@ -69,6 +69,7 @@ class SystemAnnex extends Model
      * @param string $thumb_type 缩略图方式
      * @param string $input 文件表单字段名
      * @param string $full_path 是否返回完整的文件路径(含域名)本地上传有效
+     * @param string $upload_driver 指定上传驱动
      * @author 橘子俊 <364666827@qq.com>
      * @return json
      */
@@ -86,6 +87,7 @@ class SystemAnnex extends Model
         $thumbType  = isset($param['thumb_type']) ? $param['thumb_type'] : config('upload.thumb_type');
         $input      = isset($param['input']) ? $param['input'] : 'file';
         $fullPath   = isset($param['full_path']) ? $param['full_path'] : false;
+        $driver     = isset($param['upload_driver']) ? $param['upload_driver'] : config('upload.upload_driver');
 
         switch ($from) {
 
@@ -163,8 +165,7 @@ class SystemAnnex extends Model
 
         }
 
-        if (!empty(config('upload.upload_driver')) && 
-            config('upload.upload_driver') != 'local') {
+        if (!empty($driver) && $driver != 'local') {
             $param['file'] = $file;
             $data = runhook('system_annex_upload', $param, true);
             if (!is_array($data)) {
