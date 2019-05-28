@@ -166,9 +166,17 @@ class SystemAnnex extends Model
         if (!empty(config('upload.upload_driver')) && 
             config('upload.upload_driver') != 'local') {
             $param['file'] = $file;
-            $data = runhook('system_annex_upload', $param, true, true);
+            $data = runhook('system_annex_upload', $param, true);
             if (!is_array($data)) {
                 return self::result($data);
+            } elseif (isset($data[0])) {
+                // 挂载多个插件的时候，提取有效值
+                foreach($data as $v) {
+                    if (isset($v['file'])) {
+                        $data = ['file' => $v['file']];
+                        continue;
+                    }
+                }
             }
         } else {
             // 文件存放路径
