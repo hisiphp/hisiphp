@@ -91,7 +91,7 @@ return [
     'url_convert'            => true,
     // 默认的访问控制器层
     // 'url_controller_layer'   => 'controller',
-    'url_controller_layer'   => defined('ENTRANCE') ? 'admin' : 'home',
+    'url_controller_layer'   => defined('ENTRANCE') ? ENTRANCE : 'home',
     // 表单请求类型伪装变量
     'var_method'             => '_method',
     // 表单ajax伪装变量

@@ -87,9 +87,8 @@ class Tree {
 
                 $trees[] = $v;
             }
-
         }
-
+        
         return $trees;
     }
 
@@ -131,10 +130,10 @@ class Tree {
         }
 
         foreach ($data as $k => $v) {
+            $data = json_encode($v);
+            if ($sid == $v[$id]) {
 
-            if ($sid == $v['id']) {
-
-                $str .= '<option value="'.$v[$id].'" selected>'.$icon.$v[$name].'</option>';
+                $str .= '<option value="'.$v[$id].'" hisi-data=\''.$data.'\' selected>'.$icon.$v[$name].'</option>';
 
             } else if ($did && in_array($v[$id], $did)) {
 
@@ -142,7 +141,7 @@ class Tree {
 
             } else {
 
-                $str .= '<option value="'.$v[$id].'">'.$icon.$v[$name].'</option>';
+                $str .= '<option value="'.$v[$id].'" hisi-data=\''.$data.'\'>'.$icon.$v[$name].'</option>';
 
             }
 
