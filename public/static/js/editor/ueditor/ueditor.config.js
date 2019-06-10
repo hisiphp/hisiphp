@@ -75,7 +75,7 @@
 			h5:     ['class', 'style'],
 			h6:     ['class', 'style'],
 			header: [],
-			hr:     [],
+			hr: 	['class', 'style'],
 			i:      ['class', 'style'],
 			img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
 			ins:    ['datetime'],
