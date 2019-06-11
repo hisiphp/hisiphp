@@ -59,7 +59,7 @@ class Common extends Controller
         $controller = $_GET['_c'];
         $action     = $_GET['_a'];
         if (!$template) {
-            $template = $controller.'/'.$action;
+            $template = $controller.'/'.parse_name($action);
         } elseif (strpos($template, '/') == false) {
             $template = $controller.'/'.$template;
         }
