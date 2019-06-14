@@ -115,7 +115,7 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .module-list-info .txt h3 {font-weight:500;display:inline-block}
 .module-list-info .txt p {font-size:12px}
 .module-list-info .txt p span {color:#2a95de}
-.pop-bottom-bar {position:fixed;left:0;bottom:0;width:96%;background:#eee;padding:5px 2%;text-align:center;}
+.pop-bottom-bar {position:fixed;left:0;bottom:0;width:96%;background:#eee;padding:5px 2%;text-align:center;z-index:99999;}
 .pop-bottom-bar .pages {max-width:70%;overflow:hidden}
 .pop-bottom-bar .pages .pager li {float:left;margin:0 5px}
 .pop-bottom-bar .pages .pager li a,

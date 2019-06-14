@@ -41,7 +41,7 @@ class System extends Admin
             } else {
                 $ids = $data['id'] = '';
             }
-
+            
             unset($data['upload']);// 清除上传字段
             
             // token 验证
@@ -63,8 +63,12 @@ class System extends Admin
                 foreach ($row['config'] as $key => &$conf) {
                     if (!isset($ids[$key]) && $conf['type'] =='switch') {
                         $conf['value'] = 0;
-                    } else if ($conf['type'] =='checkbox' && isset($ids[$key])) {
-                        $conf['value'] = json_encode($ids[$key], 1);
+                    } else if ($conf['type'] =='checkbox') {
+                        if (isset($ids[$key])) {
+                            $conf['value'] = implode(',', $ids[$key]);
+                        } else {
+                            $conf['value'] = '';
+                        }
                     } else {
                         $conf['value'] = $ids[$key];
                     }
@@ -85,8 +89,13 @@ class System extends Admin
                     ConfigModel::where('name', $k)->update(['value' => 0]);
                     continue;
                 }
-                if ($v == 'checkbox' && isset($ids[$k])) {
-                    $ids[$k] = json_encode($ids[$k], 1);
+
+                if ($v == 'checkbox') {
+                    if (isset($ids[$k])) {
+                        $ids[$k] = implode(',', $ids[$k]);
+                    } else {
+                        $ids[$k] = '';
+                    }
                 }
                 
                 // 修改后台管理目录
@@ -133,7 +142,12 @@ class System extends Admin
             if (!empty($v['options'])) {
                 $v['options'] = parse_attr($v['options']);
             }
+
+            if ($v['type'] == 'checkbox') {
+                $v['value'] = explode(',', $v['value']);
+            }
         }
+
         // 模块配置
         $module = ModuleModel::where('status', 2)->column('name,title,config', 'name');
         foreach ($module as $mod) {

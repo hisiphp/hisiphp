@@ -1,4 +1,4 @@
-{include file="system@block/header" /}
+{include file="block/header" /}
 {switch name="$hisiTabType"}
     {case value="1"}
         {/* 单个分组 */}
@@ -23,7 +23,7 @@
             <div class="layui-tab layui-tab-brief">
                 <ul class="layui-tab-title">
                     {volist name="hisiTabData['menu']" id="vo" key="k"}
-                        {if ($k eq 1)}
+                        {if ($k == 1)}
                             <li class="layui-this">
                         {else /}
                             <li>
@@ -47,13 +47,15 @@
                         {php}
                             $hisiTabData['current'] = isset($hisiTabData['current']) ? $hisiTabData['current'] : '';
                         {/php}
-                        {if ($vo['url'] eq $hisiCurMenu['url'] or (url($vo['url']) eq $hisiTabData['current']))}
+                        {if ($vo['url'] == $hisiCurMenu['url'] or (url($vo['url']) == $hisiTabData['current']))}
                             <li class="layui-this">
                         {else /}
                             <li>
                         {/if}
-                            {if (substr($vo['url'], 0, 4) eq 'http')}
+                            {if (strpos($vo['url'], 'http'))}
                                 <a href="{$vo['url']}" target="_blank">{$vo['title']|raw}</a>
+                            {elseif (strpos($vo['url'], config('sys.admin_path')) !== false)}
+                                <a href="{$vo['url']}" id="{if (isset($vo['id']))}{$vo['id']}{/if}" class="{if (isset($vo['class']))}{$vo['class']}{/if}">{$vo['title']|raw}</a>
                             {else /}
                                 <a href="{:url($vo['url'])}" class="{if (isset($vo['class']))}{$vo['class']}{/if}" id="{if (isset($vo['id']))}{$vo['id']}{/if}">{$vo['title']|raw}</a>
                             {/if}
@@ -74,4 +76,4 @@
             {__CONTENT__}
         </div>
 {/switch}
-{include file="system@block/footer" /}
+{include file="block/footer" /}
