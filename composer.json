@@ -23,7 +23,9 @@
         "topthink/framework": "5.1.*",
         "topthink/think-captcha": "^2.0",
         "topthink/think-image": "^1.0",
-        "topthink/think-helper": "^1.0"
+        "topthink/think-helper": "^1.0",
+        "psr/log": "^1.1",
+        "guzzlehttp/guzzle": "6.*"
     },
     "autoload": {
         "psr-4": {
