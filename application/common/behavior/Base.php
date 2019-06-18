@@ -26,6 +26,7 @@ class Base
 {
     public function run()
     {
+        
         // 获取当前模块名称
         $module = strtolower(Request::module());
         
@@ -34,7 +35,7 @@ class Base
 
         // 设置插件配置
         config(PluginsModel::getConfig());
-
+        
         // 设置模块配置
         config(ModuleModel::getConfig());
 
@@ -43,7 +44,7 @@ class Base
         
         // 判断模块是否存在且已安装
         $theme = 'default';
-        if ($module != 'index' && !defined('ENTRANCE')) {
+        if (in_array($module, ['index', 'system']) === false) {
 
             if (empty($module)) {
                 $module = config('default_module');
@@ -95,12 +96,12 @@ class Base
             '__WAP_JS__'        => $rootDir.'theme/'.$module.'/'.$theme.'/wap/static/js',
             '__WAP_IMG__'       => $rootDir.'theme/'.$module.'/'.$theme.'/wap/static/image',
         ];
-
-        if (isset($_GET['_p'])) {
+        
+        if ($pName = Request::param('_p')) {
             $viewReplaceStr = array_merge($viewReplaceStr, [
-                '__PLUGINS_CSS__'   => $rootDir.'static/plugins/'.$_GET['_p'].'/static/css',
-                '__PLUGINS_JS__'    => $rootDir.'static/plugins/'.$_GET['_p'].'/static/js',
-                '__PLUGINS_IMG__'   => $rootDir.'static/plugins/'.$_GET['_p'].'/static/image',
+                '__PLUGINS_CSS__'   => $rootDir.'static/plugins/'.$pName.'/static/css',
+                '__PLUGINS_JS__'    => $rootDir.'static/plugins/'.$pName.'/static/js',
+                '__PLUGINS_IMG__'   => $rootDir.'static/plugins/'.$pName.'/static/image',
             ]);
         }
 
