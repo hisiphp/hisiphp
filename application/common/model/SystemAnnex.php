@@ -83,12 +83,20 @@ class SystemAnnex extends Model
         $from       = isset($param['from']) ? $param['from'] : 'input';
         $group      = isset($param['group']) ? $param['group'] : 'sys';
         $water      = isset($param['water']) ? $param['water'] : '';
-        $thumb      = isset($param['thumb']) ? $param['thumb'] : '';
-        $thumbType  = isset($param['thumb_type']) ? $param['thumb_type'] : config('upload.thumb_type');
+        $thumb      = isset($param['thumb']) && !empty($param['thumb']) ? $param['thumb'] : config('upload.thumb_size');
+        $thumbType  = isset($param['thumb_type']) && !empty($param['thumb_type'])  ? $param['thumb_type'] : config('upload.thumb_type');
         $input      = isset($param['input']) ? $param['input'] : 'file';
         $fullPath   = isset($param['full_path']) ? $param['full_path'] : false;
         $driver     = isset($param['driver']) ? $param['driver'] : config('upload.upload_driver');
 
+        if (empty($water)) {
+            if (config('upload.image_watermark') == 1) {
+                $water = 'image';
+            } elseif (config('upload.text_watermark') == 1) {
+                $water = 'text';
+            }
+        }
+        
         switch ($from) {
 
             case 'kindeditor':
@@ -155,7 +163,7 @@ class SystemAnnex extends Model
                 return self::result('上传的文件大小超过系统限制['.config('upload.upload_file_size').'KB]！', $from);
             }
 
-        } else if ($file->checkExt('avi,mkv')) {
+        } else if ($file->checkExt('avi,mkv,mp3,mp4')) {
 
             $type = 'media';
 
@@ -183,13 +191,7 @@ class SystemAnnex extends Model
             
             // 文件存放路径
             $filePath = '/upload/'.$group.'/'.$type.'/';
-    
-            // 如果文件已经存在，直接返回数据
-            // $res = self::where('hash', $file->hash())->find();
-            // if ($res) {
-            //     return self::result('文件上传成功。', $from, 1, $res);
-            // }
-    
+            
             // 执行上传
             $upfile = $file->rule('md5')->move('.'.$filePath);
             if ( !is_file('.'.$filePath.$upfile->getSaveName()) ) {
@@ -208,55 +210,30 @@ class SystemAnnex extends Model
                 'group'     => $group,
                 'ctime'     => request()->time(),
             ];
-    
-            // 记录入库
-            // self::create($data);
-            // $group_info = GroupModel::where('name', $group)->find();
-            // if (!$group_info) {
-            //     GroupModel::create(['name' => $group]);
-            // }
-    
+            
             $data['thumb'] = [];
-    
+            
             if ($type == 'image') {
     
                 $image = \think\Image::open('.'.$data['file']);
-    
+
                 // 水印
                 if (!empty($water) && $water != 'no') {
     
-                    if ($water == 'text') {// 传参优先
+                    if ($water == 'text') {
     
                         if (is_file('.'.config('upload.text_watermark_font'))) {
     
                             $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
                             ->save('.'.$data['file']); 
-    
+
                         }
     
-                    } else if($water == 'image') {
+                    } elseif ($water == 'image') {
     
                         if (is_file('.'.config('upload.image_watermark_pic'))) {
     
                             $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
-                            ->save('.'.$data['file']); 
-    
-                        }
-    
-                    } else if (config('upload.image_watermark') == 1) {// 未传参，图片水印优先[开启图片水印]
-    
-                        if (is_file('.'.config('upload.image_watermark_pic'))) {
-    
-                            $image->water('.'.config('upload.image_watermark_pic'), config('upload.image_watermark_location'), config('upload.image_watermark_opacity'))
-                            ->save('.'.$data['file']); 
-    
-                        }
-    
-                    } else if (config('upload.text_watermark') == 1) {// 开启文字水印
-    
-                        if (is_file('.'.config('upload.text_watermark_font'))) {
-    
-                            $image->text(config('upload.text_watermark_content'), '.'.config('upload.text_watermark_font'), config('upload.text_watermark_size'), config('upload.text_watermark_color'))
                             ->save('.'.$data['file']); 
     
                         }
@@ -268,18 +245,7 @@ class SystemAnnex extends Model
                 // 缩略图
                 if (!empty($thumb) && $thumb != 'no') {
     
-                    $thumbs = [];
-    
-                    if (strpos($thumb, 'x')) {// 传参优先
-    
-                        $thumbs = explode(';', $thumb);
-    
-                    } else if (!empty(config('upload.thumb_size'))) {
-    
-                        $thumbs = explode(';', config('upload.thumb_size'));
-    
-                    }
-    
+                    $thumbs = explode(';', $thumb);
                     foreach ($thumbs as $k => $v) {
     
                         $tSize = explode('x', strtolower($v));
@@ -306,19 +272,12 @@ class SystemAnnex extends Model
                         $fileCount++;
     
                     }
-                    // if (!empty($data['thumb'])) {
-                    //     self::insertAll($data['thumb']);
-                    // }
                 }
     
             }
             
-            // 附件分组统计
-            // GroupModel::where('name', $group)->setInc('count', $fileCount);
-            // GroupModel::where('name', $group)->setInc('size', $fileSize);
-            
             // 返回带域名的路径
-            if ($fullPath) {
+            if ($fullPath && $driver == 'local') {
                 $data['file'] = get_domain().$data['file'];
             }
         }
