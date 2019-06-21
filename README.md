@@ -147,6 +147,12 @@ www  WEB部署目录（不建议使用子目录）
 
 [第三方登录](https://store.hisiphp.com/detail/1000024.html?from=oschina)
 
+[七牛云储存](https://store.hisiphp.com/detail/1000029.html?from=oschina)
+
+[阿里云OSS](https://store.hisiphp.com/detail/1000031.html?from=oschina)
+
+[万能采集插件](https://store.hisiphp.com/detail/1000034.html?from=oschina)
+
 
 
 ## QQ交流群
