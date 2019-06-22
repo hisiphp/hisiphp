@@ -105,6 +105,7 @@ class Admin extends Common
                 $this->assign('formData', '');
                 $this->assign('login', $login);
                 $this->assign('languages', (new LangModel)->lists());
+                $this->assign('hisiHead', '');
                 $this->view->engine->layout(true);
             }
         }

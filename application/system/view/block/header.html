@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}" media="all">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
+    {$hisiHead|raw}
 </head>
-<body class="hisi-theme-{:cookie('hisi_admin_theme')}">
+<body class="hisi-theme-{:cookie('hisi_admin_theme')} pb50">
 {else /}
 <!DOCTYPE html>
 <html>
@@ -28,6 +29,7 @@
     <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('hisiphp.version')}" media="all">
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
+    {$hisiHead|raw}
 </head>
 <body class="layui-layout-body hisi-theme-{:cookie('hisi_admin_theme')}">
 {php}
