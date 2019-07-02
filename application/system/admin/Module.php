@@ -414,7 +414,7 @@ class Module extends Admin
             return $this->error('图标大小超过系统限制(100KB)');
         }
 
-        $imagePath = ROOT_PATH . 'public/upload/temp/';
+        $imagePath = '.'.ROOT_DIR.'upload/temp/';
         $file->rule('')->move($imagePath, $module['name'] . '.png');
         $image = getimagesize($imagePath.$module['name'] . '.png');
         if ($image[0] !== 200 || $image[1] !== 200 ) {
@@ -424,7 +424,7 @@ class Module extends Admin
 
         // 将图标移动到模块目录下面
         copy($imagePath.$module['name'] . '.png', $this->appPath.$module['name'].'.png');
-        copy($imagePath.$module['name'] . '.png', ROOT_PATH.'public/static/'.$module['name'].'/'.$module['name'].'.png');
+        copy($imagePath.$module['name'] . '.png', '.'.ROOT_DIR.'static/'.$module['name'].'/'.$module['name'].'.png');
         return $this->success('/static/'.$module['name'].'/'.$module['name'].'.png?v='.time());
     }
 
@@ -511,18 +511,18 @@ class Module extends Admin
             }
 
             Dir::copyDir($appPath, Env::get('app_path').$appName);
-            if (!is_dir(Env::get('root_path').'public/static/'.$appName.'/')) {
-                Dir::create(Env::get('root_path').'public/static/'.$appName.'/', 0755);
+            if (!is_dir('.'.ROOT_DIR.'static/'.$appName.'/')) {
+                Dir::create('.'.ROOT_DIR.'static/'.$appName.'/', 0755);
             }
 
             // 复制static目录
             if (is_dir($decomPath.'/upload/public/static')) {
-                Dir::copyDir($decomPath.'/upload/public/static', Env::get('root_path').'public/static');
+                Dir::copyDir($decomPath.'/upload/public/static', '.'.ROOT_DIR.'static');
             }
 
             // 复制theme目录
             if (is_dir($decomPath.'/upload/public/theme')) {
-                Dir::copyDir($decomPath.'/upload/public/theme', Env::get('root_path').'public/theme');
+                Dir::copyDir($decomPath.'/upload/public/theme', '.'.ROOT_DIR.'theme');
             }
 
             // 删除临时目录和安装包
@@ -648,13 +648,13 @@ class Module extends Admin
 
         // 删除模块模板
         $error = '';
-        $path = ROOT_PATH.'public/theme/'.$module['name'];
+        $path = '.'.ROOT_DIR.'theme/'.$module['name'];
         if (is_dir($path) && Dir::delDir($path) === false) {
             $error = '模块模板删除失败['.$path.']';
         }
 
         // 删除模块相关附件
-        $path = ROOT_PATH.'public/static/'.$module['name'];
+        $path = '.'.ROOT_DIR.'static/'.$module['name'];
         if (is_dir($path) && Dir::delDir($path) === false) {
             $error .= '<br>模块删除失败['.$path.']';
         }
@@ -745,7 +745,7 @@ class Module extends Admin
         if (!$module) {
             return $this->error('模块不存在或未安装');
         }
-        $path = ROOT_PATH.'public/theme/'.$module['name'].'/';
+        $path = '.'.ROOT_DIR.'theme/'.$module['name'].'/';
         if (!is_dir($path)) {
             return $this->error('模块主题不存在');
         }
@@ -756,13 +756,13 @@ class Module extends Admin
             if (is_file($path.$v.'/config.json')) {
                 $json = file_get_contents($path.$v.'/config.json');
                 $themes[$k] = json_decode($json, 1);
-            } else if (is_file($path.$v.'/config.xml')) {
+            } elseif (is_file($path.$v.'/config.xml')) {
                 $xml = file_get_contents($path.$v.'/config.xml');
                 $themes[$k] = xml2array($xml);
             } else {
                 continue;
             }
-
+            
             $themes[$k]['sql'] = 0;
             if (is_file($path.$v.'/install.sql')) {
                 $themes[$k]['sql'] = 1;
@@ -874,7 +874,7 @@ class Module extends Admin
         if (!$module) {
             return $this->error('模块不存在或未安装');
         }
-        $path = ROOT_PATH.'public/theme/'.$module['name'].'/';
+        $path = '.'.ROOT_DIR.'theme/'.$module['name'].'/';
         Dir::delDir($path.$theme);
         return $this->success('删除成功');
     }
