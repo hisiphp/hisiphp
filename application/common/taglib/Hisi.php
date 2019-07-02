@@ -96,6 +96,10 @@ class Hisi extends Taglib
                 $dbStr .= '->limit('.$limit.')';
             }
 
+            if ($order) {
+                $dbStr .= '->order("'.$order.'")';
+            }
+
             if ($cache) {
                 $dbStr .= '->cache('.$cache.')';
             }
