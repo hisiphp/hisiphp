@@ -248,7 +248,7 @@ class Admin extends Common
 
             }
 
-            return $this->success('保存成功');
+            return $this->success('保存成功', '');
         }
 
         $template = $this->request->param('template', 'form');
@@ -345,7 +345,7 @@ class Admin extends Common
                     return $this->error($model->getError());
                 }
 
-                return $this->success('保存成功');
+                return $this->success('保存成功', '');
             }
 
             $formData = $model->get($id);
@@ -362,7 +362,7 @@ class Admin extends Common
                     return $this->error('保存失败');
                 }
 
-                return $this->success('保存成功');
+                return $this->success('保存成功', '');
             }
 
             $formData = $db->where($pk, $id)->find();
@@ -454,7 +454,7 @@ class Admin extends Common
             return $this->error('状态设置失败');
         }
 
-        return $this->success('状态设置成功');
+        return $this->success('状态设置成功', '');
     }
 
     /**
@@ -541,7 +541,7 @@ class Admin extends Common
 
         }
 
-        return $this->success('删除成功');
+        return $this->success('删除成功', '');
     }
 
     /**
@@ -608,7 +608,7 @@ class Admin extends Common
             return $this->error('排序设置失败');
         }
 
-        return $this->success('排序设置成功');
+        return $this->success('排序设置成功', '');
     }
 
     /**
