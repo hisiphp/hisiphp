@@ -1,7 +1,7 @@
 HisiPHP
 ===============
 
-HisiPHP V2版 基于ThinkPHP5.1 + layui开发的一套开源PHP快速开发框架，默认集成了权限管理、模块管理、插件管理、钩子管理、数据库管理等常用功能，以方便开发者快速构建自己的应用，我们在发布第一个版本就为您集成了一键升级框架的功能，扩展的模块、插件、模板均可独立在线升级。为了让您开发的应用获得更多的使用者，HisiPHP在发布之初就上线了PHP应用市场([http://store.hisiphp.com](http://store.hisiphp.com?source=oschina))，我们诚邀您的加入。
+HisiPHP V2版 基于ThinkPHP5.1 + layui开发的一套开源PHP快速开发框架，默认集成了权限管理、模块管理、插件管理、钩子管理、数据库管理等常用功能，以方便开发者快速构建自己的应用，我们在发布第一个版本就为您集成了一键升级框架的功能，扩展的模块、插件、模板均可独立在线升级。为了让您开发的应用获得更多的使用者，HisiPHP在发布之初就上线了PHP应用市场([http://store.hisiphp.com](http://store.hisiphp.com?source=github))，我们诚邀您的加入。
 
 ## 目录结构
 ```
@@ -130,28 +130,30 @@ www  WEB部署目录（不建议使用子目录）
 [HisiPHP 完全开发手册]https://www.kancloud.cn/hisi/hisiphp_v2
 
 ## 应用商店
-[store.hisiphp.com](http://store.hisiphp.com?source=oschina)
+[store.hisiphp.com](http://store.hisiphp.com?source=github)
 
 ## 演示地址
-[v2.demo.hisiphp.com](http://v2.demo.hisiphp.com/admin.php?from=oschina)
+[v2.demo.hisiphp.com](http://v2.demo.hisiphp.com/admin.php?from=github)
 
 ## 应用推荐 
 
-[CMS内容管理系统](https://store.hisiphp.com/detail/1000025.html?from=oschina)
+[CMS内容管理系统](https://store.hisiphp.com/detail/1000025.html?from=github)
 
-[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](https://store.hisiphp.com/detail/1000019.html?from=oschina)
+[多公众号管理](https://store.hisiphp.com/detail/1000035.html?from=github)
 
-[通用RESTfulAPI接口](https://store.hisiphp.com/detail/1000022.html?from=oschina)
+[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](https://store.hisiphp.com/detail/1000019.html?from=github)
 
-[响应式轻博客](https://store.hisiphp.com/detail/1000021.html?from=oschina)
+[通用RESTfulAPI接口](https://store.hisiphp.com/detail/1000022.html?from=github)
 
-[第三方登录](https://store.hisiphp.com/detail/1000024.html?from=oschina)
+[响应式轻博客](https://store.hisiphp.com/detail/1000021.html?from=github)
 
-[七牛云储存](https://store.hisiphp.com/detail/1000029.html?from=oschina)
+[第三方登录](https://store.hisiphp.com/detail/1000024.html?from=github)
 
-[阿里云OSS](https://store.hisiphp.com/detail/1000031.html?from=oschina)
+[七牛云储存](https://store.hisiphp.com/detail/1000029.html?from=github)
 
-[万能采集插件](https://store.hisiphp.com/detail/1000034.html?from=oschina)
+[阿里云OSS](https://store.hisiphp.com/detail/1000031.html?from=github)
+
+[万能采集插件](https://store.hisiphp.com/detail/1000034.html?from=github)
 
 
 
