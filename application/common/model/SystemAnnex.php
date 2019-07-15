@@ -55,6 +55,10 @@ class SystemAnnex extends Model
         if (isset($params['full_path'])) {
             $param['full_path'] = true;
         }
+        
+        if (isset($params['driver'])) {
+            $param['driver'] = $params['driver'];
+        }
 
         return self::fileUpload($param);
 
