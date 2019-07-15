@@ -421,7 +421,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * 数据列表input编辑自动选中ids
      * @attr data-value 修改前的值
      */
-    $('.j-auto-checked,hisi-auto-checked').blur(function(){
+    $(document).on('blur', '.j-auto-checked,hisi-auto-checked',function() {
         var that = $(this);
         if(that.attr('data-value') != that.val()) {
             that.parents('tr').find('input[name="ids[]"]').attr("checked", true);
@@ -528,7 +528,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @attr hisi-data table基础参数
      * @attr action 搜索请求地址
      */
-    $('#hisiSearch,#hisi-table-search').submit(function() {
+    $(document).on('submit', '#hisiSearch,#hisi-table-search', function() {
         var that = $(this), 
             arr = that.serializeArray(), 
             where = new Array(),
