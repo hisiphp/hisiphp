@@ -47,15 +47,15 @@ class Upgrade extends Admin
 
         switch ($this->appType) {
             case 'module':
-                $module = ModuleModel::where($map)->find();
-                $this->appKey       = $module->app_keys;
-                $this->appVersion   = $module->version;
+                $this->appInfo      = ModuleModel::where($map)->find();
+                $this->appKey       = $this->appInfo->app_keys;
+                $this->appVersion   = $this->appInfo->version;
                 break;
 
             case 'plugins':
-                $plugins = PluginsModel::where($map)->find();
-                $this->appKey       = $plugins->app_keys;
-                $this->appVersion   = $plugins->version;
+                $this->appInfo      = PluginsModel::where($map)->find();
+                $this->appKey       = $this->appInfo->app_keys;
+                $this->appVersion   = $this->appInfo->version;
                 break;
 
             case 'theme':
@@ -290,6 +290,7 @@ class Upgrade extends Admin
         if (!is_dir($backPath)) {
             Dir::create($backPath, 0777);
         }
+
         $layout = '';
         array_push($upInfo['update'], '/version.php');
         //备份旧文件
@@ -299,9 +300,18 @@ class Upgrade extends Admin
             if (!is_dir($_dir)) {
                 Dir::create($_dir, 0777);
             }
+
             if (basename($v) == 'layout.html') {
                 $layout = $this->appPath.'system/view/layout.html';
+            } else if ($v == '/composer.json') {
+                $newComposer = json_decode(file_get_contents($decomPath.'/upload/composer.json'), 1);
+                $oldComposer = json_decode(file_get_contents($this->rootPath.'composer.json'), 1);
+                foreach($newComposer['require'] as $kk => $vv) {
+                    $oldComposer['require'][$kk] = $vv;
+                }
+                @file_put_contents($decomPath.'/upload/composer.json', json_encode($oldComposer, 1));
             }
+
             if (is_file($this->rootPath.$v)) {
                 @copy($this->rootPath.$v, $_dir.basename($v));
             }
@@ -316,11 +326,17 @@ class Upgrade extends Admin
                 }
             }
         }
-
         // 更新升级文件
         Dir::copyDir($decomPath.'/upload', $this->rootPath);
 
-        // 同步更新扩展模块下的layout.html TODO
+        // 同步更新扩展模块的layout.html
+        if ($layout) {
+            $modules = ModuleModel::where('system', '=', 0)->field('name')->select();
+            foreach($modules as $v) {
+                @copy($layout, $this->appPath.$v['name'].'/view/layout.html');
+            }
+        }
+
         // 导入SQL
         $sqlFile = realpath($decomPath.'/database.sql');
         if (is_file($sqlFile)) {
@@ -349,8 +365,7 @@ class Upgrade extends Admin
      */
     private function _moduleInstall($file, $version)
     {
-        $module     = ModuleModel::where('identifier', $this->identifier)->find();
-        $backPath   = $this->updateBackPath.'module/'.$module->name.'/'.$module->version;
+        $backPath   = $this->updateBackPath.'module/'.$this->appInfo['name'].'/'.$this->appInfo['version'];
         $_version   = cache($this->cacheUpgradeList);
         $_version   = $_version['data'];
         $md5file    = md5_file($file);
@@ -401,9 +416,9 @@ class Upgrade extends Admin
             foreach ($upInfo['delete'] as $k => $v) {
                 $v = trim($v, '/');
                 // 锁定删除文件范围
-                if ( ( substr($v, 0, strlen('application/'.$module->name)) == 'application/'.$module->name ||
-                    substr($v, 0, strlen('public/theme/'.$module->name)) == 'public/theme/'.$module->name ||
-                    substr($v, 0, strlen('public/static/'.$module->name)) == 'public/static/'.$module->name ) && strpos($v, '..') === false) {
+                if ( ( substr($v, 0, strlen('application/'.$this->appInfo['name'])) == 'application/'.$this->appInfo['name'] ||
+                    substr($v, 0, strlen('public/theme/'.$this->appInfo['name'])) == 'public/theme/'.$this->appInfo['name'] ||
+                    substr($v, 0, strlen('public/static/'.$this->appInfo['name'])) == 'public/static/'.$this->appInfo['name'] ) && strpos($v, '..') === false) {
                     if (is_file($this->rootPath.$v)) {
                         @unlink($this->rootPath.$v);
                     }
@@ -425,14 +440,34 @@ class Upgrade extends Admin
         }
 
         // 读取模块info
-        if (!is_file($this->appPath.$module->name.'/info.php')) {
-            $this->error = $module->name.'模块配置文件[info.php]丢失';
+        if (!is_file($this->appPath.$this->appInfo['name'].'/info.php')) {
+            $this->error = $this->appInfo['name'].'模块配置文件[info.php]丢失';
             return false;
         }
 
-        $moduleInfo = include_once $this->appPath.$module->name.'/info.php';
+        $moduleInfo = include_once $this->appPath.$this->appInfo['name'].'/info.php';
         if (!isset($moduleInfo['db_prefix']) || empty($moduleInfo['db_prefix'])) {
             $moduleInfo['db_prefix'] = 'db_';
+        }
+
+        // 整合模块配置
+        $oldConfig = $newConfig = '';
+        if (!empty($this->appInfo['config'])) {
+            $oldConfig = json_decode($this->appInfo['config'], 1);
+            sort($oldConfig);
+            $oldColumn = array_column($oldConfig, 'name');
+        }
+
+        if (!empty($newConfig = $moduleInfo['config'])) {
+            if (!empty($oldConfig)) {
+                foreach ($newConfig as $k => &$v) {
+                    $schKey = array_search($v['name'], $oldColumn);
+                    if ($schKey !== false) {
+                        $v['value'] = $oldConfig[$schKey]['value'];
+                    }
+                }
+            }
+            $newConfig = json_encode($newConfig, 1);
         }
 
         // 导入SQL
@@ -453,9 +488,13 @@ class Upgrade extends Admin
             }
         }
 
-        // 更新模块版本信息
-        ModuleModel::where('identifier', $this->identifier)->setField('version', $version);
+        // 更新模块信息
+        $this->appInfo->version = $version;
+        $this->appInfo->config = $newConfig;
+        $this->appInfo->save();
         $this->clearCache('', $version);
+        ModuleModel::getConfig('', true);
+
         return true;
     }
 
@@ -466,8 +505,7 @@ class Upgrade extends Admin
      */
     private function _pluginsInstall($file, $version)
     {
-        $plugins    = PluginsModel::where('identifier', $this->identifier)->find();
-        $backPath   = $this->updateBackPath.'plugins/'.$plugins->name.'/'.$plugins->version;
+        $backPath   = $this->updateBackPath.'plugins/'.$this->appInfo['name'].'/'.$this->appInfo['version'];
         $_version   = cache($this->cacheUpgradeList);
         $_version   = $_version['data'];
         $md5file    = md5_file($file);
@@ -499,19 +537,19 @@ class Upgrade extends Admin
             return false;
         }
 
-        if (!is_dir($decomPath.'/upload/plugins/'.$plugins->name)) {
+        if (!is_dir($decomPath.'/upload/plugins/'.$this->appInfo['name'])) {
             $this->error = '升级失败，升级包文件不完整';
             return false;
         }
 
-        if (!is_dir($this->rootPath.'plugins/'.$plugins->name)) {
-            $this->error = '升级失败，插件目录不存在[/plugins/'.$plugins->name.']';
+        if (!is_dir($this->rootPath.'plugins/'.$this->appInfo['name'])) {
+            $this->error = '升级失败，插件目录不存在[/plugins/'.$this->appInfo['name'].']';
             return false;
         }
 
         // 读取插件info
-        if (!is_file($this->rootPath.'plugins/'.$plugins->name.'/info.php')) {
-            $this->error = $plugins->name.'插件配置文件[info.php]丢失';
+        if (!is_file($this->rootPath.'plugins/'.$this->appInfo['name'].'/info.php')) {
+            $this->error = $this->appInfo['name'].'插件配置文件[info.php]丢失';
             return false;
         }
 
@@ -532,8 +570,8 @@ class Upgrade extends Admin
         if (isset($upInfo['delete'])) {
             foreach ($upInfo['delete'] as $k => $v) {
                 $v = trim($v, '/');
-                if ( ( substr($v, 0, strlen('plugins/'.$plugins->name)) == 'plugins/'.$plugins->name ||
-                    substr($v, 0, strlen('public/static/plugins/'.$plugins->name)) == 'public/static/plugins/'.$plugins->name ) && strpos($v, '..') === false) {
+                if ( ( substr($v, 0, strlen('plugins/'.$this->appInfo['name'])) == 'plugins/'.$this->appInfo['name'] ||
+                    substr($v, 0, strlen('public/static/plugins/'.$this->appInfo['name'])) == 'public/static/plugins/'.$this->appInfo['name'] ) && strpos($v, '..') === false) {
                     if (is_file($this->rootPath.$v)) {
                         @unlink($this->rootPath.$v);
                     }
@@ -554,9 +592,29 @@ class Upgrade extends Admin
             }
         }
 
-        $pluginsInfo = include_once $this->rootPath.'plugins/'.$plugins->name.'/info.php';
+        $pluginsInfo = include_once $this->rootPath.'plugins/'.$this->appInfo['name'].'/info.php';
         if (!isset($pluginsInfo['db_prefix']) || empty($pluginsInfo['db_prefix'])) {
             $pluginsInfo['db_prefix'] = 'db_';
+        }
+
+        // 整合插件配置
+        $oldConfig = $newConfig = '';
+        if (!empty($this->appInfo['config'])) {
+            $oldConfig = json_decode($this->appInfo['config'], 1);
+            sort($oldConfig);
+            $oldColumn = array_column($oldConfig, 'name');
+        }
+
+        if (!empty($newConfig = $pluginsInfo['config'])) {
+            if (!empty($oldConfig)) {
+                foreach ($newConfig as $k => &$v) {
+                    $schKey = array_search($v['name'], $oldColumn);
+                    if ($schKey !== false) {
+                        $v['value'] = $oldConfig[$schKey]['value'];
+                    }
+                }
+            }
+            $newConfig = json_encode($newConfig, 1);
         }
 
         // 导入SQL
@@ -577,9 +635,13 @@ class Upgrade extends Admin
             }
         }
 
-        // 更新模块版本信息
-        PluginsModel::where('identifier', $this->identifier)->setField('version', $version);
+        // 更新插件信息
+        $this->appInfo->version = $version;
+        $this->appInfo->config = $newConfig;
+        $this->appInfo->save();
         $this->clearCache('', $version);
+        PluginsModel::getConfig('', true);
+
         return true;
     }
 
