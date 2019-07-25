@@ -99,7 +99,7 @@
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
-                            $('.app-price').html('￥'+price+'<span class="red" style="display:block;font-size:14px;padding-bottom:10px;">支付时请备注订单号：'+res.order_id+'</span>');
+                            $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:14px;padding-bottom:10px;">支付时请备注订单号：'+res.order_id+'</strong>');
                             $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
                             $('#qrcode').attr('src', res.qrcode).show();
                             // 定时刷新支付状态
