@@ -768,6 +768,9 @@ if (!function_exists('plugins_run')) {
         }
         $class = "plugins\\{$name}\\{$group}\\{$controller}";
         $obj = new $class;
+        $_GET['_p'] = $name;
+        $_GET['_c'] = $controller;
+        $_GET['_a'] = $action;
         return call_user_func_array([$obj, $action], [$params]);
     }
 }
