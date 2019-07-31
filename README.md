@@ -137,7 +137,7 @@ www  WEB部署目录（不建议使用子目录）
 
 ## 应用推荐 
 
-[CMS内容管理系统](https://store.hisiphp.com/detail/1000025.html?from=github)
+[CMS内容管理系统(含小程序)](https://store.hisiphp.com/detail/1000025.html?from=github)
 
 [多公众号管理](https://store.hisiphp.com/detail/1000035.html?from=github)
 
