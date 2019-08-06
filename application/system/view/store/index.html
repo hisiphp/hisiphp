@@ -99,7 +99,7 @@
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
-                            $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:14px;padding-bottom:10px;">支付时请备注订单号：'+res.order_id+'</strong>');
+                            $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:16px;padding:10px 0;">支付时请备注订单号：'+res.order_id+'</strong>');
                             $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
                             $('#qrcode').attr('src', res.qrcode).show();
                             // 定时刷新支付状态
@@ -258,6 +258,9 @@
 
   <span class="layui-badge layui-bg-blue">问</span> a.com已经购买过此应用了，为什么www.a.com还要再购买？
   <span class="layui-badge layui-bg-green">答</span> 应用授权采用单域名授权，单域名规则并不是以根域名来判断的。
+
+  <span class="layui-badge layui-bg-blue">问</span> 用本地开发域名购买的应用，上线后怎么办？
+  <span class="layui-badge layui-bg-green">答</span> 支持开发域名和正式域名同时绑定，加QQ(364666827)联系添加域名。
 </pre>
 </script>
 <script type="text/html" id="installTpl">
@@ -277,12 +280,6 @@
             <dd>
                 <a href="javascript:void(0);" data-value="wechat" class="layui-btn layui-btn-xs layui-btn-normal payment app-spec-a">微信支付</a>
                 <!-- <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a> -->
-            </dd>
-        </dl>
-        <dl class="app-spec">
-            <dt>特别说明：</dt>
-            <dd>
-                <a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★本应用为单域名授权，购买后不支持变更，点此查看解决方案★</a>
             </dd>
         </dl>
         <div class="layui-form-item app-info">
