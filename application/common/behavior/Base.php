@@ -26,6 +26,12 @@ class Base
 {
     public function run()
     {
+
+        // 获取站点根目录
+        $entry  = Request::baseFile();
+        $rootDir= preg_replace(['/index.php$/', '/plugins.php$/', '/'.config('sys.admin_path').'$/'], ['', '', ''], $entry);
+
+        define('ROOT_DIR', $rootDir);
         
         // 获取当前模块名称
         $module = strtolower(Request::module());
@@ -58,12 +64,6 @@ class Base
             // 设置模块的默认主题
             $theme = $modInfo['theme'] ? $modInfo['theme'] : 'default';
         }
-
-        // 获取站点根目录
-        $entry  = request()->baseFile();
-        $rootDir= preg_replace(['/index.php$/', '/plugins.php$/', '/'.config('sys.admin_path').'$/'], ['', '', ''], $entry);
-
-        define('ROOT_DIR', $rootDir);
         
         //静态目录扩展配置
         $viewReplaceStr = [
