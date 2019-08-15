@@ -13,7 +13,6 @@ namespace hisi;
 
 use hisi\Http;
 use Env;
-use think\exception\HttpException;
 
 class Cloud {
 
@@ -49,9 +48,6 @@ class Cloud {
     public function __construct($identifier = '', $path = './') {
         $this->identifier = $identifier;
         $this->path = $path;
-        if (stripos($this->lock, 'public')) {
-            throw new HttpException(404, '请将站点根目录设置到public目录');
-        }
         $this->lock = './upload/cloud.lock';
     }
 

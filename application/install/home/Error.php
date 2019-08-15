@@ -12,6 +12,7 @@
 namespace app\install\home;
 
 use app\common\controller\Common;
+use think\exception\HttpException;
 use app\system\model\SystemUser as UserModel;
 use think\Db;
 use Env;
@@ -27,7 +28,13 @@ class Error extends Common
     {
 
         // 检测PHP环境
-        if(version_compare(PHP_VERSION,'5.6.0','<'))  die('PHP版本过低，最少需要PHP5.6，请升级PHP版本！');
+        if(version_compare(PHP_VERSION,'5.6.0','<')) {
+            return $this->error('PHP版本过低，最少需要PHP5.6，请升级PHP版本（推荐使用php7）！');
+        };
+
+        if (stripos(ROOT_DIR, 'public')) {
+            return  $this->error('请将站点根目录设置到public目录');
+        }
 
         if (is_file(Env::get('app_path').'install.lock')) {
             return $this->error('如需重新安装，请手动删除/install.lock文件');
