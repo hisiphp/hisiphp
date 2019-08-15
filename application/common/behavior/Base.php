@@ -26,12 +26,6 @@ class Base
 {
     public function run()
     {
-
-        // 获取站点根目录
-        $entry  = Request::baseFile();
-        $rootDir= preg_replace(['/index.php$/', '/plugins.php$/', '/'.config('sys.admin_path').'$/'], ['', '', ''], $entry);
-
-        define('ROOT_DIR', $rootDir);
         
         // 获取当前模块名称
         $module = strtolower(Request::module());
@@ -47,6 +41,12 @@ class Base
 
         // 设置系统配置
         config(ConfigModel::getConfig());
+
+        // 获取站点根目录
+        $entry  = Request::baseFile();
+        $rootDir= preg_replace(['/index.php$/', '/plugins.php$/', '/'.config('sys.admin_path').'$/'], ['', '', ''], $entry);
+
+        define('ROOT_DIR', $rootDir);
         
         // 判断模块是否存在且已安装
         $theme = 'default';
