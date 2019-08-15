@@ -32,8 +32,8 @@ class Error extends Common
             return $this->error('PHP版本过低，最少需要PHP5.6，请升级PHP版本（推荐使用php7）！');
         };
 
-        if (stripos(ROOT_DIR, 'public')) {
-            return  $this->error('请将站点根目录设置到public目录');
+        if (strpos($this->request->url(), 'public/')) {
+            return $this->error('请将网站根目录指向public');
         }
 
         if (is_file(Env::get('app_path').'install.lock')) {
