@@ -96,6 +96,19 @@
                             branch_id: branchId
                         };
 
+                        var str = '';
+                        if (res.free_down > 1) {
+                            str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 购买该应用累计达到 <strong style="font-size:14px;">'+res.free_down+'</strong> 次后，即可享受无限域名授权 ★</a>';
+                        } else {
+                            str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 本应用为单域名授权（开发域名和正式域名可同时绑定） ★</a>';
+                        }
+
+                        if (res.pro_free_down > 0 && res.pro_free_down < res.free_down) {
+                            str += '<br><a href="https://www.hisiphp.com/authorize.html" class="layui-btn layui-btn-xs layui-btn-danger" target="_blank">★Pro版用户只需购买 <strong style="font-size:14px;">'+res.pro_free_down+'</strong> 次后，即可享受无限制域名授权★</a>';
+                        }
+
+                        $('#authDesc').html(str);
+
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
@@ -138,12 +151,10 @@
             ,defaultToolbar: []
             ,text: {none: '对不起！暂无相关应用，不过不用担心，一大波开发者正在开发中....'}
             ,cols: [[
-                {field:'title', width:180, title: '应用名称', templet:function(d) {
-                    return d.title+' <i data-title="'+d.title+'" data-data='+JSON.stringify(d.preview)+' class="layui-icon layui-icon-picture"></i>';
-                }}
+                {field:'title', width:200, title: '应用名称'}
                 ,{field:'intro', title: '应用简介'}
                 ,{field:'author', width:100, title: '作者'}
-                ,{field:'price', width:100, title: '价格', templet:function(d) {
+                ,{field:'price', width:90, title: '价格', templet:function(d) {
                     return '￥'+d.price;
                 }}
                 ,{field:'sales', width:70, title: '下载'}
@@ -190,7 +201,7 @@
                         shade: 0.5,
                         title: '安装'+data.title,
                         skin: 'layui-layer-rim',
-                        area: ['480px', '480px'],
+                        area: ['480px', '530px'],
                         content: html,
                         success: function(layero, index) {
                             specSelect();
@@ -232,7 +243,7 @@
                 type: 1,
                 title: '购买常见问题',
                 shadeClose: true,
-                area:['580px', '300px'],
+                area:['650px', '400px'],
                 content: $('#questionTpl').html()
             });
         });
@@ -256,11 +267,14 @@
   <span class="layui-badge layui-bg-blue">问</span> 付款成功了，还是显示未支付？
   <span class="layui-badge layui-bg-green">答</span> 支付成功后正常是会立即生效，2分钟内未生效请联系<a href="http://wpa.qq.com/msgrd?v=3&uin=364666827&site=qq&menu=yes" target="_top">QQ：364666827</a>
 
-  <span class="layui-badge layui-bg-blue">问</span> a.com已经购买过此应用了，为什么www.a.com还要再购买？
-  <span class="layui-badge layui-bg-green">答</span> 应用授权采用单域名授权，单域名规则并不是以根域名来判断的。
+  <span class="layui-badge layui-bg-blue">问</span> 在a.com已经购买过此应用了，为什么www.a.com还要再购买？
+  <span class="layui-badge layui-bg-green">答</span> 部分应用授权采用单域名授权，单域名规则并不是以根域名来判断的。
 
   <span class="layui-badge layui-bg-blue">问</span> 用本地开发域名购买的应用，上线后怎么办？
   <span class="layui-badge layui-bg-green">答</span> 支持开发域名和正式域名同时绑定，加QQ(364666827)联系添加域名。
+
+  <span class="layui-badge layui-bg-blue">问</span> 部分应用授权说明显示“购买多少套后即可享受无限域名授权”什么意思？
+  <span class="layui-badge layui-bg-green">答</span> 指购买该应用达到指定的数量后，可免费下载该应用并自动获得授权（同一个云平台账号）。
 </pre>
 </script>
 <script type="text/html" id="installTpl">
@@ -281,6 +295,10 @@
                 <a href="javascript:void(0);" data-value="wechat" class="layui-btn layui-btn-xs layui-btn-normal payment app-spec-a">微信支付</a>
                 <!-- <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a> -->
             </dd>
+        </dl>
+        <dl class="app-spec">
+            <dt>授权说明：</dt>
+            <dd id="authDesc"></dd>
         </dl>
         <div class="layui-form-item app-info">
             <div class="app-price"></div>
