@@ -296,8 +296,17 @@ class SystemAnnex extends Model
      */
     public static function favicon()
     {
-        // $file = request()->file('upload');
+
+        $file = request()->file('file');
+
+        if (!$file->checkExt('ico')) {
+            return self::result('只允许上传ico格式');
+        }
+
+        $file->move('./', 'favicon.ico');
+
         $data['file'] = '/favicon.ico';
+
         return self::result('文件上传成功。', 'input', 1, $data);
     }
 
