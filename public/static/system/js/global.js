@@ -209,19 +209,11 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @title 弹窗标题
      * @hisi-data {width: '弹窗宽度', height: '弹窗高度', idSync: '是否同步ID', table: '数据表ID(同步ID时必须)', type: '弹窗类型'}
      */
-    $(document).on('click', '.j-iframe-pop,.hisi-iframe-pop', function() {
+    $(document).on('click', '.j-iframe-pop,.hisi-iframe-pop,.hisi-iframe', function() {
         var that = $(this), query = '';
         var def = {width: '750px', height: '500px', idSync: false, table: 'dataTable', type: 2, url: that.attr('href'), title: that.attr('title')};
         var opt = new Function('return '+ that.attr('hisi-data'))() || {};
-
-        opt.url     = opt.url || def.url;
-        opt.title   = opt.title || def.title;
-        opt.width   = opt.width || def.width;
-        opt.height  = opt.height || def.height;
-        opt.type    = opt.type || def.type;
-        opt.table   = opt.table || def.table;
-        opt.idSync  = opt.idSync || def.idSync;
-
+        opt = Object.assign({}, def, opt);
         if (!opt.url) {
             layer.msg('请设置href参数');
             return false;
@@ -257,23 +249,36 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
     /**
      * 通用状态设置开关
      * @attr data-href 请求地址
+     * @attr confirm 确认提示
      */
     form.on('switch(switchStatus)', function(data) {
-        var that = $(this), status = 0;
-        if (!that.attr('data-href')) {
+        var that = $(this), status = 0, func = function() {
+            $.get(that.attr('data-href'), {val:status}, function(res) {
+                layer.msg(res.msg);
+                if (res.code == 0) {
+                    that.trigger('click');
+                    form.render('checkbox');
+                }
+            });
+        };
+        if (typeof(that.attr('data-href')) == 'undefined') {
             layer.msg('请设置data-href参数');
             return false;
         }
         if (this.checked) {
             status = 1;
         }
-        $.get(that.attr('data-href'), {val:status}, function(res) {
-            layer.msg(res.msg);
-            if (res.code == 0) {
+        
+        if (typeof(that.attr('confirm')) == 'undefined') {
+            func();
+        } else {
+            layer.confirm(that.attr('confirm') || '你确定要执行操作吗？', {title:false, closeBtn:0}, function(index){
+                func();
+            }, function() {
                 that.trigger('click');
                 form.render('checkbox');
-            }
-        });
+            });
+        }
     });
 
     /**
@@ -285,18 +290,21 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
         var _form = '', 
             that = $(this), 
             text = that.text(),
-            options = {pop: false, refresh: true, jump: false, callback: null};
+            opt = {},
+            def = {pop: false, refresh: true, jump: false, callback: null, time: 3000};
         if ($(this).attr('data-form')) {
             _form = $(that.attr('data-form'));
         } else {
-            _form = that.parents('form');
+            _form = $(data.form);
         }
 
         if (that.attr('hisi-data')) {
-            options = new Function('return '+ that.attr('hisi-data'))();
+            opt = new Function('return '+ that.attr('hisi-data'))();
         } else if (that.attr('lay-data')) {
-            options = new Function('return '+ that.attr('lay-data'))();
+            opt = new Function('return '+ that.attr('lay-data'))();
         }
+
+        opt = Object.assign({}, def, opt);
 
         /* CKEditor专用 */
         if (typeof(CKEDITOR) != 'undefined') {
@@ -304,39 +312,40 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                 CKEDITOR.instances[instance].updateElement();
             }
         }
-        that.prop('disabled', true).text('提交中...');
+        that.removeClass('layui-btn-normal').addClass('layui-btn-disabled').prop('disabled', true).text('提交中...');
         $.ajax({
             type: "POST",
             url: _form.attr('action'),
-            data: _form.serialize(),
+            data: data.field,
             success: function(res) {
-                that.text(res.msg);
+                that.removeClass("layui-btn-disabled");
                 if (res.code == 0) {
-                    that.prop('disabled', false).removeClass('layui-btn-normal').addClass('layui-btn-danger');
+                    that.text(res.msg).prop('disabled', false).removeClass('layui-btn-normal').addClass('layui-btn-danger');
                     setTimeout(function(){
                         that.removeClass('layui-btn-danger').addClass('layui-btn-normal').text(text);
-                    }, 3000);
+                    }, opt.time);
                 } else {
+                    that.addClass('layui-btn-normal').text(res.msg);
                     setTimeout(function() {
                         that.text(text).prop('disabled', false);
-                        if (options.callback) {
-                            options.callback(that, res);
+                        if (opt.callback) {
+                            opt.callback(that, res);
                         }
-                        if (options.pop == true) {
-                            if (options.refresh == true) {
+                        if (opt.pop == true) {
+                            if (opt.refresh == true) {
                                 parent.location.reload();
-                            } else if (options.jump == true && res.url != '') {
+                            } else if (opt.jump == true && res.url != '') {
                                 parent.location.href = res.url;
                             }
                             parent.layui.layer.closeAll();
-                        } else if (options.refresh == true) {
+                        } else if (opt.refresh == true) {
                             if (res.url != '') {
                                 location.href = res.url;
                             } else {
-                                location.reload();
+                                history.back(-1);
                             }
                         }
-                    }, 3000);
+                    }, opt.time);
                 }
             }
         });
