@@ -542,7 +542,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             arr = that.serializeArray(), 
             where = new Array(),
             dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable',
-            options = new Function('return '+ that.attr('hisi-data'))() || {page: true};
+            options = new Function('return '+ that.attr('hisi-data'))() || {page: {curr:1}};
         
             for(var i in arr) {
                 where[arr[i].name] = arr[i].value;
@@ -563,7 +563,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      */
     $(document).on('click', '.hisi-table-a-filter', function() {
         var that = $(this), dataTable = that.attr('data-table') ? that.attr('data-table') : 'dataTable',
-        options = new Function('return '+ that.attr('hisi-data'))() || {page: true};
+        options = new Function('return '+ that.attr('hisi-data'))() || {page: {curr:1}};
         
         options.url = that.attr('href');
 
