@@ -755,7 +755,7 @@ if (!function_exists('plugins_run')) {
      */
     function plugins_run($path = '', $params = [], $group = 'admin')
     {
-        define('IS_PLUGINS', true);
+        !defined('IS_PLUGINS') && define('IS_PLUGINS', true);
         if (strpos($path, '/')) {
             list($name, $controller, $action) = explode('/', $path);
         } else {
@@ -783,12 +783,11 @@ if (!function_exists('plugins_info')) {
      */
     function plugins_info($name = '')
     {
-        $path = ROOT_PATH.'plugins/'.$name.'/info.php';
+        $path = \Env::get('root_path').'plugins/'.$name.'/info.php';
         if (!file_exists($path)) {
             return false;
         }
-        $info = include_once $path;
-        return $info;
+        return include_once $path;
     }
 }
 
@@ -834,17 +833,17 @@ if (!function_exists('plugins_url')) {
                 return url('system/plugins/run', $params);
             } else {
                 if ($urlmode == 2) {
-                    return ROOT_DIR.'plugins.php?'.http_build_query($params);
+                    return '/plugins.php?'.http_build_query($params);
                 }
-                return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
+                return '/plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
             }
         } elseif ($group == 'admin') {
             return url('system/plugins/run', $params);
         } else {
             if ($urlmode == 2) {
-                return ROOT_DIR.'plugins.php?'.http_build_query($params);
+                return '/plugins.php?'.http_build_query($params);
             }
-            return ROOT_DIR.'plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
+            return '/plugins/'.$params['_p'].'/'.$params['_c'].'/'.$params['_a'].'?'.http_build_query($param);
         }
     }
 }
