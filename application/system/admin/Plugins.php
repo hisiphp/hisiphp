@@ -452,7 +452,7 @@ class Plugins extends Admin
             Dir::copyDir($decomPath.'/upload/plugins/'.$appName.'/', Env::get('root_path').'plugins/'.$appName);
 
             // 复制静态资源
-            Dir::copyDir($decomPath.'/upload/public/static/'.$appName, Env::get('root_path').'public/static/plugins/'.$appName);
+            Dir::copyDir($decomPath.'/upload/public/static/'.$appName, './static/plugins/'.$appName);
 
             // 删除临时目录和安装包
             Dir::delDir($decomPath);

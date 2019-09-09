@@ -103,11 +103,14 @@
                             str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 本应用为单域名授权（开发域名和正式域名可同时绑定） ★</a>';
                         }
 
-                        if (res.pro_free_down > 0 && res.pro_free_down < res.free_down) {
+                        if (res.pro_free_down > 0) {
                             str += '<br><a href="https://www.hisiphp.com/authorize.html" class="layui-btn layui-btn-xs layui-btn-danger" target="_blank">★Pro版用户只需购买 <strong style="font-size:14px;">'+res.pro_free_down+'</strong> 次后，即可享受无限制域名授权★</a>';
                         }
 
-                        $('#authDesc').html(str);
+                        $('#authDesc').children('dd').html(str);
+                        if (res.free_down == 1) {
+                            $('#authDesc').hide();
+                        }
 
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
@@ -296,9 +299,9 @@
                 <!-- <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a> -->
             </dd>
         </dl>
-        <dl class="app-spec">
+        <dl class="app-spec" id="authDesc">
             <dt>授权说明：</dt>
-            <dd id="authDesc"></dd>
+            <dd>...</dd>
         </dl>
         <div class="layui-form-item app-info">
             <div class="app-price"></div>

@@ -12,7 +12,8 @@
 namespace app\system\model;
 
 use think\Model;
-use Env;
+use think\facade\Env;
+use think\facade\Cache;
 
 /**
  * 插件模型
@@ -43,7 +44,7 @@ class SystemPlugins extends Model
      */
     public static function getConfig($name = '', $update = false)
     {
-        $result = cache('plugins_config');
+        $result = Cache::get('plugins_config');
         if ($result === false || $update == true) {
             $rows = self::where('status', 2)->column('name,config', 'name');
             $result = [];
@@ -56,6 +57,7 @@ class SystemPlugins extends Model
                     continue;
                 }
                 foreach ($config as $rr) {
+                    $rr['value'] = htmlspecialchars_decode($rr['value']);
                     switch ($rr['type']) {
                         case 'array':
                         case 'checkbox':
@@ -67,7 +69,7 @@ class SystemPlugins extends Model
                     }
                 }
             }
-            cache('plugins_config', $result);
+            Cache::tag('hs_plugins')->set('plugins_config', $result);
         }
 
         return $name != '' ? $result[$name] : $result;
@@ -115,7 +117,7 @@ class SystemPlugins extends Model
         }
 
         $data['status'] = 0;
-        $data['icon'] = ROOT_DIR.'static/plugins/'.$data['name'].'/'.$data['name'].'.png';
+        $data['icon'] = '/static/plugins/'.$data['name'].'/'.$data['name'].'.png';
         // 验证
         $valid = new \app\system\validate\Plugins;
         if($valid->check($data) !== true) {
@@ -135,7 +137,7 @@ class SystemPlugins extends Model
 
         // 生成插件主目录和静态资源目录
         mkdir($path, 0777, true);
-        mkdir($rootPath.'public/static/plugins/'.$data['name'].'/', 0777, true);
+        mkdir('./static/plugins/'.$data['name'].'/', 0777, true);
         // 生成插件信息
         $this->mkInfo($path, $data, $config);
         // 生成独立配置文件
@@ -153,7 +155,7 @@ class SystemPlugins extends Model
         // 生成默认示例控制器
         $this->mkExample($path, $data);
 
-        copy($rootPath.'public/static/system/image/app.png', $rootPath.'public/static/plugins/'.$data['name'].'/'.$data['name'].'.png');
+        copy('./static/system/image/app.png', './static/plugins/'.$data['name'].'/'.$data['name'].'.png');
         // 生成说明文档
         // $this->mkReadme($path, $data);
         return true;

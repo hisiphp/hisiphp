@@ -84,7 +84,7 @@ class SystemAnnex extends Model
             $param = request()->param();
         }
 
-        $from       = isset($param['from']) ? $param['from'] : 'input';
+        $from       = isset($param['from']) ? strtolower($param['from']) : 'input';
         $group      = isset($param['group']) ? $param['group'] : 'sys';
         $water      = isset($param['water']) ? $param['water'] : '';
         $thumb      = isset($param['thumb']) && !empty($param['thumb']) ? $param['thumb'] : config('upload.thumb_size');

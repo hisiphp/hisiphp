@@ -201,12 +201,12 @@ class Store extends Admin
 
         // 复制static目录
         if (is_dir($unzipPath.'/upload/public/static')) {
-            Dir::copyDir($unzipPath.'/upload/public/static', '.'.ROOT_DIR.'static');
+            Dir::copyDir($unzipPath.'/upload/public/static', './static');
         }
 
         // 复制theme目录
         if (is_dir($unzipPath.'/upload/public/theme')) {
-            Dir::copyDir($unzipPath.'/upload/public/theme', '.'.ROOT_DIR.'theme');
+            Dir::copyDir($unzipPath.'/upload/public/theme', './theme');
         }
 
         // 删除临时目录和安装包

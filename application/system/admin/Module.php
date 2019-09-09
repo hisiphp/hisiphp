@@ -105,7 +105,7 @@ class Module extends Admin
                     $sql['title']       = $info['title'];
                     $sql['intro']       = $info['intro'];
                     $sql['author']      = $info['author'];
-                    $sql['icon']        = ROOT_DIR.substr($info['icon'], 1);
+                    $sql['icon']        = '/'.substr($info['icon'], 1);
                     $sql['version']     = $info['version'];
                     $sql['url']         = $info['author_url'];
                     $sql['config']      = '';
@@ -414,7 +414,7 @@ class Module extends Admin
             return $this->error('图标大小超过系统限制(100KB)');
         }
 
-        $imagePath = '.'.ROOT_DIR.'upload/temp/';
+        $imagePath = './upload/temp/';
         $file->rule('')->move($imagePath, $module['name'] . '.png');
         $image = getimagesize($imagePath.$module['name'] . '.png');
         if ($image[0] !== 200 || $image[1] !== 200 ) {
@@ -424,7 +424,7 @@ class Module extends Admin
 
         // 将图标移动到模块目录下面
         copy($imagePath.$module['name'] . '.png', $this->appPath.$module['name'].'.png');
-        copy($imagePath.$module['name'] . '.png', '.'.ROOT_DIR.'static/'.$module['name'].'/'.$module['name'].'.png');
+        copy($imagePath.$module['name'] . '.png', './static/'.$module['name'].'/'.$module['name'].'.png');
         return $this->success('/static/'.$module['name'].'/'.$module['name'].'.png?v='.time());
     }
 
@@ -511,18 +511,18 @@ class Module extends Admin
             }
 
             Dir::copyDir($appPath, Env::get('app_path').$appName);
-            if (!is_dir('.'.ROOT_DIR.'static/'.$appName.'/')) {
-                Dir::create('.'.ROOT_DIR.'static/'.$appName.'/', 0755);
+            if (!is_dir('./static/'.$appName.'/')) {
+                Dir::create('./static/'.$appName.'/', 0755);
             }
 
             // 复制static目录
             if (is_dir($decomPath.'/upload/public/static')) {
-                Dir::copyDir($decomPath.'/upload/public/static', '.'.ROOT_DIR.'static');
+                Dir::copyDir($decomPath.'/upload/public/static', './static');
             }
 
             // 复制theme目录
             if (is_dir($decomPath.'/upload/public/theme')) {
-                Dir::copyDir($decomPath.'/upload/public/theme', '.'.ROOT_DIR.'theme');
+                Dir::copyDir($decomPath.'/upload/public/theme', './theme');
             }
 
             // 删除临时目录和安装包

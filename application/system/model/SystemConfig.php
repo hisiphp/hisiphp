@@ -12,6 +12,7 @@
 namespace app\system\model;
 
 use think\Model;
+use think\facade\Cache;
 
 /**
  * 系统配置模型
@@ -35,11 +36,12 @@ class SystemConfig extends Model
      */
     public static function getConfig($name = '', $update = false)
     {
-        $result = cache('sys_config');
+        $result = Cache::get('sys_config');
         if ($result === false || $update == true) {
             $configs = self::column('value,type,group', 'name');
             $result = [];
             foreach ($configs as $config) {
+                $config['value'] = htmlspecialchars_decode($config['value']);
                 switch ($config['type']) {
                     case 'array':
                     case 'checkbox':
@@ -59,7 +61,7 @@ class SystemConfig extends Model
                         break;
                 }
             }
-            cache('sys_config', $result);
+            Cache::tag('hs_config')->set('sys_config', $result);
         }
         return $name != '' ? $result[$name] : $result;
     }

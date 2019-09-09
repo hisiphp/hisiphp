@@ -104,7 +104,7 @@ class Base
                 '__PLUGINS_IMG__'   => $rootDir.'static/plugins/'.$pName.'/static/image',
             ]);
         }
-
+        
         View::config(['tpl_replace_string' => $viewReplaceStr]);
 
         if(defined('ENTRANCE') && ENTRANCE == 'admin') {

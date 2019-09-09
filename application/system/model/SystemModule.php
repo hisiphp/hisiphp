@@ -12,9 +12,11 @@
 namespace app\system\model;
 
 use think\Model;
-use Env;
 use hisi\Dir;
+use think\facade\Env;
 use think\facade\Build;
+use think\facade\Cache;
+
 /**
  * 模块模型
  * @package app\system\model
@@ -37,7 +39,7 @@ class SystemModule extends Model
      */
     public static function getConfig($name = '', $update = false)
     {
-        $result = cache('module_config');
+        $result = Cache::get('module_config');
         if ($result === false || $update == true) {
             $rows = self::where('status', 2)->column('name,config', 'name');
             $result = [];
@@ -50,6 +52,7 @@ class SystemModule extends Model
                     continue;
                 }
                 foreach ($config as $rr) {
+                    $rr['value'] = htmlspecialchars_decode($rr['value']);
                     switch ($rr['type']) {
                         case 'array':
                         case 'checkbox':
@@ -61,7 +64,7 @@ class SystemModule extends Model
                     }
                 }
             }
-            cache('module_config', $result);
+            Cache::tag('hs_module')->set('module_config', $result);
         }
         return $name != '' ? $result[$name] : $result;
     }
@@ -141,12 +144,12 @@ class SystemModule extends Model
             return false;
         }
 
-        if (!is_writable(Env::get('root_path').'public/theme')) {
+        if (!is_writable('.'.ROOT_DIR.'theme')) {
             $this->error = '[theme]目录不可写！';
             return false;
         }
 
-        if (!is_writable(Env::get('root_path').'public/static')) {
+        if (!is_writable('.'.ROOT_DIR.'static')) {
             $this->error = '[static]目录不可写！';
             return false;
         }
@@ -200,7 +203,7 @@ class SystemModule extends Model
         self::create($sql);
 
         // 复制默认应用图标
-        copy(Env::get('root_path').'public/static/system/image/app.png', Env::get('root_path').'public/'.$icon);
+        copy('./static/system/image/app.png', '.'.ROOT_DIR.$icon);
         // 复制system布局模板到当前模块
         copy($app_path.'system/view/block/layout.html', $mod_path.'view/layout.html');
         return true;
@@ -244,7 +247,7 @@ class SystemModule extends Model
         if (is_dir($path.'home')) {
             $home_contro = "<?php\nnamespace app\\".$data["name"]."\\home;\nuse app\common\controller\Common;\n\nclass Index extends Common\n{\n    public function index()\n    {\n        return ".'$this->fetch()'.";\n    }\n}";
             file_put_contents($path . 'home/Index.php', $home_contro);
-            file_put_contents(Env::get('root_path').'public/theme/'.$data['name'].'/default/index/index.html', '我是前台模板[/theme/'.$data['name'].'/default/index/index.html]');
+            file_put_contents('.'.ROOT_DIR.'theme/'.$data['name'].'/default/index/index.html', '我是前台模板[/theme/'.$data['name'].'/default/index/index.html]');
         }
     }
 
@@ -294,6 +297,7 @@ return [
         'url'           => '{$data['name']}',
         'param'         => '',
         'target'        => '_self',
+        'nav'           => 1,
         'sort'          => 100,
     ],
 ];

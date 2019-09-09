@@ -32,7 +32,7 @@ class System extends Admin
     public function index($group = 'base')
     {
         if ($this->request->isPost()) {
-            $webPath = Env::get('root_path').'public/';
+            $webPath = './';
             $data = $this->request->post();
             $types = $data['type'];
 
@@ -212,7 +212,7 @@ if(!is_file('./../install.lock')) {
 
 INFO;
         if (!file_put_contents(ROOT_PATH.$file, $code)) {
-            return fasle;
+            return false;
         }
         return true;
     }
