@@ -242,7 +242,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             opt.url += '?hisi_iframe=yes'+query;
         }
 
-        layer.open({type: opt.type, title: opt.title, content: opt.url, area: [opt.width, opt.height]});
+        layer.open({type: opt.type, offset: 'auto', title: opt.title, content: opt.url, area: [opt.width, opt.height]});
         return false;
     });
 
@@ -316,7 +316,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
         $.ajax({
             type: "POST",
             url: _form.attr('action'),
-            data: data.field,
+            data: _form.serialize(),
             success: function(res) {
                 that.removeClass("layui-btn-disabled");
                 if (res.code == 0) {
@@ -479,7 +479,7 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
      * @class confirm 类似系统confirm
      * @attr tips confirm提示内容
      */
-    $(document).on('click', '.j-page-btns,.hisi-page-btns', function(){
+    $(document).on('click', '.j-page-btns,.hisi-page-btns,.hisi-table-ajax', function(){
         var that = $(this),
             query = '',
             code = function(that) {
