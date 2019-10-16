@@ -7,13 +7,12 @@
 </script>
 
 <script type="text/html" title="操作按钮模板" id="buttonTpl">
-    <a href="{:url('editUser')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal">修改</a>
-    <a href="{:url('delUser')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+    <a href="{:url('editUser')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal hisi-iframe" hisi-data="{width: '470px', height: '400px'}" title="修改管理员">修改</a><a href="{:url('delUser')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
 </script>
 
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group fl">
-        <a href="{:url('addUser')}" class="layui-btn layui-btn-primary layui-btn-sm layui-icon layui-icon-add-circle-fine j-iframe-pop" hisi-data="{width: '470px', height: '400px'}" title="添加管理员">&nbsp;添加</a>
+        <a href="{:url('addUser')}" class="layui-btn layui-btn-primary layui-btn-sm layui-icon layui-icon-add-circle-fine hisi-iframe" hisi-data="{width: '470px', height: '400px'}" title="添加管理员">&nbsp;添加</a>
         <a data-href="{:url('status?val=1')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns layui-icon layui-icon-play" data-table="dataTable">&nbsp;启用</a>
         <a data-href="{:url('status?val=0')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns layui-icon layui-icon-pause" data-table="dataTable">&nbsp;禁用</a>
         <a data-href="{:url('delUser')}" class="layui-btn layui-btn-primary layui-btn-sm j-page-btns confirm layui-icon layui-icon-close red">&nbsp;删除</a>
@@ -23,6 +22,7 @@
 <script type="text/javascript">
     layui.use(['table'], function() {
         var table = layui.table;
+        var roles = {:json_encode($roles, 1)};
         table.render({
             elem: '#dataTable'
             ,url: '{:url()}' //数据接口
@@ -37,17 +37,22 @@
             ,defaultToolbar: ['filter']
             ,cols: [[ //表头
                 {type:'checkbox'}
-                ,{field: 'username', title: '用户名'}
-                ,{field: 'nick', title: '昵称'}
+                ,{field: 'username', title: '用户名', width: 100}
+                ,{field: 'nick', title: '昵称', width: 100}
                 ,{field: 'role_id', title: '角色', templet:function(d){
-                    return d.role.name;
+                    var str = '';
+                    for(var i in d.role_id) {
+                        if (d.role_id[i]) {
+                            str += '<span class="layui-badge layui-bg-blue" style="margin-right:5px">'+roles[d.role_id[i]]+'</span>';
+                        }
+                    }
+                    return str;
                 }}
-                ,{field: 'mobile', title: '手机'}
+                ,{field: 'mobile', title: '手机', width: 120}
                 ,{field: 'last_login_time', width: 150, title: '最后登陆'}
-                ,{field: 'last_login_ip', title: '登陆IP'}
-                ,{field: 'intro', title: '简介'}
-                ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
-                ,{title: '操作', templet: '#buttonTpl'}
+                ,{field: 'last_login_ip', title: '登陆IP', width: 120}
+                ,{field: 'status', title: '状态', width: 95, templet: '#statusTpl'}
+                ,{title: '操作', templet: '#buttonTpl', width:110}
             ]]
         });
     });

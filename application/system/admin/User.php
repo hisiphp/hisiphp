@@ -14,6 +14,7 @@ namespace app\system\admin;
 use app\system\model\SystemUser as UserModel;
 use app\system\model\SystemRole as RoleModel;
 use app\system\model\SystemMenu as MenuModel;
+use hisi\Tree;
 
 /**
  * 后台用户、角色控制器
@@ -32,11 +33,11 @@ class User extends Admin
 
         $tabData['menu'] = [
             [
-                'title' => '管理员角色',
+                'title' => '管理角色',
                 'url' => 'system/user/role',
             ],
             [
-                'title' => '系统管理员',
+                'title' => '管理员',
                 'url' => 'system/user/index',
             ],
         ];
@@ -60,16 +61,18 @@ class User extends Admin
                 $where[] = ['username', 'like', "%{$keyword}%"];
             }
 
-            $data['data'] = UserModel::with('role')->where($where)->page($page)->limit($limit)->select();
+            $data['data'] = UserModel::where($where)->page($page)->limit($limit)->select();
             $data['count'] = UserModel::where($where)->count('id');
             $data['code'] = 0;
             $data['msg'] = '';
             return json($data);
         }
 
-        $this->assign('hisiTabData', $this->tabData);
-        $this->assign('hisiTabType', 3);
-        return $this->fetch();
+        $assign = [];
+        $assign['hisiTabData'] = $this->tabData;
+        $assign['hisiTabType'] = 3;
+        $assign['roles'] = RoleModel::column('id,name');
+        return $this->assign($assign)->fetch();
     }
 
     /**
@@ -138,8 +141,8 @@ class User extends Admin
             return $this->success('添加成功');
         }
         
-        $this->assign('menu_list', '');
-        $this->assign('roleOptions', RoleModel::getOption());
+        $this->assign('menus', []);
+        $this->assign('roles', RoleModel::where('id', '>', 1)->order('id asc')->column('id,name'));
 
         return $this->fetch('userform');
     }
@@ -152,27 +155,34 @@ class User extends Admin
      */
     public function editUser($id = 0)
     {
-        if ($id == 1 && ADMIN_ID != $id) {
-            return $this->error('禁止修改超级管理员');
+        if ($id == 1 || ADMIN_ID == $id) {
+            return $this->error('禁止修改当前登录用户');
         }
+        
         if ($this->request->isPost()) {
             $data = $this->request->post();
             if (!isset($data['auth'])) {
-                $data['auth'] = '';
+                $data['auth'] = [];
             }
             
             $row = UserModel::where('id', $id)->field('role_id,auth')->find();
-            if ($data['id'] == 1 || ADMIN_ID == $id) {// 禁止更改超管角色，当前登陆用户不可更改自己的角色和自定义权限
-                unset($data['role_id'], $data['auth']);
-                if (!$row['auth']) {
-                    $data['auth'] = '';
-                }
-            } else if ($row['role_id'] != $data['role_id']) {// 如果分组不同，自定义权限无效
-                $data['auth'] = '';
+
+            if (implode(',', $row['role_id']) != implode(',', $data['role_id'])) {// 如果分组不同，自定义权限无效
+                $data['auth'] = [];
             }
 
-            if (isset($data['role_id']) && RoleModel::where('id', $data['role_id'])->value('auth') == json_encode($data['auth'])) {// 如果自定义权限与角色权限一致，则设置自定义权限为空
-                $data['auth'] = '';
+            if (isset($data['role_id'])) {
+                $auth = RoleModel::where('id', 'in', $data['role_id'])->field('auth')->select();
+    
+                $newAuth = [];
+                foreach($auth as $v) {
+                    $newAuth = array_merge($newAuth, $v['auth']);
+                }
+                $newAuth = array_unique($newAuth);
+    
+                if (json_encode($newAuth, 1) == json_encode($data['auth'], 1) ) {// 如果自定义权限与角色权限一致，则设置自定义权限为空
+                    $data['auth'] = [];
+                }
             }
 
             if ($data['password']) {
@@ -199,21 +209,13 @@ class User extends Admin
         }
 
         $row = UserModel::where('id', $id)->field('id,username,role_id,nick,email,mobile,auth,status')->find()->toArray();
+
         if (!$row['auth']) {
-            $role = RoleModel::where('id', $row['role_id'])->find();
+            $role = RoleModel::where('id', 'in', $row['role_id'])->find();
             $row['auth'] = $role->auth;
         }
         
-        $tabData = [];
-        $tabData['menu'] = [
-            ['title' => '修改管理员'],
-            ['title' => '设置权限'],
-        ];
-
-        $this->assign('menu_list', MenuModel::getAllChild());
-        $this->assign('hisiTabData', $tabData);
-        $this->assign('hisiTabType', 2);
-        $this->assign('roleOptions', RoleModel::getOption($row['role_id']));
+        $this->assign('roles', RoleModel::where('id', '>', 1)->order('id asc')->column('id,name'));
         $this->assign('formData', $row);
         return $this->fetch('userform');
     }
@@ -328,9 +330,11 @@ class User extends Admin
             ['title' => '添加角色'],
             ['title' => '设置权限'],
         ];
-        $this->assign('menu_list', MenuModel::getAllChild());
+
+        $this->assign('menus', MenuModel::getAuthTree());
         $this->assign('hisiTabData', $tabData);
         $this->assign('hisiTabType', 2);
+        
         return $this->fetch('roleform');
     }
 
@@ -374,7 +378,7 @@ class User extends Admin
         $row = RoleModel::where('id', $id)->field('id,name,intro,auth,status')->find()->toArray();
 
         $this->assign('formData', $row);
-        $this->assign('menu_list', MenuModel::getAllChild());
+        $this->assign('menus', MenuModel::getAuthTree($row['auth']));
         $this->assign('hisiTabData', $tabData);
         $this->assign('hisiTabType', 2);
         return $this->fetch('roleform');

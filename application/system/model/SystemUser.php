@@ -40,6 +40,18 @@ class SystemUser extends Model
         return json_decode($value, 1);
     }
 
+    public function setRoleIdAttr($value)
+    {
+        if (empty($value)) return '';
+        return implode(',', $value);
+    }
+
+    public function getRoleIdAttr($value)
+    {
+        if (empty($value)) return [];
+        return explode(',', $value);
+    }
+
     // 获取最后登陆ip
     public function setLastLoginIpAttr($value)
     {
@@ -156,20 +168,55 @@ class SystemUser extends Model
 
         // 密码校验
         if (!password_verify($password, $user->password)) {
-            $this->error = '登陆密码错误！';
+            $this->error = '登录密码错误！';
             return false;
         }
 
         // 检查是否分配角色
         if ($user->role_id == 0) {
-            $this->error = '禁止访问(原因：未分配角色)！';
+            $this->error = '登录账号未分配角色！';
             return false;
         }
 
         // 角色信息
-        $role = RoleModel::where('id', $user->role_id)->find()->toArray();
-        if (!$role || $role['status'] == 0) {
+        $newAuth = [];
+        
+        if ($user->id !== 1) {
+            $role = RoleModel::where('id', 'in', $user->role_id)->field('status,auth')->select();
+    
+            foreach($role as $v) {
+                if ($v->status == 0) {
+                    continue;
+                }
+                $newAuth = array_merge($newAuth, $v->auth);
+            }
+            
+            $newAuth = array_unique($newAuth);
+            if (empty($newAuth)) {
+                $this->error = '绑定的角色不可用！';
+                return false;
+            }
+        }
+
+        // 通过角色ID获取相关权限
+        $roles = RoleModel::where('id', 'in', $user->role_id)
+                            ->where('status', '=', 1)
+                            ->field('name,auth')
+                            ->select();
+
+        if (!$roles) {
             $this->error = '禁止访问(原因：角色分组可能被禁用)！';
+            return false;
+        }
+
+        $auths = [];
+        foreach($roles as $k => $v) {
+            $auths = array_merge($auths, $v->auth);
+        }
+
+        $auths = array_unique($auths);
+        if (empty($auths) && $user->id > 1) {
+            $this->error = '绑定的角色不可用！';
             return false;
         }
 
@@ -179,24 +226,31 @@ class SystemUser extends Model
         // 更新登录信息
         $user->last_login_time = time();
         $user->last_login_ip   = get_client_ip();
+
         if ($user->save()) {
             // 执行登陆
-            $login = [];
-            $login['uid'] = $user->id;
-            $login['role_id'] = $user->role_id;
-            $login['role_name'] = $role['name'];
-            $login['nick'] = $user->nick;
-            cookie('hisi_iframe', (int)$user->iframe);
+            $login              = [];
+            $login['uid']       = $user->id;
+            $login['role_id']   = implode(',', $user->role_id);
+            $login['nick']      = $user->nick;
+            $login['mobile']    = $user->mobile;
+            $login['email']     = $user->email;
+            
             // 主题设置
             self::setTheme(isset($user->theme) ? $user->theme : 0);
             self::getThemes(true);
+
             // 缓存角色权限
-            session('role_auth_'.$user->role_id, $user->auth ? $user->auth : $role['auth']);
+            session('role_auth_'.$user->id, $auths);
+            
             // 缓存登录信息
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));
+            cookie('hisi_iframe', (int)$user->iframe);
+            
             return $user->id;
         }
+
         return false;
     }
 
@@ -266,8 +320,14 @@ class SystemUser extends Model
      */
     public function logout() 
     {
+        $user = session('admin_user');
+        
         session('admin_user', null);
         session('admin_user_sign', null);
+
+        if (isset($user['uid'])) {
+            session('role_auth_'.$user['uid'], null);
+        }
     }
 
     /**
@@ -287,49 +347,4 @@ class SystemUser extends Model
         return $sign;
     }
 
-    // /**
-    //  * 用户状态设置
-    //  * @param string $id 用户ID
-    //  * @return bool
-    //  */
-    // public function status($id = '', $val = 0) {
-    //     if (is_array($id)) {
-    //         $error = '';
-    //         foreach ($id as $k => $v) {
-    //             $v = (int)$v;
-    //             if ($v == 1) {
-    //                 $error .= '禁止更改超级管理员状态['.$v.']<br>';
-    //                 continue;
-    //             }
-
-    //             $map = [];
-    //             $map['id'] = $v;
-    //             // 删除用户
-    //             self::where($map)->setField('status', $val);
-    //         }
-
-    //         if ($error) {
-    //             $this->error = $error;
-    //             return false;
-    //         }
-    //     } else {
-    //         $id = (int)$id;
-    //         if ($id <= 0) {
-    //             $this->error = '参数传递错误';
-    //             return false;
-    //         }
-
-    //         if ($id == 1) {
-    //             $this->error = '禁止更改超级管理员状态';
-    //             return false;
-    //         }
-
-    //         $map = [];
-    //         $map['id'] = $id;
-    //         // 删除用户
-    //         self::where($map)->setField('status', $val);
-    //     }
-
-    //     return true;
-    // }
 }
