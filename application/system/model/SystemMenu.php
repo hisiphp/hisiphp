@@ -196,6 +196,7 @@ class SystemMenu extends Model
         $where = [];
         $where[] = ['nav', '=', 1];
         $where[] = ['status', '=', 1];
+        $where[] = ['uid', '=', 0];
 
         if (config('sys.app_debug') == 0) {
             $where[] = ['debug', '=', 0];
@@ -207,21 +208,29 @@ class SystemMenu extends Model
             $auths = $menus;
         } else if (!empty($menus)) {
             $keys   = array_keys($menus);
-            $role   = UserModel::where('id', ADMIN_ID)->find();
-            if (empty($role->auth)) {
-                $role = RoleModel::where('id', ADMIN_ROLE)->find();
+            $auth = RoleModel::where('id', 'in', ADMIN_ROLE)->field('auth')->select();
+
+            $roleAuth = [];
+            foreach($auth as $v) {
+                $roleAuth = array_merge($roleAuth, $v['auth']);
             }
+
+            $roleAuth = array_unique($roleAuth);
             
-            $merge  = array_merge($keys, $role->auth);
+            $merge  = array_merge($keys, $roleAuth);
             $unique = array_unique($merge);
             $diff   = array_diff_assoc($merge, $unique);
-    
+            
             $auths = [];
             foreach($diff as $v) {
                 if (isset($menus[$v])) {
                     $auths[$v] = $menus[$v];
                 }
             }
+
+            // 合并快捷菜单
+            $quick = self::where('uid', '=', ADMIN_ID)->column('id,pid,module,title,url,param,target,icon', 'id');
+            $auths = array_merge($auths, $quick);
         }
 
         if (empty($auths)) {
@@ -309,6 +318,7 @@ class SystemMenu extends Model
         }
 
         $map[] = ['status', '=', 1];
+        $map[] = ['uid', '=', 0];
 
         $rows = self::where($map)->column('id,title,url,param');
 
@@ -352,7 +362,8 @@ class SystemMenu extends Model
 
                     $where     = [];
                     $where[]   = ['param', '=', http_build_query($paramArr)];
-                    $where[]   =  ['url', '=', $module.'/'.$controller.'/'.$action];
+                    $where[]   = ['url', '=', $module.'/'.$controller.'/'.$action];
+                    $where[]   = ['uid', '=', 0];
 
                     $res = self::where($where)->field('id,title,url,param')->find();
                     if ($res) {
@@ -577,5 +588,28 @@ class SystemMenu extends Model
 
         self::getMainMenu(true);
         return true;
+    }
+
+    // 获取权限树（角色权限、管理员权限设置专用）
+    public static function getAuthTree($auth = [])
+    {
+        $menus = self::where('status', '=', 1)
+                ->column([
+                    'pid', 
+                    'title', 
+                    'id' => 'spread', 
+                    "IF(id > 0,'auth[]', 'auth[]')" => 'field'
+                ], 'id');
+
+        foreach($menus as $k => &$v) {
+            if (in_array($v['id'], $auth) !== false && 
+                !self::where('pid', '=', $v['id'])->find()) {
+                $v['checked'] = true;
+            }
+        }
+
+        $tree = new Tree(['child' => 'children']);
+
+        return $tree::toTree($menus);
     }
 }
