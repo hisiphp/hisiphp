@@ -80,7 +80,17 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD'})">
+                        <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" id="laydate-{$v['id']}" laydate-type="date">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式<code>config('{if condition="isset($v['module'])"}module_{/if}{:input('param.group', 'base')}.{$v['name']}')</code></div>
+                </div>
+            {/case}
+            {case value="time"}
+                <!--时间-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$v['title']}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" id="laydate-{$v['id']}" laydate-type="time">
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式<code>config('{if condition="isset($v['module'])"}module_{/if}{:input('param.group', 'base')}.{$v['name']}')</code></div>
                 </div>
@@ -90,7 +100,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" onclick="layui.laydate({elem: this,format:'YYYY-MM-DD hh:mm:ss'})">
+                        <input type="text" class="layui-input layui-date" name="id[{$v['id']}]" value="{$v['value']}" autocomplete="off" placeholder="请填写{$v['title']}" id="laydate-{$v['id']}"laydate-type="datetime">
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:htmlspecialchars_decode($v['tips'])}<br>调用方式<code>config('{if condition="isset($v['module'])"}module_{/if}{:input('param.group', 'base')}.{$v['name']}')</code></div>
                 </div>
@@ -172,7 +182,16 @@
                 input.val(res.data.file);
             }
         });
-        // 日期渲染
-        laydate.render({elem: '.layui-date'});
+        
+        /* 绑定多个日期控件 */
+        $('.layui-date').each(function(i) {
+            var t = $(this), option = {
+                elem: this,
+                type: t.attr('laydate-type'),
+                trigger: 'click'
+            };
+
+            laydate.render(option);
+        });
     });
     </script>
