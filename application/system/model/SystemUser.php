@@ -43,7 +43,7 @@ class SystemUser extends Model
     public function setRoleIdAttr($value)
     {
         if (empty($value)) return '';
-        return implode(',', $value);
+        return implode(',', (array)$value);
     }
 
     public function getRoleIdAttr($value)
