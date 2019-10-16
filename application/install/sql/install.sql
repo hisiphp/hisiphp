@@ -98,7 +98,7 @@ VALUES
   (48,1,'base','网站图标','site_favicon','','image','','/system/annex/favicon','又叫网站收藏夹图标，它显示位于浏览器的地址栏或者标题前面，&lt;strong class=&quot;red&quot;&gt;.ico格式&lt;/strong&gt;，&lt;a href=&quot;https://www.baidu.com/s?ie=UTF-8&amp;wd=favicon&quot; target=&quot;_blank&quot;&gt;点此了解网站图标&lt;/a&gt;',5,1,1494692781,1494693966),
   (49,1,'base','手机网站','wap_site_status','1','switch','0:关闭\r\n1:开启','','如果有手机网站，请设置为开启状态，否则只显示PC网站',2,1,1498405436,1498405436),
   (50,1,'sys','云端推送','cloud_push','0','switch','0:关闭\r\n1:开启','','关闭之后，无法通过云端推送安装扩展',5,1,1504250320,1504250320),
-  (51,1,'base','手机网站域名','wap_domain','','input','','','手机访问将自动跳转至此域名',2,1,1504304776,1504304837),
+  (51,1,'base','手机网站域名','wap_domain','','input','','','手机访问将自动跳转至此域名，示例：http://m.domain.com',2,1,1504304776,1504304837),
   (52,1,'sys','多语言支持','multi_language','0','switch','0:关闭\r\n1:开启','','开启后你可以自由上传多种语言包',6,1,1506532211,1506532211),
   (53,1,'sys','后台白名单验证','admin_whitelist_verify','0','switch','0:禁用\r\n1:启用','','禁用后不存在的菜单节点将不在提示',7,1,1542012232,1542012321),
   (54,1,'sys','系统日志保留','system_log_retention','30','input','','','单位天，系统将自动清除 ? 天前的系统日志',8,1,1542013958,1542014158),
@@ -621,7 +621,7 @@ DROP TABLE IF EXISTS `hisiphp_system_user`;
 
 CREATE TABLE `hisiphp_system_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色ID',
+  `role_id` varchar(100) NOT NULL DEFAULT '0' COMMENT '多个角色,分割',
   `username` varchar(50) NOT NULL COMMENT '用户名',
   `password` varchar(64) NOT NULL,
   `nick` varchar(50) NOT NULL COMMENT '昵称',
