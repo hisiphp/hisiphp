@@ -97,14 +97,14 @@
                         };
 
                         var str = '';
-                        if (res.free_down > 1) {
-                            str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 购买该应用累计达到 <strong style="font-size:14px;">'+res.free_down+'</strong> 次后，即可享受无限域名授权 ★</a>';
-                        } else {
-                            str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 本应用为单域名授权（开发域名和正式域名可同时绑定） ★</a>';
-                        }
+                        // if (res.free_down > 1) {
+                        //     str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 购买该应用累计达到 <strong style="font-size:14px;">'+res.free_down+'</strong> 次后，即可享受无限域名授权 ★</a>';
+                        // } else {
+                        //     str = '<a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-danger j-show-question">★ 本应用为单域名授权（开发域名和正式域名可同时绑定） ★</a>';
+                        // }
 
                         if (res.pro_free_down > 0) {
-                            str += '<br><a href="https://www.hisiphp.com/authorize.html" class="layui-btn layui-btn-xs layui-btn-danger" target="_blank">★Pro版用户只需购买 <strong style="font-size:14px;">'+res.pro_free_down+'</strong> 次后，即可享受无限制域名授权★</a>';
+                            str += '<a href="https://www.hisiphp.com/authorize.html?source={:get_domain()}" class="layui-btn layui-btn-xs layui-btn-danger" target="_blank">★当前框架为公众免费版，点此升级为Pro版可享无限域名授权★</a>';
                         }
 
                         $('#authDesc').children('dd').html(str);
@@ -276,8 +276,8 @@
   <span class="layui-badge layui-bg-blue">问</span> 用本地开发域名购买的应用，上线后怎么办？
   <span class="layui-badge layui-bg-green">答</span> 支持开发域名和正式域名同时绑定，加QQ(364666827)联系添加域名。
 
-  <span class="layui-badge layui-bg-blue">问</span> 部分应用授权说明显示“购买多少套后即可享受无限域名授权”什么意思？
-  <span class="layui-badge layui-bg-green">答</span> 指购买该应用达到指定的数量后，可免费下载该应用并自动获得授权（同一个云平台账号）。
+  <!-- <span class="layui-badge layui-bg-blue">问</span> 部分应用授权说明显示“购买多少套后即可享受无限域名授权”什么意思？
+  <span class="layui-badge layui-bg-green">答</span> 指购买该应用达到指定的数量后，可免费下载该应用并自动获得授权（同一个云平台账号）。 -->
 </pre>
 </script>
 <script type="text/html" id="installTpl">
@@ -300,7 +300,7 @@
             </dd>
         </dl>
         <dl class="app-spec" id="authDesc">
-            <dt>授权说明：</dt>
+            <dt>友情提示：</dt>
             <dd>...</dd>
         </dl>
         <div class="layui-form-item app-info">
