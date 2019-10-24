@@ -55,6 +55,7 @@ class Admin extends Common
             define('ADMIN_ROLE', $login['role_id']);
 
             $curMenu = MenuModel::getInfo();
+            
             if ($curMenu) {
 
                 if (!RoleModel::checkAuth($curMenu['id']) && 
@@ -107,7 +108,7 @@ class Admin extends Common
                 $this->assign('login', $login);
                 $this->assign('languages', (new LangModel)->lists());
                 $this->assign('hisiHead', '');
-                $this->view->engine->layout(true);
+                $this->view->engine->layout('system@layout');
             }
         }
     }
