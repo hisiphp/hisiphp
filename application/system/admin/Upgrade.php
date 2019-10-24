@@ -291,7 +291,6 @@ class Upgrade extends Admin
             Dir::create($backPath, 0777);
         }
 
-        $layout = '';
         array_push($upInfo['update'], '/version.php');
         //备份旧文件
         foreach ($upInfo['update'] as $k => $v) {
@@ -301,9 +300,7 @@ class Upgrade extends Admin
                 Dir::create($_dir, 0777);
             }
 
-            if (basename($v) == 'layout.html') {
-                $layout = $this->appPath.'system/view/layout.html';
-            } else if ($v == '/composer.json') {
+            if ($v == '/composer.json') {
                 $newComposer = json_decode(file_get_contents($decomPath.'/upload/composer.json'), 1);
                 $oldComposer = json_decode(file_get_contents($this->rootPath.'composer.json'), 1);
                 foreach($newComposer['require'] as $kk => $vv) {
@@ -328,14 +325,6 @@ class Upgrade extends Admin
         }
         // 更新升级文件
         Dir::copyDir($decomPath.'/upload', $this->rootPath);
-
-        // 同步更新扩展模块的layout.html
-        if ($layout) {
-            $modules = ModuleModel::where('system', '=', 0)->field('name')->select();
-            foreach($modules as $v) {
-                @copy($layout, $this->appPath.$v['name'].'/view/layout.html');
-            }
-        }
 
         // 导入SQL
         $sqlFile = realpath($decomPath.'/database.sql');
