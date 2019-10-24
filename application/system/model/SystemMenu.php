@@ -194,40 +194,27 @@ class SystemMenu extends Model
         }
         
         $where = [];
+        $where[] = ['uid', '=', 0];
         $where[] = ['nav', '=', 1];
         $where[] = ['status', '=', 1];
-        $where[] = ['uid', '=', 0];
 
         if (config('sys.app_debug') == 0) {
             $where[] = ['debug', '=', 0];
         }
 
-        $menus = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
-
         if (ADMIN_ID == 1 || ADMIN_ROLE == 1) {
-            $auths = $menus;
-        } else if (!empty($menus)) {
-            $keys   = array_keys($menus);
-            $auth = RoleModel::where('id', 'in', ADMIN_ROLE)->field('auth')->select();
-
-            $roleAuth = [];
-            foreach($auth as $v) {
-                $roleAuth = array_merge($roleAuth, $v['auth']);
+            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
+        } else {
+            $rows   = RoleModel::where('id', 'in', ADMIN_ROLE)->field('auth')->select();
+            $ids    = [];
+            foreach($rows as $k => $v) {
+                $ids += $v['auth'];
             }
-
-            $roleAuth = array_unique($roleAuth);
             
-            $merge  = array_merge($keys, $roleAuth);
-            $unique = array_unique($merge);
-            $diff   = array_diff_assoc($merge, $unique);
+            $where[] = ['id', 'in', $ids];
             
-            $auths = [];
-            foreach($diff as $v) {
-                if (isset($menus[$v])) {
-                    $auths[$v] = $menus[$v];
-                }
-            }
-
+            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
+            
             // 合并快捷菜单
             $quick = self::where('uid', '=', ADMIN_ID)->column('id,pid,module,title,url,param,target,icon', 'id');
             $auths = array_merge($auths, $quick);
