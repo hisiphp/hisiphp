@@ -179,45 +179,13 @@ class SystemUser extends Model
         }
 
         // 角色信息
-        $newAuth = [];
-        
+        $auths = [];
         if ($user->id !== 1) {
-            $role = RoleModel::where('id', 'in', $user->role_id)->field('status,auth')->select();
-    
-            foreach($role as $v) {
-                if ($v->status == 0) {
-                    continue;
-                }
-                $newAuth = array_merge($newAuth, $v->auth);
-            }
-            
-            $newAuth = array_unique($newAuth);
-            if (empty($newAuth)) {
+            $auths = RoleModel::getRoleAuth($user->role_id);
+            if (empty($auths)) {
                 $this->error = '绑定的角色不可用！';
                 return false;
             }
-        }
-
-        // 通过角色ID获取相关权限
-        $roles = RoleModel::where('id', 'in', $user->role_id)
-                            ->where('status', '=', 1)
-                            ->field('name,auth')
-                            ->select();
-
-        if (!$roles) {
-            $this->error = '禁止访问(原因：角色分组可能被禁用)！';
-            return false;
-        }
-
-        $auths = [];
-        foreach($roles as $k => $v) {
-            $auths = array_merge($auths, $v->auth);
-        }
-
-        $auths = array_unique($auths);
-        if (empty($auths) && $user->id > 1) {
-            $this->error = '绑定的角色不可用！';
-            return false;
         }
 
         // 自动清除过期的系统日志

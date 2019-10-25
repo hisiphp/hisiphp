@@ -205,14 +205,9 @@ class SystemMenu extends Model
         if (ADMIN_ID == 1 || ADMIN_ROLE == 1) {
             $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
         } else {
-            $rows   = RoleModel::where('id', 'in', ADMIN_ROLE)->field('auth')->select();
-            $ids    = [];
-            foreach($rows as $k => $v) {
-                $ids += $v['auth'];
-            }
-            
+
+            $ids = RoleModel::getRoleAuth(ADMIN_ROLE);
             $where[] = ['id', 'in', $ids];
-            
             $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
             
             // 合并快捷菜单

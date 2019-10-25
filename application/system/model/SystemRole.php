@@ -147,17 +147,8 @@ class SystemRole extends Model
         // 获取当前角色的权限明细
         $roleAuth = (array)session('role_auth_'.$login['uid']);
         if (!$roleAuth) {
-            $auth = self::where('id', 'in', $login['role_id'])->field('auth')->select();
-            if (empty($auth)) {
-                return false;
-            }
 
-            $roleAuth = [];
-            foreach($auth as $v) {
-                $roleAuth = array_merge($roleAuth, $v['auth']);
-            }
-
-            $roleAuth = array_unique($roleAuth);
+            $roleAuth = self::getRoleAuth($login['role_id']);
 
             // 非开发模式，缓存数据
             if (config('sys.app_debug') == 0) {
@@ -166,5 +157,20 @@ class SystemRole extends Model
         }
         if (!$roleAuth) return false;
         return in_array($id, $roleAuth);
+    }
+
+    /**
+     * 获取角色权限ID集
+     */
+    public static function getRoleAuth($id)
+    {
+        $rows   = self::where('id', 'in', $id)->field('auth')->select();
+        $auths  = [];
+
+        foreach($rows as $k => $v) {
+            $auths = array_merge($auths, $v['auth']);
+        }
+        
+        return array_unique($auths);
     }
 }
