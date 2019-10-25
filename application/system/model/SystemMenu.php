@@ -203,16 +203,16 @@ class SystemMenu extends Model
         }
 
         if (ADMIN_ID == 1 || ADMIN_ROLE == 1) {
-            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
+            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
         } else {
 
             $ids = RoleModel::getRoleAuth(ADMIN_ROLE);
             $where[] = ['id', 'in', $ids];
-            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon', 'id');
+            $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
             
             // 合并快捷菜单
-            $quick = self::where('uid', '=', ADMIN_ID)->column('id,pid,module,title,url,param,target,icon', 'id');
-            $auths = array_merge($auths, $quick);
+            $quick = self::where('uid', '=', ADMIN_ID)->column('id,pid,module,title,url,param,target,icon');
+            $quick && $auths += $quick;
         }
 
         if (empty($auths)) {
