@@ -193,19 +193,18 @@ class SystemMenu extends Model
             return $cacheData;
         }
         
-        $where = [];
-        $where[] = ['uid', '=', 0];
-        $where[] = ['nav', '=', 1];
-        $where[] = ['status', '=', 1];
+        $where      = [];
+        $where[]    = ['nav', '=', 1];
+        $where[]    = ['status', '=', 1];
 
         if (config('sys.app_debug') == 0) {
             $where[] = ['debug', '=', 0];
         }
 
         if (ADMIN_ID == 1 || ADMIN_ROLE == 1) {
+            $where[] = ['uid', 'in', [0, ADMIN_ID]];
             $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
         } else {
-
             $ids = RoleModel::getRoleAuth(ADMIN_ROLE);
             $where[] = ['id', 'in', $ids];
             $auths = self::where($where)->order('sort asc')->column('id,pid,module,title,url,param,target,icon');
