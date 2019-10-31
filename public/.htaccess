@@ -13,4 +13,8 @@
     # 上传保护文件
     RewriteCond %{QUERY_STRING} ^(.*)$
     RewriteRule ^upload/protect/(.*)$ index.php
+
+    # 禁止访问.env|.ini|.yaml
+    RewriteCond %{QUERY_STRING} ^(.*)$
+    RewriteRule ^(.*)(.env|.ini|.yaml)$ index.php
 </IfModule>
