@@ -12,6 +12,7 @@
 namespace app\system\admin;
 
 use app\system\model\SystemConfig as ConfigModel;
+use think\facade\Env;
 
 /**
  * 配置管理控制器
@@ -21,6 +22,12 @@ use app\system\model\SystemConfig as ConfigModel;
 class Config extends Admin
 {
     protected $hisiTable = 'SystemConfig';
+
+    protected function initialize()
+    {
+        parent::initialize();
+        !Env::get('app_debug') && $this->error('非开发模式禁止访问！');
+    }
 
     public function index($group = 'base')
     {
