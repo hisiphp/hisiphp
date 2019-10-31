@@ -169,8 +169,8 @@ class Config extends Admin
             return $this->error('请求异常');
         }
 
-        $name = $this->request->param('name');
-
+        $name = $this->request->param('name', '', 'strip_tags');
+        
         $exp = explode(':', $name);
 
         if (count($exp) != 2) {
