@@ -75,20 +75,16 @@ abstract class Plugins
     /**
      * 获取插件配置
      * @param string $key 主键
+     * @param mixed $default 默认值
      * @author 橘子俊 <364666827@qq.com>
      * @return mixed
      */
-    final protected function getConfig($key = '')
+    final protected function getConfig($key = '', $default = '')
     {
-        $config = PluginsModel::where('name', $this->pluginsName)->value('config');
-        if (!$config) {
-            return '';
-        } else {
-            $config = json_decode($config, 1);
-        }
+        $config = config('plugins_'.$this->pluginsName.'.');
 
-        if ($key && isset($config[$key])) {
-            return $config[$key];
+        if ($key) {
+            return isset($config[$key]) ? $config[$key] : $default;
         }
 
         return $config;
