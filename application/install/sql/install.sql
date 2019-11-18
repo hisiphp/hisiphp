@@ -655,3 +655,18 @@ CREATE TABLE `hisiphp_jobs` (
   `created_at` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+# Dump of table hisiphp_token
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `hisiphp_token`;
+
+CREATE TABLE `hisiphp_token` (
+  `token` varchar(128) NOT NULL DEFAULT '' COMMENT 'Token',
+  `tag` varchar(50) DEFAULT '' COMMENT '标签',
+  `value` varchar(30) NOT NULL DEFAULT '' COMMENT '映射的值',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `expire_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间',
+  PRIMARY KEY (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Token表';
