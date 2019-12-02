@@ -12,6 +12,7 @@
 namespace app\common\controller;
 use View;
 use think\Controller;
+use think\facade\Env;
 
 /**
  * 框架公共控制器
@@ -55,22 +56,25 @@ class Common extends Controller
      */
     final protected function pluginsFetch($template = '', $vars = [], $replace = [], $config = [], $renderContent = false)
     {
-        $plugin     = $_GET['_p'];
-        $controller = $_GET['_c'];
-        $action     = $_GET['_a'];
-        if (!$template) {
-            $template = $controller.'/'.parse_name($action);
-        } elseif (strpos($template, '/') == false) {
-            $template = $controller.'/'.$template;
+        if (stripos($template, config('template.view_suffix')) === false) {
+            $plugin     = $_GET['_p'];
+            $controller = $_GET['_c'];
+            $action     = $_GET['_a'];
+            if (!$template) {
+                $template = $controller.'/'.parse_name($action);
+            } elseif (strpos($template, '/') == false) {
+                $template = $controller.'/'.$template;
+            }
+            
+            if(defined('ENTRANCE') && ENTRANCE == 'admin') {
+                $template = 'admin/'.$template;
+            } else {
+                $template = 'home/'.$template;
+            }
+            
+            $template = Env::get('root_path').strtolower("plugins/{$plugin}/view/{$template}.".config('template.view_suffix'));
         }
         
-        if(defined('ENTRANCE') && ENTRANCE == 'admin') {
-            $template = 'admin/'.$template;
-        } else {
-            $template = 'home/'.$template;
-        }
-
-        $template_path = strtolower("../plugins/{$plugin}/view/{$template}.".config('template.view_suffix'));
-        return parent::fetch($template_path, $vars, $replace, $config, $renderContent);
+        return parent::fetch($template, $vars, $replace, $config, $renderContent);
     }
 }
