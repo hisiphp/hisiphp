@@ -284,25 +284,25 @@ class SystemMenu extends Model
     public static function getInfo($id = 0)
     {
         $map = [];
+        $checkField = '';
 
         if (empty($id)) {
-
             $module     = request()->module();
             $controller = request()->controller();
             $action     = request()->action();
+            $field      = request()->param('field');
+            if (in_array($action, ['setfield', 'setdefault', 'sort', 'status']) && $field) {
+                $checkField = $field;
+            }
+
             $map[] = ['url', '=', $module.'/'.$controller.'/'.$action];
-
         } else {
-
             $map[] = ['id', '=', (int)$id];
-
         }
 
         $map[] = ['status', '=', 1];
-        $map[] = ['uid', '=', 0];
 
         $rows = self::where($map)->column('id,title,url,param');
-
         if (!$rows) {
             return false;
         }
@@ -310,30 +310,22 @@ class SystemMenu extends Model
         sort($rows);
 
         $_param = request()->param();
-
         if (count($rows) > 1) {
-
             if (!$_param) {
-
                 foreach ($rows as $k => $v) {
-
                     if ($v['param'] == '') {
                         return $rows[$k];
                     }
-
                 }
-
             }
 
             foreach ($rows as $k => $v) {
-
                 if ($v['param']) {
-
                     parse_str($v['param'], $param);
-                    
                     ksort($param);
-
                     $paramArr = [];
+
+                    $checkField && $paramArr['field'] = $checkField;
 
                     foreach ($param as $kk => $vv) {
                         if (isset($_param[$kk])) {
@@ -343,21 +335,18 @@ class SystemMenu extends Model
 
                     $where     = [];
                     $where[]   = ['param', '=', http_build_query($paramArr)];
-                    $where[]   = ['url', '=', $module.'/'.$controller.'/'.$action];
-                    $where[]   = ['uid', '=', 0];
+                    $where[]   =  ['url', '=', $module.'/'.$controller.'/'.$action];
 
                     $res = self::where($where)->field('id,title,url,param')->find();
                     if ($res) {
                         return $res;
                     }
                 }
-
             }
 
             $map[] = ['param', '=', ''];
 
             $res = self::where($map)->field('id,title,url,param')->find();
-
             if ($res) {
                 return $res;
             } else {
@@ -369,18 +358,15 @@ class SystemMenu extends Model
         // 扩展参数判断
         if ($rows[0]['param']) {
             parse_str($rows[0]['param'], $param);
-            ksort($param);
+            $checkField && $param['field'] = $checkField;
             foreach ($param as $k => $v) {
                 if (!isset($_param[$k]) || $_param[$k] != $v) {
                     return false;
                 }
             }
-        } else {// 排除敏感参数
-            $param = ['hisiModel', 'hisiTable', 'hisiValidate', 'hisiScene'];
-            foreach ($param as $k => $v) {
-                if (isset($_param[$v])) {
-                    return false;
-                }
+        } else if ($checkField) {// 排除敏感参数
+            if (isset($_param[$checkField])) {
+                return false;
             }
         }
         

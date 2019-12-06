@@ -621,7 +621,6 @@ DROP TABLE IF EXISTS `hisiphp_system_user`;
 
 CREATE TABLE `hisiphp_system_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` varchar(100) NOT NULL DEFAULT '0' COMMENT '多个角色,分割',
   `username` varchar(50) NOT NULL COMMENT '用户名',
   `password` varchar(64) NOT NULL,
   `nick` varchar(50) NOT NULL COMMENT '昵称',
@@ -638,6 +637,16 @@ CREATE TABLE `hisiphp_system_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='[系统] 管理用户';
 
+
+# Dump of table hisiphp_system_user_role
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `hisiphp_system_user_role`;
+
+CREATE TABLE `hisiphp_system_user_role` (
+  `user_id` int(11) unsigned NOT NULL,
+  `role_id` int(10) unsigned DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员角色索引';
 
 # Dump of table hisiphp_jobs
 # ------------------------------------------------------------
@@ -656,17 +665,16 @@ CREATE TABLE `hisiphp_jobs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 # Dump of table hisiphp_token
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `hisiphp_token`;
 
-CREATE TABLE `hisiphp_token` (
+CREATE TABLE IF NOT EXISTS `hisiphp_token` (
   `token` varchar(128) NOT NULL DEFAULT '' COMMENT 'Token',
   `tag` varchar(50) DEFAULT '' COMMENT '标签',
   `value` varchar(30) NOT NULL DEFAULT '' COMMENT '映射的值',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `expire_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间',
   PRIMARY KEY (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Token表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='token表';

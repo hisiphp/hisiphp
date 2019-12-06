@@ -13,6 +13,7 @@ namespace app\system\model;
 
 use think\Model;
 use app\system\model\SystemUser as UserModel;
+use app\system\model\SystemUserRole as IndexModel;
 
 /**
  * 后台角色模型
@@ -39,6 +40,32 @@ class SystemRole extends Model
         return json_decode($value, 1);
     }
 
+    // 模型事件
+    public static function init()
+    {
+        // 更新前
+        self::event('before_update', function ($obj) {
+
+            $roles = explode(',', ADMIN_ROLE);
+            if (in_array($obj->id, $roles)) {
+                $obj->error = '禁止修改当前角色';
+                return false;
+            }
+            
+            return true;
+
+        });
+
+        // 删除前
+        self::event('before_delete', function ($obj) {
+            if (IndexModel::where('role_id', 'in', $obj->id)->find()) {
+                $obj->error = '已有管理员绑定此角色（请先取消绑定）';
+                return false;
+            }
+            return true;
+        });
+    }
+
     /**
      * 获取所有角色(下拉列)
      * @param int $id 选中的ID
@@ -60,65 +87,6 @@ class SystemRole extends Model
             }
         }
         return $str;
-    }
-
-    /**
-     * 删除角色
-     * @param string $id 用户ID
-     * @author 橘子俊 <364666827@qq.com>
-     * @return bool
-     */
-    public function del($id = 0) 
-    {
-        $user_model = new UserModel();
-        if (is_array($id)) {
-            $error = '';
-            foreach ($id as $k => $v) {
-                if ($v == 1) {
-                    $error .= '不能删除超级管理员角色['.$v.']！<br>';
-                    continue;
-                }
-
-                if ($v <= 0) {
-                    $error .= '参数传递错误['.$v.']！<br>';
-                    continue;
-                }
-
-                // 判断是否有用户绑定此角色
-                if (UserModel::where('role_id', $v)->find()) {
-                    $error .= '删除失败，已有管理员绑定此角色['.$v.']！<br>';
-                    continue;
-                }
-                $map = [];
-                $map['id'] = $v;
-                self::where($map)->delete();
-            }
-
-            if ($error) {
-                $this->error = $error;
-                return false;
-            }
-        } else {
-            $id = (int)$id;
-            if ($id <= 0) {
-                $this->error = '参数传递错误！';
-                return false;
-            }
-
-            if ($id == 1) {
-                $this->error = '不能删除超级管理员角色！';
-                return false;
-            }
-
-            // 判断是否有用户绑定此角色
-            if (UserModel::where('role_id', $id)->find()) {
-                $this->error = '删除失败，已有管理员绑定此角色！<br>';
-                return false;
-            }
-            self::where('id', $id)->delete();
-        }
-
-        return true;
     }
 
     /**

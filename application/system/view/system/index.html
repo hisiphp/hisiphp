@@ -68,6 +68,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$v['title']}</label>
                     <div class="layui-input-inline">
+                        {php}!is_array($v['value']) && $v['value'] = explode(',', $v['value']);{/php}
                         {foreach name="v['options']" id="vv" key="kk"}
                             <input type="checkbox" name="id[{$v['id']}][]" value="{$kk}" title="{$vv}" {if (isset($v['value']) && !isset($formData[$v['name']]) && in_array($kk, $v['value']))}checked{/if}>
                         {/foreach}

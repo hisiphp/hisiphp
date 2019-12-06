@@ -24,6 +24,7 @@ class User extends Admin
 {
     public $tabData = [];
     protected $hisiTable = 'SystemUser';
+    protected $hisiModel = 'SystemUser';
     /**
      * 初始化方法
      */
@@ -61,7 +62,7 @@ class User extends Admin
                 $where[] = ['username', 'like', "%{$keyword}%"];
             }
 
-            $data['data'] = UserModel::where($where)->page($page)->limit($limit)->select();
+            $data['data'] = UserModel::with('hasRoles')->where($where)->page($page)->limit($limit)->select();
             $data['count'] = UserModel::where($where)->count('id');
             $data['code'] = 0;
             $data['msg'] = '';
@@ -71,7 +72,7 @@ class User extends Admin
         $assign = [];
         $assign['hisiTabData'] = $this->tabData;
         $assign['hisiTabType'] = 3;
-        $assign['roles'] = RoleModel::column('id,name');
+
         return $this->assign($assign)->fetch();
     }
 
@@ -161,30 +162,7 @@ class User extends Admin
         
         if ($this->request->isPost()) {
             $data = $this->request->post();
-            if (!isset($data['auth'])) {
-                $data['auth'] = [];
-            }
             
-            $row = UserModel::where('id', $id)->field('role_id,auth')->find();
-
-            if (implode(',', $row['role_id']) != implode(',', $data['role_id'])) {// 如果分组不同，自定义权限无效
-                $data['auth'] = [];
-            }
-
-            if (isset($data['role_id'])) {
-                $auth = RoleModel::where('id', 'in', $data['role_id'])->field('auth')->select();
-    
-                $newAuth = [];
-                foreach($auth as $v) {
-                    $newAuth = array_merge($newAuth, $v['auth']);
-                }
-                $newAuth = array_unique($newAuth);
-    
-                if (json_encode($newAuth, 1) == json_encode($data['auth'], 1) ) {// 如果自定义权限与角色权限一致，则设置自定义权限为空
-                    $data['auth'] = [];
-                }
-            }
-
             if ($data['password']) {
                 $data['password'] = md5($data['password']);
                 $data['password_confirm'] = md5($data['password_confirm']);
@@ -208,13 +186,10 @@ class User extends Admin
             return $this->success('修改成功');
         }
 
-        $row = UserModel::where('id', $id)->field('id,username,role_id,nick,email,mobile,auth,status')->find()->toArray();
+        $row = UserModel::with('hasIndexs')->where('id', '=', $id)->field('id,username,nick,email,mobile,status')->find()->toArray();
 
-        if (!$row['auth']) {
-            $role = RoleModel::where('id', 'in', $row['role_id'])->find();
-            $row['auth'] = $role->auth;
-        }
-        
+        $row['role_id'] = array_column($row['has_indexs'], 'role_id');
+
         $this->assign('roles', RoleModel::where('id', '>', 1)->order('id asc')->column('id,name'));
         $this->assign('formData', $row);
         return $this->fetch('userform');
@@ -269,12 +244,7 @@ class User extends Admin
      */
     public function delUser()
     {
-        $ids   = $this->request->param('id/a');
-        $model = new UserModel();
-        if ($model->del($ids)) {
-            return $this->success('删除成功');
-        }
-        return $this->error($model->getError());
+        parent::del();
     }
 
     // +----------------------------------------------------------------------
@@ -351,11 +321,7 @@ class User extends Admin
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
-            // 当前登陆用户不可更改自己的分组角色
-            if (ADMIN_ROLE == $data['id']) {
-                return $this->error('禁止修改当前角色(原因：您不是超级管理员)');
-            }
-
+            
             // 验证
             $result = $this->validate($data, 'SystemRole');
             if($result !== true) {
@@ -366,7 +332,7 @@ class User extends Admin
             }
 
             // 更新权限缓存
-            cache('role_auth_'.$data['id'], $data['auth']);
+            session('role_auth_'.$data['id'], $data['auth']);
 
             return $this->success('修改成功');
         }
@@ -381,9 +347,13 @@ class User extends Admin
         $this->assign('menus', MenuModel::getAuthTree($row['auth']));
         $this->assign('hisiTabData', $tabData);
         $this->assign('hisiTabType', 2);
+        
         return $this->fetch('roleform');
     }
 
+    /**
+     * 角色状态设置
+     */
     public function statusRole()
     {
         $this->hisiTable = 'SystemRole';
@@ -398,11 +368,7 @@ class User extends Admin
      */
     public function delRole()
     {
-        $ids   = $this->request->param('id/a');
-        $model = new RoleModel();
-        if ($model->del($ids)) {
-            return $this->success('删除成功');
-        }
-        return $this->error($model->getError());
+        $this->hisiModel = 'SystemRole';
+        parent::del();
     }
 }

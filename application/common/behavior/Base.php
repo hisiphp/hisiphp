@@ -129,7 +129,7 @@ class Base
                 config('base.wap_site_status') && 
                 file_exists('.'.ROOT_DIR.$viewPath.'wap/')) {
 
-                if ($wap != $domain) {
+                if ($wap && $wap != $domain) {
                     header('Location: '.$wap.Request::url());
                     exit();
                 }

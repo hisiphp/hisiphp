@@ -17,6 +17,7 @@ use app\system\model\SystemRole as RoleModel;
 use app\system\model\SystemUser as UserModel;
 use app\system\model\SystemLog as LogModel;
 use app\system\model\SystemLanguage as LangModel;
+use app\system\model\SystemUserRole as UserRoleModel;
 use think\Db;
 
 /**
@@ -35,6 +36,10 @@ class Admin extends Common
     protected $hisiAddScene = false;
     //[通用更新专用] 更新数据验证场景名
     protected $hisiEditScene = false;
+    // 数据权限设置，可选值：own 个人，org 组织，false 不启用
+    protected $dataRight = false;
+    // 数据权限字段名
+    protected $dataRightField = 'admin_id';
 
     /**
      * 初始化方法
@@ -55,22 +60,15 @@ class Admin extends Common
             define('ADMIN_ROLE', $login['role_id']);
 
             $curMenu = MenuModel::getInfo();
-            
             if ($curMenu) {
-
                 if (!RoleModel::checkAuth($curMenu['id']) && 
                     $curMenu['url'] != 'system/index/index') {
                     return $this->error('['.$curMenu['title'].'] 访问权限不足');
-                }
-                
+                } 
             } else if (config('sys.admin_whitelist_verify')) {
-
                 return $this->error('节点不存在或者已禁用！');
-
             } else {
-
                 $curMenu = ['title' => '', 'url' => '', 'id' => 0];
-
             }
 
             $this->_systemLog($curMenu['title']);
@@ -165,30 +163,7 @@ class Admin extends Common
     public function add()
     {
         if ($this->request->isPost()) {
-
-            $hisiModel      = $this->request->param('hisiModel');
-            $hisiTable      = $this->request->param('hisiTable');
-            $hisiValidate   = $this->request->param('hisiValidate');
-            $hisiScene      = $this->request->param('hisiScene');
-
-            if ($hisiModel) {
-                $this->hisiModel = $hisiModel;
-                $this->hisiTable = '';
-            }
-
-            if ($hisiTable) {
-                $this->hisiTable = $hisiTable;
-                $this->hisiModel = '';
-            }
-
-            if ($hisiValidate) {
-                $this->hisiValidate = $hisiValidate;
-            }
-
-            if ($hisiScene) {
-                $this->hisiAddScene = $hisiScene;
-            }
-
+            
             $postData = $this->request->post();
 
             if ($this->hisiValidate) {// 数据验证
@@ -216,23 +191,7 @@ class Admin extends Common
 
             if ($this->hisiModel) {// 通过Model添加
 
-                if (defined('IS_PLUGINS')) {
-
-                    if (strpos($this->hisiModel, '\\') === false ) {
-                        $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
-                    }
-
-                    $model = new $this->hisiModel;
-                    
-                } else {
-
-                    if (strpos($this->hisiModel, '/') === false ) {
-                        $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
-                    }
-
-                    $model = model($this->hisiModel);
-
-                }
+                $model = $this->model();
 
                 if (!$model->save($postData)) {
                     return $this->error($model->getError());
@@ -265,33 +224,8 @@ class Admin extends Common
      */
     public function edit()
     {
-
-        $hisiModel = $this->request->param('hisiModel');
-        $hisiTable = $this->request->param('hisiTable');
-
-        if ($hisiModel) {
-            $this->hisiModel = $hisiModel;
-            $this->hisiTable = '';
-        }
-
-        if ($hisiTable) {
-            $this->hisiTable = $hisiTable;
-            $this->hisiModel = '';
-        }
-
         if ($this->request->isPost()) {// 数据验证
-
-            $hisiValidate   = $this->request->param('hisiValidate');
-            $hisiScene      = $this->request->param('hisiScene');
             
-            if ($hisiValidate) {
-                $this->hisiValidate = $hisiValidate;
-            }
-
-            if ($hisiScene) {
-                $this->hisiEditScene = $hisiScene;
-            }
-
             $postData = $this->request->post();
 
             if ($this->hisiValidate) {
@@ -318,39 +252,27 @@ class Admin extends Common
             }
         }
 
+        $where = [];
         if ($this->hisiModel) {// 通过Model更新
 
-            if (defined('IS_PLUGINS')) {
-
-                if (strpos($this->hisiModel, '\\') === false ) {
-                    $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
-                }
-
-                $model = new $this->hisiModel;
-
-            } else {
-
-                if (strpos($this->hisiModel, '/') === false ) {
-                    $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
-                }
-
-                $model = model($this->hisiModel);
-
-            }
+            $model = $this->model();
 
             $pk = $model->getPk();
             $id = $this->request->param($pk);
+
+            $where[]= [$pk, '=', $id];
+            $where  = $this->getRightWhere($where);
             
             if ($this->request->isPost()) {
 
-                if ($model->save($postData, [$pk => $id]) === false) {
+                if ($model->save($postData, $where) === false) {
                     return $this->error($model->getError());
                 }
 
                 return $this->success('保存成功', '');
             }
 
-            $formData = $model->get($id);
+            $formData = $model->where($where)->find();
 
         } else if ($this->hisiTable) {// 通过Db更新
 
@@ -358,21 +280,28 @@ class Admin extends Common
             $pk = $db->getPk();
             $id = $this->request->param($pk);
 
+            $where[]= [$pk, '=', $id];
+            $where  = $this->getRightWhere($where);
+
             if ($this->request->isPost()) {
 
-                if (!$db->where($pk, $id)->update($postData)) {
+                if (!$db->where($where)->update($postData)) {
                     return $this->error('保存失败');
                 }
 
                 return $this->success('保存成功', '');
             }
 
-            $formData = $db->where($pk, $id)->find();
+            $formData = $db->where($where)->find();
 
         } else {
 
             return $this->error('当前控制器缺少属性（hisiModel、hisiTable至少定义一个）');
 
+        }
+
+        if (!$formData) {
+            return $this->error('数据不存在或没有权限');
         }
 
         $this->assign('formData', $formData);
@@ -393,51 +322,14 @@ class Admin extends Common
         $val        = $this->request->param('val/d');
         $id         = $this->request->param('id/a');
         $field      = $this->request->param('field/s', 'status');
-        $hisiModel  = $this->request->param('hisiModel');
-        $hisiTable  = $this->request->param('hisiTable');
-
-        if ($hisiModel) {
-            $this->hisiModel = $hisiModel;
-            $this->hisiTable = '';
-        }
-
-        if ($hisiTable) {
-            $this->hisiTable = $hisiTable;
-            $this->hisiModel = '';
-        }
-
+        
         if (empty($id)) {
             return $this->error('缺少id参数');
-        }
-
-        // 以下表操作需排除值为1的数据
-        if ($this->hisiModel == 'SystemMenu') {
-
-            if (in_array('1', $id) || in_array('2', $id) || in_array('3', $id)) {
-                return $this->error('系统限制操作');
-            }
-
         }
         
         if ($this->hisiModel) {
 
-            if (defined('IS_PLUGINS')) {
-
-                if (strpos($this->hisiModel, '\\') === false ) {
-                    $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
-                }
-
-                $obj = new $this->hisiModel;
-                
-            } else {
-
-                if (strpos($this->hisiModel, '/') === false ) {
-                    $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
-                }
-
-                $obj = model($this->hisiModel);
-
-            }
+            $obj = $this->model();
 
         } else if ($this->hisiTable) {
 
@@ -450,8 +342,12 @@ class Admin extends Common
         }
         
         $pk     = $obj->getPk();
-        $result = $obj->where([$pk => $id])->setField($field, $val);
 
+        $where  = [];
+        $where[]= [$pk, 'in', $id];
+        $where  = $this->getRightWhere($where);
+
+        $result = $obj->where($where)->setField($field, $val);
         if ($result === false) {
             return $this->error('状态设置失败');
         }
@@ -468,47 +364,21 @@ class Admin extends Common
     {
 
         $id         = $this->request->param('id/a');
-        $hisiModel  = $this->request->param('hisiModel');
-        $hisiTable  = $this->request->param('hisiTable');
-
-        if ($hisiModel) {
-            $this->hisiModel = $hisiModel;
-            $this->hisiTable = '';
-        }
-
-        if ($hisiTable) {
-            $this->hisiTable = $hisiTable;
-            $this->hisiModel = '';
-        }
-
+        
         if (empty($id)) {
             return $this->error('缺少id参数');
         }
         
         if ($this->hisiModel) {
 
-            if (defined('IS_PLUGINS')) {
-
-                if (strpos($this->hisiModel, '\\') === false ) {
-                    $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
-                }
-
-                $obj = new $this->hisiModel;
-                
-            } else {
-
-                if (strpos($this->hisiModel, '/') === false ) {
-                    $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
-                }
-
-                $obj = model($this->hisiModel);
-
-            }
+            $model  = $this->model();
+            $pk     = $model->getPk();
+            $where  = $this->getRightWhere();
             
             try {
 
                 foreach($id as $v) {
-                    $row = $obj->withTrashed()->get($v);
+                    $row = $model->withTrashed()->where($where)->where($pk, '=', $v)->find();
                     if (!$row) continue;
                     if (!$row->delete()) {
                         return $this->error($row->getError());
@@ -519,7 +389,7 @@ class Admin extends Common
                 if (strpos($err->getMessage(), 'withTrashed')) {
 
                     foreach($id as $v) {
-                        $row = $obj->get($v);
+                        $row = $model->where($where)->where($pk, '=', $v)->find();
                         if (!$row) continue;
                         if (!$row->delete()) {
                             return $this->error($row->getError());
@@ -535,7 +405,12 @@ class Admin extends Common
 
             $obj    = db($this->hisiTable);
             $pk     = $obj->getPk();
-            $obj->where($pk, 'in', $id)->delete();
+            
+            $where  = [];
+            $where[]= [$pk, 'in', $id];
+            $where  = $this->getRightWhere($where);
+
+            $db->where($where)->delete();
 
         } else {
 
@@ -556,18 +431,6 @@ class Admin extends Common
         $id         = $this->request->param('id/a');
         $field      = $this->request->param('field/s', 'sort');
         $val        = $this->request->param('val/d');
-        $hisiModel  = $this->request->param('hisiModel');
-        $hisiTable  = $this->request->param('hisiTable');
-
-        if ($hisiModel) {
-            $this->hisiModel = $hisiModel;
-            $this->hisiTable = '';
-        }
-
-        if ($hisiTable) {
-            $this->hisiTable = $hisiTable;
-            $this->hisiModel = '';
-        }
 
         if (empty($id)) {
             return $this->error('缺少id参数');
@@ -575,23 +438,7 @@ class Admin extends Common
 
         if ($this->hisiModel) {
 
-            if (defined('IS_PLUGINS')) {
-
-                if (strpos($this->hisiModel, '\\') === false ) {
-                    $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
-                }
-
-                $obj = new $this->hisiModel;
-                
-            } else {
-
-                if (strpos($this->hisiModel, '/') === false ) {
-                    $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
-                }
-
-                $obj = model($this->hisiModel);
-
-            }
+            $obj = $this->model();
 
         } else if ($this->hisiTable) {
 
@@ -620,11 +467,95 @@ class Admin extends Common
      */
     public function upload()
     {
-
         $model = new \app\common\model\SystemAnnex;
         
         return json($model::fileUpload());
-
     }
 
+    /** 
+     * 实例化模型类($hisiModel)
+    */
+    protected function model()
+    {
+
+        if (!$this->hisiModel) {
+            $this->error('hisiModel属性未定义');
+        }
+
+        if (defined('IS_PLUGINS')) {
+            if (strpos($this->hisiModel, '\\') === false ) {
+                $this->hisiModel = 'plugins\\'.$this->request->param('_p').'\\model\\'.$this->hisiModel;
+            }
+
+            return (new $this->hisiModel);
+        } else {
+            if (strpos($this->hisiModel, '/') === false ) {
+                $this->hisiModel = $this->request->module().'/'.$this->hisiModel;
+            }
+
+            return model($this->hisiModel);
+        }
+    }
+
+    /** 
+     * 实例化数据库类
+    */
+    protected function db($name = '')
+    {
+        $name = $name ?: $this->hisiTable;
+        if (!$name) {
+            $this->error('hisiTable属性未定义');
+        }
+
+        return Db::name($name);
+    }
+
+    /**
+     * 获取同组织下的所有管理员ID
+     * @return array
+     */
+    protected function getAdminIds()
+    {
+        
+        if (ADMIN_ID == 1 || !$this->dataRight) {
+            return [];
+        }
+
+        $ids = [ADMIN_ID];
+
+        if ($this->dataRight == 'org') {// 组织
+            $ids = UserRoleModel::getOrgUserId(ADMIN_ROLE);
+        }
+
+        return $ids;
+    }
+
+    /**
+     * 获取数据权限 where
+     * @param array $where
+     * @return array
+     */
+    protected function getRightWhere($where = [])
+    {
+        $ids = $this->getAdminIds();
+        
+        if ($ids) {
+            $ids[] = 0;    
+            $where[] = [$this->dataRightField, 'in', $ids];
+        }
+
+        return $where;
+    }
+
+    /**
+     * 输出layui的json数据
+     *
+     * @param array $data
+     * @param integer $count
+     * @return void
+     */
+    protected function layuiJson($data, $count = 0)
+    {
+        return json(['data' => $data, 'count' => $count, 'code' => 0]);
+    }
 }

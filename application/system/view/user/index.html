@@ -22,7 +22,6 @@
 <script type="text/javascript">
     layui.use(['table'], function() {
         var table = layui.table;
-        var roles = {:json_encode($roles, 1)};
         table.render({
             elem: '#dataTable'
             ,url: '{:url()}' //数据接口
@@ -41,10 +40,8 @@
                 ,{field: 'nick', title: '昵称', width: 100}
                 ,{field: 'role_id', title: '角色', templet:function(d){
                     var str = '';
-                    for(var i in d.role_id) {
-                        if (d.role_id[i]) {
-                            str += '<span class="layui-badge layui-bg-blue" style="margin-right:5px">'+roles[d.role_id[i]]+'</span>';
-                        }
+                    for(var i in d.has_roles) {
+                        str += '<span class="layui-badge layui-bg-blue" style="margin-right:5px">'+d.has_roles[i].name+'</span>';
                     }
                     return str;
                 }}

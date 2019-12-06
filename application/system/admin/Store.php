@@ -95,7 +95,11 @@ class Store extends Admin
 
     	$data['cats'] = cache('cloud_app_cats');
     	if (!$data['cats']) {
-    		$cats = $this->cloud->api('cats');
+            $cats = $this->cloud->api('cats');
+            if (!isset($cats['data'])) {
+                $this->error('云市场请求失败');
+            }
+            
             $data['cats'] = $cats['data'];
     		cache('cloud_app_cats', $data['cats']);
     	}

@@ -9,13 +9,11 @@
 // | Author: 橘子俊 <364666827@qq.com>，开发者QQ群：50304283
 // +----------------------------------------------------------------------
 
-namespace app\common\controller;
+namespace app\common\service;
 
-/**
- * 框架公共控制器
- * @package app\common\controller
- */
-class Common extends Base
+use app\common\model\Base as ModelBase;
+
+class Base extends ModelBase
 {
-    
+
 }

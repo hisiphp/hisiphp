@@ -63,80 +63,67 @@ class SystemUser extends Model
     {
         return date('Y-m-d H:i', $value);
     }
-
-    // 权限
-    public function role()
+    
+    // 关联角色
+    public function hasRoles()
     {
-        return $this->hasOne('SystemRole', 'id', 'role_id');
+        return $this->belongsToMany('SystemRole', 'SystemUserRole', 'role_id', 'user_id');
     }
 
-    /**
-     * 删除用户
-     * @param string $id 用户ID
-     * @author 橘子俊 <364666827@qq.com>
-     * @return bool
-     */
-    public function del($id = 0) 
+    // 关联索引
+    public function hasIndexs()
     {
-        $menu_model = new MenuModel();
-        if (is_array($id)) {
-            $error = '';
-            foreach ($id as $k => $v) {
-                if ($v == ADMIN_ID) {
-                    $error .= '不能删除当前登陆的用户['.$v.']！<br>';
-                    continue;
-                }
-
-                if ($v == 1) {
-                    $error .= '不能删除超级管理员['.$v.']！<br>';
-                    continue;
-                }
-
-                if ($v <= 0) {
-                    $error .= '参数传递错误['.$v.']！<br>';
-                    continue;
-                }
-
-                $map = [];
-                $map['id'] = $v;
-                // 删除用户
-                self::where($map)->delete();
-                // 删除关联表;
-                $menu_model->delUser($v);
-            }
-
-            if ($error) {
-                $this->error = $error;
-                return false;
-            }
-        } else {
-            $id = (int)$id;
-            if ($id <= 0) {
-                $this->error = '参数传递错误！';
-                return false;
-            }
-
-            if ($id == ADMIN_ID) {
-                $this->error = '不能删除当前登陆的用户！';
-                return false;
-            }
-
-            if ($id == 1) {
-                $this->error = '不能删除超级管理员！';
-                return false;
-            }
-
-            $map = [];
-            $map['id'] = $id;
-            // 删除用户
-            self::where($map)->delete();
-            // 删除关联表
-            $menu_model->delUser($id);
-        }
-
-        return true;
+        return $this->hasMany('SystemUserRole', 'user_id');
     }
 
+    // 模型事件
+    public static function init()
+    {
+        // 新增后
+        self::event('after_insert', function($obj) {
+            $obj->hasRoles()->saveAll($obj->role_id);
+        });
+
+        // 更新前
+        self::event('before_update', function ($obj) {
+            $data = $obj->getData();
+            
+            if ($data['id'] == 1 && ADMIN_ID != 1) {
+                $obj->error = '禁止修改超级管理员';
+                return false;
+            }
+            
+            $obj->hasRoles()->detach();
+            
+            return true;
+        });
+
+        // 更新后
+        self::event('after_update', function($obj) {
+            $obj->hasRoles()->saveAll($obj->role_id);
+        });
+
+        // 删除前
+        self::event('before_delete', function ($obj) {
+
+            if ($obj['id'] == ADMIN_ID) {
+                $obj->error = '不能删除当前登陆的用户';
+                return false;
+            }
+
+            if ($obj['id'] == 1) {
+                $obj->error = '不能删除超级管理员';
+                return false;
+            }
+            
+            // 删除角色索引表
+            $obj->hasRoles()->detach();
+
+            // 删除用户收藏的菜单
+            (new MenuModel)->delUser($obj['id']);
+        });
+    }
+    
     /**
      * 用户登录
      * @param string $username 用户名
@@ -160,7 +147,7 @@ class SystemUser extends Model
             return false;
         }
         
-        $user = self::where($map)->find();
+        $user = self::with('hasRoles')->where($map)->find();
         if (!$user) {
             $this->error = '用户不存在或被禁用！';
             return false;
@@ -172,34 +159,33 @@ class SystemUser extends Model
             return false;
         }
 
-        // 检查是否分配角色
-        if ($user->role_id == 0) {
-            $this->error = '登录账号未分配角色！';
-            return false;
-        }
+        $roleIds = [];
+        if ($user['id'] != 1) {
+            // 非超级管理员，提取关联角色
+            $roles = $user->hasRoles->toArray();
+            if (empty($roles)) {
+                $this->error = '未绑定角色';
+                return false;
+            }
+            
+            foreach($roles as $k => $v) {
+                $v['status'] == 1 && $roleIds[] = $v['id'];
+            }
 
-        // 角色信息
-        $auths = [];
-        if ($user->id !== 1) {
-            $auths = RoleModel::getRoleAuth($user->role_id);
-            if (empty($auths)) {
-                $this->error = '绑定的角色不可用！';
+            if (empty($roleIds)) {
+                $this->error = '绑定的角色不可用';
                 return false;
             }
         }
-
+        
         // 自动清除过期的系统日志
         LogModel::where('ctime', '<', strtotime('-'.(int)config('sys.system_log_retention').' days'))->delete();
 
-        // 更新登录信息
-        $user->last_login_time = time();
-        $user->last_login_ip   = get_client_ip();
-
-        if ($user->save()) {
+        if ($user->where('id', '=', $user->id)->update(['last_login_time' => time(), 'last_login_ip' => get_client_ip()])) {
             // 执行登陆
             $login              = [];
             $login['uid']       = $user->id;
-            $login['role_id']   = implode(',', $user->role_id);
+            $login['role_id']   = implode(',', $roleIds);
             $login['nick']      = $user->nick;
             $login['mobile']    = $user->mobile;
             $login['email']     = $user->email;
@@ -207,9 +193,6 @@ class SystemUser extends Model
             // 主题设置
             self::setTheme(isset($user->theme) ? $user->theme : 0);
             self::getThemes(true);
-
-            // 缓存角色权限
-            session('role_auth_'.$user->id, $auths);
             
             // 缓存登录信息
             session('admin_user', $login);

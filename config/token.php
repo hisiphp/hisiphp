@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // 驱动方式（File、Mysql、Redis、Memcache、Memcached、Xcache）
+    // 驱动方式
     'type'     => 'Mysql',
     // 缓存前缀
     'prefix'    => 'hisiphp',
