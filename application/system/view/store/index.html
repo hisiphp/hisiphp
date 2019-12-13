@@ -15,6 +15,11 @@
             clientIp = '{:get_client_ip()}',
             md5 = layui.md5;
 
+        var getTimestamp = function() {
+            var myDate = new Date();
+            return myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate()+' '+myDate.getHours()+':'+myDate.getMinutes()+':'+myDate.getSeconds();
+        }
+
         var getParam = function(name) { 
                 var value = "", isFound = !1, search = this.location.search; 
                 if (search.indexOf("?") == 0 && search.indexOf("=") > 1) { 
@@ -115,9 +120,23 @@
                         if (res.app_keys != null && res.app_keys != '') {
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
-                            $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:16px;padding:10px 0;">支付时请备注订单号：'+res.order_id+'</strong>');
-                            $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
-                            $('#qrcode').attr('src', res.qrcode).show();
+
+                            if (payment == 'wechat') {
+                                $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:16px;padding:10px 0;">支付时请备注订单号：'+res.order_id+'</strong>');
+                                $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
+                                $('#qrcode').attr('src', res.qrcode).show();
+                            } else {
+                                $('.app-price').html('');
+                                $('.app-order-id').html('<a href="javascript:;" data-order_id="'+res.order_id+'" data-identifier="'+identifier+'" target="_blank" id="jumpPay" class="layui-btn mt50 layui-btn-normal">点此跳转至支付宝完成支付</a>');
+                                $('#qrcode').attr('src', '').hide();
+                            }
+
+                            $('#jumpPay').on('click', function(){
+                                var t = $(this);
+                                t.attr('href', 'https://store.hisiphp.com/client_pay/alipay?order_id='+t.attr('data-order_id')+'&timestamp='+encodeURIComponent(getTimestamp())+'&sign='+md5.exec(t.attr('data-order_id')+t.attr('data-identifier')+getTimestamp()));
+                                return true;
+                            });
+
                             // 定时刷新支付状态
                             var checkOrder = function() {
                                 clearTimeout(si);
@@ -295,8 +314,8 @@
         <dl class="app-spec">
             <dt>支付方式：</dt>
             <dd>
-                <a href="javascript:void(0);" data-value="wechat" class="layui-btn layui-btn-xs layui-btn-normal payment app-spec-a">微信支付</a>
-                <!-- <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">支付宝支付</a> -->
+                <a href="javascript:void(0);" data-value="alipay" class="layui-btn layui-btn-xs layui-btn-normal payment app-spec-a">支付宝支付</a>
+                <a href="javascript:void(0);" data-value="wechat" class="layui-btn layui-btn-xs layui-btn-primary payment app-spec-a">微信支付</a>
             </dd>
         </dl>
         <dl class="app-spec" id="authDesc">
