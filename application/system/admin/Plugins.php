@@ -451,6 +451,14 @@ class Plugins extends Admin
             // 复制插件
             Dir::copyDir($decomPath.'/upload/plugins/'.$appName.'/', Env::get('root_path').'plugins/'.$appName);
 
+            // 文件安全检查
+            $safeCheck = Dir::safeCheck(Env::get('root_path').'plugins/'.$appName);
+            if ($safeCheck) {
+                foreach($safeCheck as $v) {
+                    Log::warning('文件 '. $v['file'].' 含有危险函数：'.str_replace('(', '', implode(',', $v['function'])));
+                }
+            }
+
             // 复制静态资源
             Dir::copyDir($decomPath.'/upload/public/static/'.$appName, './static/plugins/'.$appName);
 
@@ -458,7 +466,7 @@ class Plugins extends Admin
             Dir::delDir($decomPath);
             @unlink($file);
 
-            return $this->success('插件导入成功', url('index?status=0'));
+            $this->success($safeCheck ? '插件导入成功，部分文件可能存在安全风险，请查看系统日志' : '插件导入成功', url('index?status=0'));
         }
 
         $tabData = $this->tabData;

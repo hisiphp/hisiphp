@@ -19,7 +19,8 @@ use hisi\Dir;
 use hisi\PclZip;
 use think\Db;
 use think\Xml;
-use Env;
+use think\facade\Log;
+use think\facade\Env;
 
 /**
  * 模块管理控制器
@@ -511,6 +512,17 @@ class Module extends Admin
             }
 
             Dir::copyDir($appPath, Env::get('app_path').$appName);
+
+            // 文件安全检查
+            $safeTips = false;
+            $safeCheck = Dir::safeCheck(Env::get('app_path').$appName);
+            if ($safeCheck) {
+                $safeTips = true;
+                foreach($safeCheck as $v) {
+                    Log::warning('文件 '. $v['file'].' 含有危险函数：'.str_replace('(', '', implode(',', $v['function'])));
+                }
+            }
+
             if (!is_dir('./static/'.$appName.'/')) {
                 Dir::create('./static/'.$appName.'/', 0755);
             }
@@ -523,12 +535,21 @@ class Module extends Admin
             // 复制theme目录
             if (is_dir($decomPath.'/upload/public/theme')) {
                 Dir::copyDir($decomPath.'/upload/public/theme', './theme');
+
+                // 文件安全检查
+                $safeCheck = Dir::safeCheck('./theme/'.$appName);
+                if ($safeCheck) {
+                    $safeTips = true;
+                    foreach($safeCheck as $v) {
+                        Log::warning('文件 '. $v['file'].' 含有危险函数：'.str_replace('(', '', implode(',', $v['function'])));
+                    } 
+                }
             }
 
             // 删除临时目录和安装包
             Dir::delDir($decomPath);
             @unlink($file);
-            return $this->success('模块导入成功', url('index?status=0'));
+            $this->success($safeTips ? '模块导入成功，部分文件可能存在安全风险，请查看系统日志' : '模块导入成功', url('index?status=0'));
         }
 
         $tabData = $this->tabData;
