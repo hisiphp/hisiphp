@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>135编辑器外部编辑调用</title>
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+    }
+    #editor135 {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: none;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<!-- 如需要appkey进行额外私有化等对接，请联系QQ: 285694665   微信: hncszdb -->
+<iframe id="editor135" src="https://www.135editor.com/simple_editor.html?callback=true&appkey="></iframe>
+<script type="text/javascript" src="../../dialogs/internal.js?t=1458602018"></script>
+<script>
+  var editor135 = document.getElementById('editor135');
+  
+  window.onload = function () {
+	  setTimeout(function(){
+		  editor135.contentWindow.postMessage(editor.getContent(),'*');
+	  },3000);    
+  };
+  document.addEventListener("mousewheel", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  });
+  window.addEventListener('message', function (event) {
+      if (typeof event.data !== 'string') return;
+      editor.setContent(event.data);
+      editor.fireEvent("catchRemoteImage"); 
+      dialog.close();
+  }, false);
+</script>
+</body>
+</html>

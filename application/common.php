@@ -518,6 +518,7 @@ if (!function_exists('editor')) {
             case 'ueditor':
                 $html = '<script src="'.$jsPath.'ueditor/ueditor.config.js"></script>';
                 $html .= '<script src="'.$jsPath.'ueditor/ueditor.all.min.js"></script>';
+                $html .= '<script src="'.$jsPath.'ueditor/plugins/135editor.js"></script>';
                 $html .= '<script>';
                 foreach ($obj as $k =>$v) {
                     $html .= 'var ue'.$k.' = UE.ui.Editor({serverUrl:"'.$url.'",initialFrameHeight:500,initialFrameWidth:"100%",autoHeightEnabled:false});ue'.$k.'.render("'.$v.'");';
