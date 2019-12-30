@@ -120,26 +120,29 @@ class Base
                 exit('站点已关闭！');
             }
 
-            $domain = Request::domain();
-            $wap    = config('base.wap_domain');
-            $viewPath = 'theme/'.$module.'/'.$theme.'/';
-            
-            // 定义前台模板路径[分手机和PC]
-            if (Request::isMobile() === true && 
-                config('base.wap_site_status') && 
-                file_exists('.'.ROOT_DIR.$viewPath.'wap/')) {
+            if (Request::isAjax() === false && 
+                strpos(Request::server('http_user_agent'), 'miniProgram') === false) {
+                    
+                $domain = Request::domain();
+                $wap    = config('base.wap_domain');
+                $viewPath = 'theme/'.$module.'/'.$theme.'/';
+        
+                // 定义前台模板路径[分手机和PC]
+                if (Request::isMobile() === true &&
+                    config('base.wap_site_status') &&
+                    file_exists('.'.ROOT_DIR.$viewPath.'wap/')) {
+                    if ($wap && $wap != $domain) {
+                        header('Location: '.$wap.Request::url());
+                        exit();
+                    }
 
-                if ($wap && $wap != $domain) {
-                    header('Location: '.$wap.Request::url());
-                    exit();
+                    $viewPath .= 'wap/';
+                } elseif (config('base.wap_site_status') && $domain == $wap) {
+                    $viewPath .= 'wap/';
                 }
 
-                $viewPath .= 'wap/';
-            } else if (config('base.wap_site_status') && $domain == $wap) {
-                $viewPath .= 'wap/';                
+                View::config(['view_path' => $viewPath]);
             }
-
-            View::config(['view_path' => $viewPath]);
 
             self::setLang();
         }
