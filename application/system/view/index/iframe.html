@@ -56,8 +56,9 @@ $ca = strtolower(request()->controller().'/'.request()->action());
                 }
             };
         $('.admin-nav-item').click(function(event) {
-            var that = $(this);
-            if ($('iframe[src="'+that.attr('href')+'"]')[0]) {
+            var that = $(this), iframe = $('iframe[src="'+that.attr('href')+'"]');
+            if (iframe[0]) {
+                iframe.prop('src', iframe.attr('src'));
                 tab.change(that.attr('data-id'));
                 event.stopPropagation();
                 return false;
