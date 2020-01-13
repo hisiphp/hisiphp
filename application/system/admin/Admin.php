@@ -19,6 +19,9 @@ use app\system\model\SystemLog as LogModel;
 use app\system\model\SystemLanguage as LangModel;
 use app\system\model\SystemUserRole as UserRoleModel;
 use think\Db;
+use hisi\Dir;
+use think\facade\Env;
+use think\facade\Log;
 
 /**
  * 后台公共控制器
@@ -47,6 +50,7 @@ class Admin extends Common
     protected function initialize()
     {
         parent::initialize();
+        
         $model = new UserModel();
         // 判断登陆
         $login = $model->isLogin();
@@ -363,44 +367,38 @@ class Admin extends Common
     public function del()
     {
 
-        $id         = $this->request->param('id/a');
-        
+        $id = $this->request->param('id/a');
         if (empty($id)) {
             return $this->error('缺少id参数');
         }
         
         if ($this->hisiModel) {
-
-            $model  = $this->model();
-            $pk     = $model->getPk();
-            $where  = $this->getRightWhere();
-            
-            try {
-
+            $model = $this->model();
+            $pk = $model->getPk();
+            $where = $this->getRightWhere();
+            if (method_exists($model, 'withTrashed')) {
                 foreach($id as $v) {
                     $row = $model->withTrashed()->where($where)->where($pk, '=', $v)->find();
+                    if (!$row) continue;
+                    if ($row->trashed()) {
+                        $result = $row->delete(true);
+                    } else {
+                        $result = $row->delete();
+                    }
+
+                    if (!$result) {
+                        return $this->error($row->getError());
+                    }
+                }
+            } else {
+                foreach($id as $v) {
+                    $row = $model->where($where)->where($pk, '=', $v)->find();
                     if (!$row) continue;
                     if (!$row->delete()) {
                         return $this->error($row->getError());
                     }
                 }
-
-            } catch (\think\Exception $err) {
-                if (strpos($err->getMessage(), 'withTrashed')) {
-
-                    foreach($id as $v) {
-                        $row = $model->where($where)->where($pk, '=', $v)->find();
-                        if (!$row) continue;
-                        if (!$row->delete()) {
-                            return $this->error($row->getError());
-                        }
-                    }
-
-                } else {
-                    return $this->error($err->getMessage());
-                }
             }
-
         } else if ($this->hisiTable) {
 
             $obj    = db($this->hisiTable);
