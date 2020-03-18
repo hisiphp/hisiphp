@@ -325,27 +325,28 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
                         that.removeClass('layui-btn-danger').addClass('layui-btn-normal').text(text);
                     }, opt.time);
                 } else {
-                    that.addClass('layui-btn-normal').text(res.msg);
-                    setTimeout(function() {
-                        that.text(text).prop('disabled', false);
-                        if (opt.callback) {
-                            opt.callback(that, res);
-                        }
-                        if (opt.pop == true) {
-                            if (opt.refresh == true) {
-                                parent.location.reload();
-                            } else if (opt.jump == true && res.url != '') {
-                                parent.location.href = res.url;
+                    if (opt.callback) {
+                        opt.callback(that, res);
+                    } else {
+                        that.addClass('layui-btn-normal').text(res.msg);
+                        setTimeout(function() {
+                            that.text(text).prop('disabled', false);
+                            if (opt.pop == true) {
+                                if (opt.refresh == true) {
+                                    parent.location.reload();
+                                } else if (opt.jump == true && res.url != '') {
+                                    parent.location.href = res.url;
+                                }
+                                parent.layui.layer.closeAll();
+                            } else if (opt.refresh == true) {
+                                if (res.url != '') {
+                                    location.href = res.url;
+                                } else {
+                                    history.back(-1);
+                                }
                             }
-                            parent.layui.layer.closeAll();
-                        } else if (opt.refresh == true) {
-                            if (res.url != '') {
-                                location.href = res.url;
-                            } else {
-                                history.back(-1);
-                            }
-                        }
-                    }, opt.time);
+                        }, opt.time);
+                    }
                 }
             }
         });
