@@ -44,7 +44,7 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .main-nav .layui-nav-item a {font-size:16px;padding:0;margin:0 15px}
 .footer {line-height:44px;padding:0 10px;color:#666}
 .footer a {color:#5c90d2}
-#switchNav {position:fixed;left:0;top:60px;z-index:1000}
+#switchNav {position:fixed;left:0;top:60px;z-index:99999}
 #switchNav .layui-nav-child dd {position:relative}
 #switchNav .layui-nav-child dd .j-del-menu {position:absolute;right:10px;top:3px;font-size:18px;color:#999;cursor:pointer}
 #switchNav .layui-nav-child dd .j-del-menu:hover {color:#fff}
@@ -52,6 +52,7 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 #switchNav .fold-mark i.aicon {margin-right:20px}
 #switchNav a {cursor:pointer}
 #switchNav i.typcn,#switchNav i.fa {font-size:16px!important}
+#switchNav .admin-nav-item {padding-left:35px;}
 #switchNav i.aicon {margin-right:2px}
 #switchNav.close i.aicon{margin-right:7px;} 
 #switchNav img {border-radius:5px;margin:-2px 5px 0 0}
@@ -128,7 +129,6 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .layui-tab-title li {padding:0 10px}
 .layui-form-mid {font-size:12px!important}
 .layui-table-cell {min-height:28px;height:auto!important}
-.layui-table-page{text-align:right;}
 .hisi-themes {overflow:hidden;width:282px}
 .hisi-themes li {float:left;width:40px;height:40px;overflow:hidden;margin:2px;border:1px solid #efefef;cursor:pointer}
 .hisi-themes li:hover,.hisi-themes li.active {border:2px solid #ccc;margin:1px}
@@ -224,9 +224,4 @@ body{background-color:#f5f5f5;margin:0;padding:0;}
 .hisi-toolbar-nav li dl{position: absolute;z-index:999;left:0;right:auto;min-width:100%;top:32px;white-space:nowrap;padding:5px 0;background-color:#fff;box-shadow: 0 2px 4px rgba(0,0,0,.12);border:1px solid #C9C9C9;display:none;border-radius: 2px;}
 .hisi-toolbar-nav li dl dd{display:block;height:30px;line-height:30px;padding:0 10px;font-size:12px;white-space: nowrap;}
 .hisi-toolbar-nav li:hover dl {display:block;}
-.edui-button.edui-for-135editor .edui-button-wrap .edui-button-body .edui-icon{
-    background-image: url("../image/editor-135-icon.png") !important;
-    background-size: 85%;
-    background-position: center;
-    background-repeat: no-repeat;
-}
+.layui-form-select dl {z-index:1000;}
