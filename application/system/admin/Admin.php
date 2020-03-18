@@ -408,7 +408,7 @@ class Admin extends Common
             $where[]= [$pk, 'in', $id];
             $where  = $this->getRightWhere($where);
 
-            $db->where($where)->delete();
+            $obj->where($where)->delete();
 
         } else {
 
