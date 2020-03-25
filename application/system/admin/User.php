@@ -356,7 +356,7 @@ class User extends Admin
      */
     public function statusRole()
     {
-        $this->hisiTable = 'SystemRole';
+        $this->hisiModel = 'SystemRole';
         parent::status();
     }
 
