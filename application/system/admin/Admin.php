@@ -54,7 +54,7 @@ class Admin extends Common
         $model = new UserModel();
         // 判断登陆
         $login = $model->isLogin();
-        if (!$login['uid']) {
+        if (!isset($login['uid']) || !$login['uid']) {
             return $this->error('请登陆之后在操作', '/'.config('sys.admin_path'));
         }
         
