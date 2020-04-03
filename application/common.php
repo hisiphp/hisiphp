@@ -481,14 +481,14 @@ if (!function_exists('parse_sql')) {
                 array_push($pure_sql, $line);
             }
 
-            // 只返回一条语句
-            if ($limit == 1) {
-                return implode($pure_sql, "");
-            }
-
-            // 以数组形式返回sql语句
-            $pure_sql = implode($pure_sql, "\n");
+            $pure_sql = implode("\n", $pure_sql);
             $pure_sql = explode(";\n", $pure_sql);
+
+            // 只返回一条语句
+            if ($limit == 1 && isset($pure_sql[0])) {
+                return $pure_sql[0];
+            }
+            
             return $pure_sql;
         } else {
             return $limit == 1 ? '' : [];
