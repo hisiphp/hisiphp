@@ -219,23 +219,23 @@ layui.define(['element', 'form', 'table', 'md5'], function(exports) {
             return false;
         }
 
-        if ($('.checkbox-ids:checked').length <= 0) {
-            var checkStatus = table.checkStatus(opt.table);
-
-            for (var i in checkStatus.data) {
-                query += '&id[]=' + checkStatus.data[i].id;
+        if (opt.idSync) {
+            if ($('.checkbox-ids:checked').length > 0) {
+                $('.checkbox-ids:checked').each(function() {
+                    query += '&id[]=' + $(this).val();
+                })
+            } else {
+                var checkStatus = table.checkStatus(opt.table);
+                for (var i in checkStatus.data) {
+                    query += '&id[]=' + checkStatus.data[i].id;
+                }
             }
-        } else {
-            $('.checkbox-ids:checked').each(function() {
-                query += '&id[]=' + $(this).val();
-            })
+            if (!query) {
+                layer.msg("请选择要操作的数据");
+                return false;
+            }
         }
-
-        if (opt.idSync && (query == '' || query == null)) {
-            layer.msg('请选择要操作的数据');
-            return false;
-        }
-
+        
         if (opt.url.indexOf('?') >= 0) {
             opt.url += '&hisi_iframe=yes'+query;
         } else {
