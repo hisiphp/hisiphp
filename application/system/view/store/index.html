@@ -121,21 +121,7 @@
                             $('.app-order-id').html('<a data-data=\''+JSON.stringify(installParam)+'\' class="layui-btn layui-btn-normal mt50" id="installBtn">'+(parseFloat(price) <= 0 ? '免费应用' : '已支付')+'，请点此直接安装</a>');
                         } else {
 
-                            if (payment == 'wechat') {
-                                $('.app-price').html('￥'+price+'<strong class="red" style="display:block;font-size:16px;padding:10px 0;">支付时请备注订单号：'+res.order_id+'</strong>');
-                                $('.app-order-id').html('<a href="javascript:void(0);" style="margin-top:10px;" class="layui-btn layui-btn-xs layui-btn-normal j-show-question">点此查看常见问题</a>');
-                                $('#qrcode').attr('src', res.qrcode).show();
-                            } else {
-                                $('.app-price').html('');
-                                $('.app-order-id').html('<a href="javascript:;" data-order_id="'+res.order_id+'" data-identifier="'+identifier+'" target="_blank" id="jumpPay" class="layui-btn mt50 layui-btn-normal">点此跳转至支付宝完成支付</a>');
-                                $('#qrcode').attr('src', '').hide();
-                            }
-
-                            $('#jumpPay').on('click', function(){
-                                var t = $(this);
-                                t.attr('href', 'https://store.hisiphp.com/client_pay/alipay?order_id='+t.attr('data-order_id')+'&timestamp='+encodeURIComponent(getTimestamp())+'&sign='+md5.exec(t.attr('data-order_id')+t.attr('data-identifier')+getTimestamp()));
-                                return true;
-                            });
+                            $('.app-order-id').html('<a href="https://store.hisiphp.com/client_pay/'+payment+'?order_id='+res.order_id+'&timestamp='+encodeURIComponent(getTimestamp())+'&sign='+md5.exec(res.order_id+identifier+getTimestamp())+'" target="_blank" id="jumpPay" class="layui-btn mt50 layui-btn-normal">点此跳转至'+(payment == 'wechat' ? '微信' : '支付宝')+'完成支付</a>');
 
                             // 定时刷新支付状态
                             var checkOrder = function() {
@@ -323,10 +309,6 @@
             <dd>...</dd>
         </dl>
         <div class="layui-form-item app-info">
-            <div class="app-price"></div>
-            <div class="app-qrocde">
-                <img src="" style="display:none;" id="qrcode" width="200" height="200" />
-            </div>
             <div class="app-order-id"></div>
         </div>
     </div>
