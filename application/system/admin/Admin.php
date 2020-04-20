@@ -375,41 +375,33 @@ class Admin extends Common
         if ($this->hisiModel) {
             $model = $this->model();
             $pk = $model->getPk();
-            $where = $this->getRightWhere();
+            $where[] = [$pk, 'in', $id];
+            $where = $this->getRightWhere($where);
             if (method_exists($model, 'withTrashed')) {
-                foreach($id as $v) {
-                    $row = $model->withTrashed()->where($where)->where($pk, '=', $v)->find();
-                    if (!$row) continue;
-                    if ($row->trashed()) {
-                        $result = $row->delete(true);
+                $rows = $model->withTrashed()->where($where)->select();
+                foreach($rows as $v) {
+                    if ($v->trashed()) {
+                        $result = $v->delete(true);
                     } else {
-                        $result = $row->delete();
+                        $result = $v->delete();
                     }
 
                     if (!$result) {
-                        return $this->error($row->getError());
+                        return $this->error($v->getError());
                     }
                 }
             } else {
-                foreach($id as $v) {
-                    $row = $model->where($where)->where($pk, '=', $v)->find();
-                    if (!$row) continue;
-                    if (!$row->delete()) {
-                        return $this->error($row->getError());
-                    }
-                }
+                $row = $model->where($where)->delete();
             }
         } else if ($this->hisiTable) {
+            $db = db($this->hisiTable);
+            $pk = $db->getPk();
 
-            $obj    = db($this->hisiTable);
-            $pk     = $obj->getPk();
-            
             $where  = [];
             $where[]= [$pk, 'in', $id];
             $where  = $this->getRightWhere($where);
 
-            $obj->where($where)->delete();
-
+            $db->where($where)->delete();
         } else {
 
             return $this->error('当前控制器缺少属性（hisiModel、hisiTable至少定义一个）');
