@@ -93,14 +93,14 @@ class SystemUser extends Model
                 return false;
             }
             
-            $obj->hasRoles()->detach();
+            (isset($obj->role_id) && $obj->role_id) && $obj->hasRoles()->detach();
             
             return true;
         });
 
         // 更新后
         self::event('after_update', function($obj) {
-            $obj->hasRoles()->saveAll($obj->role_id);
+            (isset($obj->role_id) && $obj->role_id) && $obj->hasRoles()->saveAll($obj->role_id);
         });
 
         // 删除前
