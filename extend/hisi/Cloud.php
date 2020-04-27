@@ -38,7 +38,7 @@ class Cloud {
     public $type = 'post';
 
     //服务器地址
-    const API_URL = 'https://cloud.hisiphp.com/thinkphp51/';
+    const API_URL = 'https://cloud.hisiphp.cn/thinkphp51/';
     
     /**
      * 架构函数
