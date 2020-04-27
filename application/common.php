@@ -31,6 +31,24 @@ if (!function_exists('hs_array_filter_callback')) {
     }
 }
 
+
+if (!function_exists('get_layer')) {
+    /**
+     * 自动获取层前缀
+     * @param string $name 名称
+     */
+    function get_layer($name)
+    {
+        $layers = ['db', 'logic', 'model', 'service', 'validate'];
+        foreach ($layers as $v) {
+            if (substr($name, 0, strlen($v)) == $v) {
+                return $v;
+            }
+        }
+        return false;
+    }
+}
+
 if (!function_exists('dblang')) {
     /**
      * 获取语言包ID，数据库读取时使用
@@ -163,7 +181,7 @@ if (!function_exists('random')) {
          }
          $max = strlen($seed) - 1;
          for($i = 0; $i < $length; $i++) {
-              $hash .= $seed{mt_rand(0, $max)};
+              $hash .= $seed[mt_rand(0, $max)];
          }
          return $hash;
     }
@@ -481,14 +499,14 @@ if (!function_exists('parse_sql')) {
                 array_push($pure_sql, $line);
             }
 
-            $pure_sql = implode("\n", $pure_sql);
-            $pure_sql = explode(";\n", $pure_sql);
-
             // 只返回一条语句
-            if ($limit == 1 && isset($pure_sql[0])) {
-                return $pure_sql[0];
+            if ($limit == 1) {
+                return implode($pure_sql, "");
             }
-            
+
+            // 以数组形式返回sql语句
+            $pure_sql = implode($pure_sql, "\n");
+            $pure_sql = explode(";\n", $pure_sql);
             return $pure_sql;
         } else {
             return $limit == 1 ? '' : [];
