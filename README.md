@@ -127,7 +127,7 @@ www  WEB部署目录（不建议使用子目录）
 ```
 
 ## 帮助手册
-[HisiPHP 完全开发手册]https://www.kancloud.cn/hisi/hisiphp_v2
+[HisiPHP 完全开发手册]http://www.kancloud.cn/hisi/hisiphp_v2
 
 ## 应用商店
 [store.hisiphp.com](http://store.hisiphp.com?source=github)
@@ -137,23 +137,23 @@ www  WEB部署目录（不建议使用子目录）
 
 ## 应用推荐 
 
-[CMS内容管理系统(含小程序)](https://store.hisiphp.com/detail/1000025.html?from=github)
+[CMS内容管理系统(含小程序)](http://store.hisiphp.com/detail/1000025.html?from=github)
 
-[多公众号管理](https://store.hisiphp.com/detail/1000035.html?from=github)
+[多公众号管理](http://store.hisiphp.com/detail/1000035.html?from=github)
 
-[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](https://store.hisiphp.com/detail/1000019.html?from=github)
+[在线支付（支付宝、微信扫码支付、微信公众号支付、微信H5支付、微信小程序支付、微信APP支付）](http://store.hisiphp.com/detail/1000019.html?from=github)
 
-[通用RESTfulAPI接口](https://store.hisiphp.com/detail/1000022.html?from=github)
+[通用RESTfulAPI接口](http://store.hisiphp.com/detail/1000022.html?from=github)
 
-[响应式轻博客](https://store.hisiphp.com/detail/1000021.html?from=github)
+[响应式轻博客](http://store.hisiphp.com/detail/1000021.html?from=github)
 
-[第三方登录](https://store.hisiphp.com/detail/1000024.html?from=github)
+[第三方登录](http://store.hisiphp.com/detail/1000024.html?from=github)
 
-[七牛云储存](https://store.hisiphp.com/detail/1000029.html?from=github)
+[七牛云储存](http://store.hisiphp.com/detail/1000029.html?from=github)
 
-[阿里云OSS](https://store.hisiphp.com/detail/1000031.html?from=github)
+[阿里云OSS](http://store.hisiphp.com/detail/1000031.html?from=github)
 
-[万能采集插件](https://store.hisiphp.com/detail/1000034.html?from=github)
+[万能采集插件](http://store.hisiphp.com/detail/1000034.html?from=github)
 
 
 
