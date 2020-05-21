@@ -132,8 +132,11 @@ www  WEB部署目录（不建议使用子目录）
 ## 应用商店
 [store.hisiphp.com](http://store.hisiphp.com?source=github)
 
-## 演示地址
+## 社区版演示
 [v2.demo.hisiphp.com](http://v2.demo.hisiphp.com?from=github)
+
+## PRO版演示
+[pro.demo.hisiphp.com](http://pro.demo.hisiphp.com/admin.php?from=github)
 
 ## 应用推荐 
 
