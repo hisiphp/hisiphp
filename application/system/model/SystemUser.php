@@ -82,6 +82,7 @@ class SystemUser extends Model
         // 新增后
         self::event('after_insert', function($obj) {
             $obj->hasRoles()->saveAll($obj->role_id);
+            runhook('admin_create', $obj);
         });
 
         // 更新前
@@ -101,6 +102,7 @@ class SystemUser extends Model
         // 更新后
         self::event('after_update', function($obj) {
             (isset($obj->role_id) && $obj->role_id) && $obj->hasRoles()->saveAll($obj->role_id);
+            runhook('admin_update', $obj);
         });
 
         // 删除前
@@ -121,6 +123,7 @@ class SystemUser extends Model
 
             // 删除用户收藏的菜单
             (new MenuModel)->delUser($obj['id']);
+            runhook('admin_delete', $obj);
         });
     }
     
@@ -198,7 +201,7 @@ class SystemUser extends Model
             session('admin_user', $login);
             session('admin_user_sign', $this->dataSign($login));
             cookie('hisi_iframe', (int)$user->iframe);
-            
+            runhook('admin_login', $login);
             return $user->id;
         }
 
@@ -278,7 +281,10 @@ class SystemUser extends Model
 
         if (isset($user['uid'])) {
             session('role_auth_'.$user['uid'], null);
+            Cache::rm('admin_menu_'.$user['uid'].'_'.dblang('admin').'_'.config('sys.app_debug'));
         }
+
+        runhook('admin_logout', $user);
     }
 
     /**
@@ -297,5 +303,4 @@ class SystemUser extends Model
         $sign = sha1($code);
         return $sign;
     }
-
 }
