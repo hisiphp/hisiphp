@@ -143,10 +143,14 @@ class Module extends Admin
         }
 
         if ($this->request->isPost()) {
-
             $model = new ModuleModel();
-
-            if (!$model->design($this->request->post())) {
+            $data = $this->request->post();
+            $result = $this->validate($data, 'app\system\validate\SystemModule');
+            if ($result !== true) {
+                return $this->error($result);
+            }
+            
+            if (!$model->design($data)) {
                 return $this->error($model->getError());
             }
 
