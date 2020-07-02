@@ -122,13 +122,21 @@ class Plugins extends Admin
         if (config('sys.app_debug') == 0) {
             return $this->error('非开发模式禁止使用此功能');
         }
+
         if ($this->request->isPost()) {
             $model = new PluginsModel();
-            if (!$model->design($this->request->post())) {
+            $data = $this->request->post();
+            $result = $this->validate($data, 'app\system\validate\SystemPlugins');
+            if ($result !== true) {
+                return $this->error($result);
+            }
+
+            if (!$model->design($data)) {
                 return $this->error($model->getError());
             }
             return $this->success('插件已生成完毕', url('index?status=0'));
         }
+
         $tabData = [];
         $tabData['menu'] = [
             ['title' => '插件设计'],
