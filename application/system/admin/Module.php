@@ -441,22 +441,28 @@ class Module extends Admin
     public function import()
     {
         if ($this->request->isPost()) {
-            $_file = $this->request->param('file');
-            if (empty($_file)) {
+            $file = $this->request->file('file');
+            if (empty($file)) {
                 return $this->error('请上传模块安装包');
             }
 
-            $file = realpath('.'.$_file);
+            if (!$file->checkExt('zip')) {
+                return $this->error('请上传 ZIP 格式的安装包');
+            }
+
+            $basePath = './upload/temp/file/';
+            $file = $file->rule('md5')->move($basePath);
+            $file = $basePath.$file->getSaveName();
+
             if (ROOT_DIR != '/') {// 针对子目录处理
-                $file = realpath('.'.str_replace(ROOT_DIR, '/', $_file));
+                $file = realpath(str_replace(ROOT_DIR, '/', $file));
             }
             
             if (!file_exists($file)) {
                 return $this->error('上传文件无效');
             }
             
-            $decomPath = '.'.trim($_file, '.zip');
-
+            $decomPath = '.'.trim($file, '.zip');
             if (!is_dir($decomPath)) {
                 Dir::create($decomPath, 0777);
             }

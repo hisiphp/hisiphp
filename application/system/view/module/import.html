@@ -9,7 +9,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">开始导入</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="submit">开始导入</button>
             <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
         </div>
     </div>
@@ -20,19 +20,19 @@ layui.use(['jquery', 'laydate', 'upload'], function() {
     var $ = layui.jquery, layer = layui.layer, upload = layui.upload;
     upload.render({
         elem: '.layui-upload',
-        url: '{:url("system/annex/upload?thumb=no&water=no&group=temp&driver=local")}'
+        url: '{:url()}'
         ,method: 'post'
+        ,accept: 'file'
+        ,exts: 'zip'
+        ,bindAction: '#submit'
+        ,auto: false
         ,before: function(input) {
             layer.msg('文件上传中...', {time:3000000});
         },done: function(res, index, upload) {
             var obj = this.item;
-            if (res.code == 0) {
-                layer.msg(res.msg);
-                return false;
-            }
-            layer.closeAll();
-            $(obj).parents('.upload').find('.upload-input').val(res.data.file);
-            $(obj).parents('.upload').find('button').text('文件上传成功');
+            layer.msg(res.msg, {}, function() {
+                res.code && (location.href = "{:url('index', ['status' => 0])}");
+            });
         }
     });
 });
