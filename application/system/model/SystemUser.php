@@ -14,6 +14,7 @@ use think\Model;
 use app\system\model\SystemMenu as MenuModel;
 use app\system\model\SystemRole as RoleModel;
 use app\system\model\SystemLog as LogModel;
+use think\Cache;
 
 /**
  * 后台用户模型
