@@ -55,7 +55,8 @@ if (!function_exists('dblang')) {
      * @param string $group 分组[admin]，默认为前台
      * @return int
      */
-    function dblang($group = '') {
+    function dblang($group = '')
+    {
         $lang = cookie($group.'_language');
         if (empty($lang)) {
             $lang = config('default_lang');
@@ -70,7 +71,8 @@ if (!function_exists('get_domain')) {
      * @param bool $http true 返回http协议头,false 只返回域名
      * @return string
      */
-    function get_domain($http = true) {
+    function get_domain($http = true)
+    {
         $host = input('server.http_host');
         $port = input('server.server_port');
         if ($port != 80 && $port != 443 && strpos($host, ':') === false) {
@@ -94,7 +96,8 @@ if (!function_exists('get_num')) {
      * @param string $field 要获取的字段名
      * @return bool
      */
-    function get_num($field = 'id') {
+    function get_num($field = 'id')
+    {
         $_id = input('param.' . $field. '/d', 0);
         if ($_id > 0) {
             return $_id;
@@ -115,7 +118,8 @@ if (!function_exists('is_email')) {
      * @param string $str 要验证的邮箱地址
      * @return bool
      */
-    function is_email($str) {
+    function is_email($str)
+    {
         return preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $str);
     }
 }
@@ -126,7 +130,8 @@ if (!function_exists('is_mobile')) {
      * @param string $num 要验证的手机号
      * @return bool
      */
-    function is_mobile($num) {
+    function is_mobile($num)
+    {
         return preg_match("/^1(3|4|5|6|7|8|9)\d{9}$/", $num);
     }
 }
@@ -136,7 +141,8 @@ if (!function_exists('cur_url')) {
      * 获取当前访问的完整URL
      * @return string
      */
-    function cur_url() {
+    function cur_url()
+    {
         $pageURL = 'http';
         if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === 'on') {
             $pageURL .= "s";
@@ -158,7 +164,8 @@ if (!function_exists('is_username')) {
      * @param string $str 要验证的字符串
      * @return bool
      */
-    function is_username($str) {
+    function is_username($str)
+    {
         return preg_match("/^[\x80-\xffA-Za-z]{1,1}[\x80-\xff_A-Za-z0-9]{2,19}+$/", $str);
     }
 }
@@ -170,20 +177,21 @@ if (!function_exists('random')) {
      * @param int $type 类型(0：混合；1：纯数字)
      * @return string
      */
-    function random($length = 16, $type = 1) {
-         $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $type ? 10 : 35);
-         $seed = $type ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
-         if($type) {
-              $hash = '';
-         } else {
-              $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
-              $length--;
-         }
-         $max = strlen($seed) - 1;
-         for($i = 0; $i < $length; $i++) {
-              $hash .= $seed[mt_rand(0, $max)];
-         }
-         return $hash;
+    function random($length = 16, $type = 1)
+    {
+        $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $type ? 10 : 35);
+        $seed = $type ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
+        if ($type) {
+            $hash = '';
+        } else {
+            $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
+            $length--;
+        }
+        $max = strlen($seed) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $hash .= $seed[mt_rand(0, $max)];
+        }
+        return $hash;
     }
 }
 
@@ -192,7 +200,8 @@ if (!function_exists('order_number')) {
      * 生成订单号(年月日时分秒+5位随机数)
      * @return int
      */
-    function order_number() {
+    function order_number()
+    {
         return date('YmdHis').random(5);
     }
 }
@@ -207,9 +216,11 @@ if (!function_exists('hide_str')) {
      * @param string    $glue     分割符
      * @return string   处理后的字符串
      */
-    function hide_str($string, $bengin=0, $len = 4, $type = 0, $glue = "@") {
-        if (empty($string))
+    function hide_str($string, $bengin=0, $len = 4, $type = 0, $glue = "@")
+    {
+        if (empty($string)) {
             return false;
+        }
         $array = array();
         if ($type == 0 || $type == 1 || $type == 4) {
             $strlen = $length = mb_strlen($string);
@@ -221,39 +232,47 @@ if (!function_exists('hide_str')) {
         }
         if ($type == 0) {
             for ($i = $bengin; $i < ($bengin + $len); $i++) {
-                if (isset($array[$i])) $array[$i] = "*";
+                if (isset($array[$i])) {
+                    $array[$i] = "*";
+                }
             }
             $string = implode("", $array);
-        }else if ($type == 1) {
+        } elseif ($type == 1) {
             $array = array_reverse($array);
             for ($i = $bengin; $i < ($bengin + $len); $i++) {
-                if (isset($array[$i])) $array[$i] = "*";
+                if (isset($array[$i])) {
+                    $array[$i] = "*";
+                }
             }
             $string = implode("", array_reverse($array));
-        }else if ($type == 2) {
+        } elseif ($type == 2) {
             $array = explode($glue, $string);
             if (isset($array[0])) {
                 $array[0] = hide_str($array[0], $bengin, $len, 1);
             }
             $string = implode($glue, $array);
-        } else if ($type == 3) {
+        } elseif ($type == 3) {
             $array = explode($glue, $string);
             if (isset($array[1])) {
                 $array[1] = hide_str($array[1], $bengin, $len, 0);
             }
             $string = implode($glue, $array);
-        } else if ($type == 4) {
+        } elseif ($type == 4) {
             $left = $bengin;
             $right = $len;
             $tem = array();
             for ($i = 0; $i < ($length - $right); $i++) {
-                if (isset($array[$i])) $tem[] = $i >= $left ? "" : $array[$i];
+                if (isset($array[$i])) {
+                    $tem[] = $i >= $left ? "" : $array[$i];
+                }
             }
             $tem[] = '*****';
             $array = array_chunk(array_reverse($array), $right);
             $array = array_reverse($array[0]);
             for ($i = 0; $i < $right; $i++) {
-                if (isset($array[$i])) $tem[] = $array[$i];
+                if (isset($array[$i])) {
+                    $tem[] = $array[$i];
+                }
             }
             $string = implode("", $tem);
         }
@@ -268,26 +287,31 @@ if (!function_exists('get_client_ip')) {
      * @param bool $adv 是否进行高级模式获取（有可能被伪装）
      * @return mixed
      */
-    function get_client_ip($type = 0, $adv = false) {
+    function get_client_ip($type = 0, $adv = false)
+    {
         $type       =  $type ? 1 : 0;
-        static $ip  =   NULL;
-        if ($ip !== NULL) return $ip[$type];
-        if($adv){
+        static $ip  =   null;
+        if ($ip !== null) {
+            return $ip[$type];
+        }
+        if ($adv) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $arr    =   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-                $pos    =   array_search('unknown',$arr);
-                if(false !== $pos) unset($arr[$pos]);
+                $pos    =   array_search('unknown', $arr);
+                if (false !== $pos) {
+                    unset($arr[$pos]);
+                }
                 $ip     =   trim($arr[0]);
-            }elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip     =   $_SERVER['HTTP_CLIENT_IP'];
-            }elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
                 $ip     =   $_SERVER['REMOTE_ADDR'];
             }
-        }elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         // IP地址合法验证
-        $long = sprintf("%u",ip2long($ip));
+        $long = sprintf("%u", ip2long($ip));
         $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
         return $ip[$type];
     }
@@ -299,8 +323,11 @@ if (!function_exists('parse_attr')) {
      * @param string $value 配置值
      * @return array|string
      */
-    function parse_attr($value = '') {
-        if (is_array($value)) return $value;
+    function parse_attr($value = '')
+    {
+        if (is_array($value)) {
+            return $value;
+        }
         $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
         if (strpos($value, ':')) {
             $value  = array();
@@ -319,10 +346,11 @@ if (!function_exists('xml2array')) {
     /**
      * XML转数组
      * @param string $xml xml格式内容
-     * @param bool $isnormal 
+     * @param bool $isnormal
      * @return array
      */
-    function xml2array(&$xml, $isnormal = FALSE) {
+    function xml2array(&$xml, $isnormal = false)
+    {
         $xml_parser = new hisi\Xml($isnormal);
         $data = $xml_parser->parse($xml);
         $xml_parser->destruct();
@@ -338,11 +366,12 @@ if (!function_exists('array2xml')) {
      * @param intval $level 层级
      * @return type
      */
-    function array2xml($arr, $ignore = true, $level = 1) {
+    function array2xml($arr, $ignore = true, $level = 1)
+    {
         $s = $level == 1 ? "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<root>\r\n" : '';
         $space = str_repeat("\t", $level);
-        foreach($arr as $k => $v) {
-            if(!is_array($v)) {
+        foreach ($arr as $k => $v) {
+            if (!is_array($v)) {
                 $s .= $space."<item id=\"$k\">".($ignore ? '<![CDATA[' : '').$v.($ignore ? ']]>' : '')."</item>\r\n";
             } else {
                 $s .= $space."<item id=\"$k\">\r\n".array2xml($v, $ignore, $level + 1).$space."</item>\r\n";
@@ -359,7 +388,8 @@ if (!function_exists('form_type')) {
      * @param string $type 类型(英文)
      * @return array|string
      */
-    function form_type($type = '') {
+    function form_type($type = '')
+    {
         $arr = [];
         $arr['input'] = '单行文本';
         $arr['textarea'] = '多行文本';
@@ -388,38 +418,39 @@ if (!function_exists('json_indent')) {
      * @param string $json json字符串
      * @return string
      */
-    function json_indent($json) { 
-        $result = ''; 
-        $pos = 0; 
-        $strLen = strlen($json); 
-        $indentStr = '  '; 
-        $newLine = "\n"; 
-        $prevChar = ''; 
-        $outOfQuotes = true; 
-        for ($i=0; $i<=$strLen; $i++) { 
+    function json_indent($json)
+    {
+        $result = '';
+        $pos = 0;
+        $strLen = strlen($json);
+        $indentStr = '  ';
+        $newLine = "\n";
+        $prevChar = '';
+        $outOfQuotes = true;
+        for ($i=0; $i<=$strLen; $i++) {
             $char = substr($json, $i, 1);
-            if ($char == '"' && $prevChar != '\\') { 
+            if ($char == '"' && $prevChar != '\\') {
                 $outOfQuotes = !$outOfQuotes;
-            } else if(($char == '}' || $char == ']') && $outOfQuotes) { 
-                $result .= $newLine; 
-                $pos --; 
-                for ($j=0; $j<$pos; $j++) { 
-                    $result .= $indentStr; 
-                } 
+            } elseif (($char == '}' || $char == ']') && $outOfQuotes) {
+                $result .= $newLine;
+                $pos --;
+                for ($j=0; $j<$pos; $j++) {
+                    $result .= $indentStr;
+                }
             }
             $result .= $char;
-            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) { 
-                $result .= $newLine; 
-                if ($char == '{' || $char == '[') { 
-                    $pos ++; 
-                } 
-                for ($j = 0; $j < $pos; $j++) { 
-                    $result .= $indentStr; 
-                } 
-            } 
-            $prevChar = $char; 
-        } 
-        return $result; 
+            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
+                $result .= $newLine;
+                if ($char == '{' || $char == '[') {
+                    $pos ++;
+                }
+                for ($j = 0; $j < $pos; $j++) {
+                    $result .= $indentStr;
+                }
+            }
+            $prevChar = $char;
+        }
+        return $result;
     }
 }
 
@@ -431,7 +462,8 @@ if (!function_exists('parse_sql')) {
      * @param  array $prefix 替换表前缀
      * @return array|string 除去注释之后的sql语句数组或一条语句
      */
-    function parse_sql($sql = '', $limit = 0, $prefix = []) {
+    function parse_sql($sql = '', $limit = 0, $prefix = [])
+    {
         // 被替换的前缀
         $from = '';
         // 要替换的前缀
@@ -505,7 +537,7 @@ if (!function_exists('parse_sql')) {
             }
 
             // 以数组形式返回sql语句
-            $pure_sql = implode($pure_sql, "\n");
+            $pure_sql = implode("\n", $pure_sql);
             $pure_sql = explode(";\n", $pure_sql);
             return $pure_sql;
         } else {
@@ -522,7 +554,8 @@ if (!function_exists('editor')) {
      * @param string $url [选填]附件上传地址，建议保持默认
      * @return html
      */
-    function editor($obj = [], $name = '', $url = '') {
+    function editor($obj = [], $name = '', $url = '')
+    {
         $jsPath = '/static/js/editor/';
         if (empty($name)) {
             $name = config('sys.editor');
@@ -596,7 +629,8 @@ if (!function_exists('str_coding')) {
      * @param  integer $expiry   有效期
      * @return string
      */
-    function str_coding($string, $operation = 'DECODE', $key = '', $expiry = 0) {
+    function str_coding($string, $operation = 'DECODE', $key = '', $expiry = 0)
+    {
         $ckey_length = 4;
         $key = md5($key ? $key : config('hs_auth.key'));
         $keya = md5(substr($key, 0, 16));
@@ -610,18 +644,18 @@ if (!function_exists('str_coding')) {
         $result = '';
         $box = range(0, 255);
         $rndkey = array();
-        for($i = 0; $i <= 255; $i++) {
+        for ($i = 0; $i <= 255; $i++) {
             $rndkey[$i] = ord($cryptkey[$i % $key_length]);
         }
 
-        for($j = $i = 0; $i < 256; $i++) {
+        for ($j = $i = 0; $i < 256; $i++) {
             $j = ($j + $box[$i] + $rndkey[$i]) % 256;
             $tmp = $box[$i];
             $box[$i] = $box[$j];
             $box[$j] = $tmp;
         }
 
-        for($a = $j = $i = 0; $i < $string_length; $i++) {
+        for ($a = $j = $i = 0; $i < $string_length; $i++) {
             $a = ($a + 1) % 256;
             $j = ($j + $box[$a]) % 256;
             $tmp = $box[$a];
@@ -630,8 +664,8 @@ if (!function_exists('str_coding')) {
             $result .= chr(ord($string[$i]) ^ ($box[($box[$a] + $box[$j]) % 256]));
         }
 
-        if($operation == 'DECODE') {
-            if((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() > 0) && substr($result, 10, 16) == substr(md5(substr($result, 26).$keyb), 0, 16)) {
+        if ($operation == 'DECODE') {
+            if ((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() > 0) && substr($result, 10, 16) == substr(md5(substr($result, 26).$keyb), 0, 16)) {
                 return substr($result, 26);
             } else {
                 return '';
@@ -645,10 +679,11 @@ if (!function_exists('str_coding')) {
 if (!function_exists('is_empty')) {
     /**
      * 判断是否为空值
-     * @param array|string $value 要判断的值 
+     * @param array|string $value 要判断的值
      * @return bool
      */
-    function is_empty($value) {
+    function is_empty($value)
+    {
         if (!isset($value)) {
             return true;
         }
@@ -725,7 +760,8 @@ if (!function_exists('runhook')) {
      * @param  bool   $return   是否需要返回结果
      * @param  bool   $once   只获取一个有效返回值
      */
-    function runhook($name = '', $params = null, $return = false, $once = false) {
+    function runhook($name = '', $params = null, $return = false, $once = false)
+    {
         $result = \Hook::listen($name, $params, $once);
         if ($return) {
             return $result;
@@ -834,7 +870,7 @@ if (!function_exists('plugins_url')) {
                 $params['_p'] = isset($url[0]) ? $url[0] : '';
                 $params['_c'] =  isset($url[1]) ? ucfirst($url[1]) : 'Index';
                 $params['_a'] = isset($url[2]) ? $url[2] : 'index';
-            } else if ($count == 2) {
+            } elseif ($count == 2) {
                 $params['_c'] =  isset($url[0]) ? ucfirst($url[0]) : 'Index';
                 $params['_a'] = isset($url[1]) ? $url[1] : 'index';
             } else {
