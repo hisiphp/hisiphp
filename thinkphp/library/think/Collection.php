@@ -400,7 +400,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      */
     public function column($columnKey, $indexKey = null)
     {
-        return array_column($this->items, $columnKey, $indexKey);
+        return array_column($this->toArray(), $columnKey, $indexKey);
     }
 
     /**
@@ -416,7 +416,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 
         $callback = $callback ?: function ($a, $b) {
             return $a == $b ? 0 : (($a < $b) ? -1 : 1);
-
         };
 
         uasort($items, $callback);
