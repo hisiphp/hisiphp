@@ -398,7 +398,6 @@ abstract class Builder
         }
 
         if ($value instanceof Expression) {
-
         } elseif (is_object($value) && method_exists($value, '__toString')) {
             // 对象数据写入
             $value = $value->__toString();
@@ -633,7 +632,6 @@ abstract class Builder
         . $this->parseDateTime($query, $value[0], $field, $bindType)
         . ' AND '
         . $this->parseDateTime($query, $value[1], $field, $bindType);
-
     }
 
     /**
@@ -684,7 +682,7 @@ abstract class Builder
      */
     protected function parseClosure(Query $query, $call, $show = true)
     {
-        $newQuery = $query->newQuery()->setConnection($this->connection);
+        $newQuery = $query->newQuery()->removeOption();
         $call($newQuery);
 
         return $newQuery->buildSql($show);
@@ -1005,7 +1003,8 @@ abstract class Builder
                 $this->parseComment($query, $options['comment']),
                 $this->parseForce($query, $options['force']),
             ],
-            $this->selectSql);
+            $this->selectSql
+        );
     }
 
     /**
@@ -1037,7 +1036,8 @@ abstract class Builder
                 implode(' , ', $values),
                 $this->parseComment($query, $options['comment']),
             ],
-            $this->insertSql);
+            $this->insertSql
+        );
     }
 
     /**
@@ -1087,7 +1087,8 @@ abstract class Builder
                 implode(' UNION ALL ', $values),
                 $this->parseComment($query, $options['comment']),
             ],
-            $this->insertAllSql);
+            $this->insertAllSql
+        );
     }
 
     /**
@@ -1143,7 +1144,8 @@ abstract class Builder
                 $this->parseLock($query, $options['lock']),
                 $this->parseComment($query, $options['comment']),
             ],
-            $this->updateSql);
+            $this->updateSql
+        );
     }
 
     /**
@@ -1168,6 +1170,7 @@ abstract class Builder
                 $this->parseLock($query, $options['lock']),
                 $this->parseComment($query, $options['comment']),
             ],
-            $this->deleteSql);
+            $this->deleteSql
+        );
     }
 }
