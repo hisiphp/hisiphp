@@ -20,7 +20,6 @@ use think\db\Query;
  */
 class Mysql extends Connection
 {
-
     protected $builder = '\\think\\db\\builder\\Mysql';
 
     /**
@@ -97,7 +96,7 @@ class Mysql extends Connection
                 $info[$val['field']] = [
                     'name'    => $val['field'],
                     'type'    => $val['type'],
-                    'notnull' => (bool) ('' === $val['null']), // not null is empty, null is yes
+                    'notnull' => 'NO' == $val['null'],
                     'default' => $val['default'],
                     'primary' => (strtolower($val['key']) == 'pri'),
                     'autoinc' => (strtolower($val['extra']) == 'auto_increment'),
