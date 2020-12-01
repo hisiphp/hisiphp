@@ -201,6 +201,12 @@ class Lang
     {
         // 自动侦测设置获取语言选择
         $langSet = '';
+        
+        if (defined('ENTRANCE') && ENTRANCE == 'admin') {
+            $this->setLangCookieVar(config('cookie.prefix').'admin_language');
+        } else {
+            $this->setLangCookieVar(config('cookie.prefix').'_language');
+        }
 
         if (isset($_GET[$this->langDetectVar])) {
             // url中设置了语言变量
