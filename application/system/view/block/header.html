@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="__STATIC__/fonts/typicons/min.css?v={:config('hisiphp.version')}">
     <link rel="stylesheet" href="__STATIC__/fonts/font-awesome/min.css?v={:config('hisiphp.version')}">
     {$hisiHead|raw}
+    <script>
+        var HSMENUS = {:json_encode($hisiMenus, 1)};
+    </script>
 </head>
 <body class="layui-layout-body hisi-theme-{:cookie('hisi_admin_theme')}">
 {php}

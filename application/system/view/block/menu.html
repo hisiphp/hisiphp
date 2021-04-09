@@ -1,16 +1,7 @@
 <div class="layui-header" style="z-index:999!important;">
         <div class="fl header-logo">后台管理中心</div>
         <div class="fl header-fold"><a href="javascript:;" title="打开/关闭左侧导航" class="aicon ai-shouqicaidan" id="foldSwitch"></a></div>
-        <ul class="layui-nav fl nobg main-nav">
-            {volist name="hisiMenus" id="vo"}
-                {if condition="($hisiCurParents['pid'] eq $vo['id'] and $ca neq 'plugins/run') or ($ca eq 'plugins/run' and $vo['id'] eq 3)"}
-               <li class="layui-nav-item layui-this">
-                {else /}
-                <li class="layui-nav-item">
-                {/if} 
-                <a href="javascript:;">{$vo['title']}</a></li>
-            {/volist}
-        </ul>
+        <ul class="layui-nav hs-first-menu"></ul>
         <ul class="layui-nav fr nobg head-info">
             <li class="layui-nav-item">
                 <a href="__ROOT_DIR__" target="_blank" class="aicon ai-ai-home" title="前台"></a>
